@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check, X, Pencil, FileCheck2, ChevronLeft } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
@@ -20,16 +20,20 @@ import { cn } from "../components/ui/cn";
 export function ValidationView() {
   const { notify } = useToast();
   const { data, loading, setData } = useAsync(() => repositories.validation.list(), []);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [chosenId, setChosenId] = useState<string | null>(null);
+  const [cleared, setCleared] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState("");
 
   const records = data ?? [];
+  // fall back to the first record rather than syncing selection through an effect
+  const selectedId = chosenId ?? (cleared ? null : (records[0]?.id ?? null));
   const selected = records.find((r) => r.id === selectedId) ?? null;
 
-  useEffect(() => {
-    if (!selectedId && records.length > 0) setSelectedId(records[0].id);
-  }, [records, selectedId]);
+  function selectRecord(id: string | null) {
+    setChosenId(id);
+    setCleared(id === null);
+  }
 
   function startEdit(field: ExtractedField) {
     setEditingId(field.id);
@@ -108,7 +112,7 @@ export function ValidationView() {
                     <li key={record.id}>
                       <button
                         type="button"
-                        onClick={() => setSelectedId(record.id)}
+                        onClick={() => selectRecord(record.id)}
                         aria-current={record.id === selectedId ? "true" : undefined}
                         className={cn(
                           "w-full px-4 py-3 text-left transition-colors hover:bg-navy-50",
@@ -143,7 +147,7 @@ export function ValidationView() {
                   <span className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() => setSelectedId(null)}
+                      onClick={() => selectRecord(null)}
                       aria-label="Back to queue"
                       className="rounded p-0.5 text-navy-400 hover:text-navy-700 lg:hidden"
                     >

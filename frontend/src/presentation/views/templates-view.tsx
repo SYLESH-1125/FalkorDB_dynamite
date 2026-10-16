@@ -7,7 +7,7 @@ import { useAsync } from "@/src/application/hooks/use-async";
 import { formatDate } from "@/src/application/services/formatting";
 import type { ReportTemplate } from "@/src/domain/entities/report";
 import { PageHeader } from "../components/ui/page-header";
-import { Card, CardHeader, CardBody } from "../components/ui/card";
+import { Card, CardBody } from "../components/ui/card";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Modal } from "../components/ui/modal";

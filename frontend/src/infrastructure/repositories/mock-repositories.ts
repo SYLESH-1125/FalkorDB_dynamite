@@ -5,10 +5,9 @@ import type {
   HelpRepository,
 } from "@/src/domain/repositories";
 import type { IngestedDocument } from "@/src/domain/entities/document";
-import type { ValidationRecord, ExtractedField } from "@/src/domain/entities/validation";
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
-import type { Report, ReportTemplate, ReportVersion, ReportWizardConfig } from "@/src/domain/entities/report";
-import type { ParliamentaryQuery, QueryStage } from "@/src/domain/entities/parliamentary";
+import type { Report, ReportVersion, ReportWizardConfig } from "@/src/domain/entities/report";
+import type { QueryStage } from "@/src/domain/entities/parliamentary";
 import type { User } from "@/src/domain/entities/user";
 import type { Integration } from "@/src/domain/entities/integration";
 import type { AppNotification } from "@/src/domain/entities/notification";

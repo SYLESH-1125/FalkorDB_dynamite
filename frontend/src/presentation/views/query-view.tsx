@@ -47,51 +47,49 @@ function CitationCard({ citation }: { citation: Citation }) {
 }
 
 export function QueryView() {
-  const { data: threadData, loading } = useAsync(() => repositories.query.threads(), []);
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const { data: threadData, loading, setData: setThreads } = useAsync(() => repositories.query.threads(), []);
+  const [chosenId, setChosenId] = useState<string | null>(null);
+  const [appended, setAppended] = useState<Record<string, ChatMessage[]>>({});
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [threadListOpen, setThreadListOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const threads = threadData ?? [];
-
-  useEffect(() => {
-    if (!activeId && threads.length > 0) {
-      setActiveId(threads[0].id);
-      setMessages(threads[0].messages);
-    }
-  }, [threads, activeId]);
+  const activeId = chosenId ?? threads[0]?.id ?? null;
+  const activeThread = threads.find((t) => t.id === activeId) ?? null;
+  const messages = [...(activeThread?.messages ?? []), ...(activeId ? (appended[activeId] ?? []) : [])];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, thinking]);
+  }, [messages.length, thinking]);
 
   function selectThread(id: string) {
-    const thread = threads.find((t) => t.id === id);
-    setActiveId(id);
-    setMessages(thread?.messages ?? []);
+    setChosenId(id);
     setThreadListOpen(false);
+  }
+
+  function append(threadId: string, message: ChatMessage) {
+    setAppended((prev) => ({ ...prev, [threadId]: [...(prev[threadId] ?? []), message] }));
   }
 
   async function submit(question: string) {
     const trimmed = question.trim();
     if (!trimmed || thinking || !activeId) return;
 
-    const userMessage: ChatMessage = {
-      id: `msg-${Date.now()}`,
+    const now = new Date();
+    append(activeId, {
+      id: `msg-${now.getTime()}`,
       role: "user",
       content: trimmed,
-      createdAt: new Date().toISOString(),
+      createdAt: now.toISOString(),
       citations: [],
-    };
-    setMessages((prev) => [...prev, userMessage]);
+    });
     setInput("");
     setThinking(true);
 
     const answer = await repositories.query.ask(activeId, trimmed);
-    setMessages((prev) => [...prev, answer]);
+    append(activeId, answer);
     setThinking(false);
   }
 
@@ -132,8 +130,8 @@ export function QueryView() {
               className="w-full"
               onClick={async () => {
                 const thread = await repositories.query.createThread();
-                setActiveId(thread.id);
-                setMessages([]);
+                setThreads([thread, ...threads]);
+                setChosenId(thread.id);
                 setThreadListOpen(false);
               }}
             >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type DragEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import {
   UploadCloud, FileText, FileSpreadsheet, ImageIcon, ScanLine, File as FileIcon,
   RotateCw, Trash2, X,
@@ -33,7 +33,7 @@ export function UploadView() {
   const [filter, setFilter] = useState<string>("all");
   const [subsidiary, setSubsidiary] = useState<string>("all");
   const inputRef = useRef<HTMLInputElement>(null);
-  const documents = data ?? [];
+  const documents = useMemo(() => data ?? [], [data]);
 
   const handleFiles = useCallback(
     async (files: FileList | null) => {
