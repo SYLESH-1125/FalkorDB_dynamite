@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Anton, Bowlby_One_SC } from "next/font/google";
 import { ToastProvider } from "@/src/presentation/components/ui/toast";
 import "./globals.css";
 
@@ -16,18 +16,32 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const anton = Anton({
+  variable: "--font-anton",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
+const bowlby = Bowlby_One_SC({
+  variable: "--font-bowlby",
+  subsets: ["latin"],
+  weight: ["400"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "CMPDI Intelligence Platform",
-    template: "%s · CMPDI Intelligence Platform",
+    default: "BHUMI",
+    template: "%s · BHUMI",
   },
   description:
-    "Document digitisation, AI-assisted query and automated reporting platform for Central Mine Planning & Design Institute, Coal India Limited.",
+    "Document digitisation, AI-assisted query and automated reporting platform — Bharat Hub for Unified Mining Intelligence.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrains.variable} h-full`}>
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable} ${anton.variable} ${bowlby.variable} h-full`}>
       <body className="min-h-full bg-canvas text-ink-0 antialiased">
         <ToastProvider>{children}</ToastProvider>
       </body>

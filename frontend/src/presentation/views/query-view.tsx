@@ -200,7 +200,7 @@ export function QueryView() {
                           <span className="grid size-5 place-items-center rounded-md bg-primary-600 text-white">
                             <Sparkles className="size-3" aria-hidden />
                           </span>
-                          <span className="type-caption text-muted">CMPDI Assistant</span>
+                          <span className="type-caption text-muted">BHUMI Assistant</span>
                         </div>
                       ) : null}
 

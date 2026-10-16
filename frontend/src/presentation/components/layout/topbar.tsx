@@ -40,7 +40,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
         </button>
 
         <Link href="/dashboard" className="shrink-0 lg:hidden">
-          <span className="type-wordmark text-ink-0">CMPDI</span>
+          <span className="type-wordmark text-ink-0">BHUMI</span>
         </Link>
 
         <div className="mx-auto hidden w-full max-w-xl md:block">

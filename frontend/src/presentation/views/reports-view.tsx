@@ -282,7 +282,7 @@ export function ReportsView() {
                 <p className="mt-1 text-xs text-muted">Review the structure before generating.</p>
                 <div className="mt-4 rounded-xl border border-hairline bg-surface-soft/50 p-5 sm:p-8">
                   <p className="text-[10px] tracking-wider text-muted-soft uppercase">
-                    Central Mine Planning &amp; Design Institute Limited
+                    BHUMI · Bharat Hub for Unified Mining Intelligence
                   </p>
                   <h4 className="display-sm mt-2 text-ink-0">
                     {config.title || "Untitled Report"}

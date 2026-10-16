@@ -170,10 +170,10 @@ export function HelpView() {
         </Card>
 
         <Card>
-          <CardHeader title="Still need help?" description="Reach the CMPDI platform support desk" />
+          <CardHeader title="Still need help?" description="Reach the BHUMI platform support desk" />
           <CardBody className="grid gap-4 sm:grid-cols-3">
             {[
-              [Mail, "Email support", "support.platform@cmpdi.co.in", "Response within one working day"],
+              [Mail, "Email support", "support.platform@bhumi.gov.in", "Response within one working day"],
               [Phone, "Helpdesk", "0651-2230-1450", "Mon–Fri, 09:30–18:00 IST"],
               [MessageCircle, "Raise a ticket", "Internal service desk", "For access and data corrections"],
             ].map(([Icon, title, value, help]) => {

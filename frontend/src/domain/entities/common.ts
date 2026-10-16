@@ -1,10 +1,10 @@
 export type Subsidiary =
-  | "ECL" | "BCCL" | "CCL" | "NCL" | "WCL" | "SECL" | "MCL" | "NEC" | "CMPDI";
+  | "ECL" | "BCCL" | "CCL" | "NCL" | "WCL" | "SECL" | "MCL" | "NEC";
 
 export type MineType = "Opencast" | "Underground" | "Mixed";
 
 export const SUBSIDIARIES: Subsidiary[] = [
-  "ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC", "CMPDI",
+  "ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC",
 ];
 
 export const MINE_TYPES: MineType[] = ["Opencast", "Underground", "Mixed"];

@@ -302,8 +302,8 @@ export function UsersView() {
           </div>
           <div>
             <Label htmlFor="invite-subsidiary">Subsidiary</Label>
-            <Select id="invite-subsidiary" defaultValue="CMPDI">
-              {["CMPDI", "ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"].map((s) => (
+            <Select id="invite-subsidiary" defaultValue="ECL">
+              {["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"].map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </Select>

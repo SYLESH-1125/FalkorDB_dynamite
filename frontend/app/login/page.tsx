@@ -18,7 +18,7 @@ export default function LoginPage() {
           <span className="grid size-8 place-items-center rounded-lg bg-primary-600 text-[13px] font-semibold text-white">
             C
           </span>
-          <span className="type-wordmark text-ink-0">CMPDI</span>
+          <span className="type-wordmark text-ink-0">BHUMI</span>
         </Link>
       </div>
 
@@ -31,7 +31,7 @@ export default function LoginPage() {
                 Government of India
               </span>
               <h2 className="display-sm mt-6 text-ink-0">
-                Intelligence platform for Coal India Limited
+                Bharat Hub for Unified Mining Intelligence
               </h2>
               <p className="mt-3.5 text-[14px] leading-relaxed text-ink-0/70">
                 Document digitisation, AI-assisted query and automated reporting across nine
@@ -49,7 +49,7 @@ export default function LoginPage() {
               ))}
               <p className="flex items-start gap-2 border-t border-ink-0/10 pt-4 text-[11.5px] leading-relaxed text-ink-0/60">
                 <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-                Authorised personnel only. All access is logged and subject to audit under CIL
+                Authorised personnel only. All access is logged and subject to audit under
                 information security policy.
               </p>
             </div>
@@ -58,7 +58,7 @@ export default function LoginPage() {
           <div className="p-6 sm:p-10">
             <h1 className="display-sm text-ink-0">Sign in</h1>
             <p className="mt-1.5 text-[14px] text-body">
-              Use your CIL employee credentials to access the platform.
+              Use your employee credentials to access the platform.
             </p>
             <LoginForm />
           </div>
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
       <footer className="px-4 py-6 text-center">
         <p className="text-[12px] text-muted">
-          Central Mine Planning &amp; Design Institute Limited · Smart India Hackathon 2026
+          BHUMI · Smart India Hackathon 2026
         </p>
       </footer>
     </div>

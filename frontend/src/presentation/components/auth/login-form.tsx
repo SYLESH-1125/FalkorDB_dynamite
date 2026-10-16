@@ -47,7 +47,7 @@ export function LoginForm() {
           id="employeeId"
           name="employeeId"
           autoComplete="username"
-          placeholder="e.g. CMPDI/2019/4471"
+          placeholder="e.g. BHUMI/2019/4471"
           value={employeeId}
           onChange={(e) => setEmployeeId(e.target.value)}
         />

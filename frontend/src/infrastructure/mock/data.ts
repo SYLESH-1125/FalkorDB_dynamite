@@ -19,9 +19,9 @@ import { isoDaysAgo, seeded, pick } from "./seed";
 export const CURRENT_USER: User = {
   id: "usr-001",
   name: "Prieyan Mogger",
-  email: "p.menon@cmpdi.co.in",
+  email: "p.menon@bhumi.gov.in",
   role: "Administrator",
-  subsidiary: "CMPDI",
+  subsidiary: "ECL",
   designation: "Chief Manager (Systems)",
   status: "active",
   lastActive: isoDaysAgo(0, 10),
@@ -43,7 +43,7 @@ const DESIGNATIONS = [
   "Senior Analyst", "Additional General Manager",
 ];
 
-const SUBS = ["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC", "CMPDI"];
+const SUBS = ["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"];
 
 export const USERS: User[] = NAMES.map((name, i) => {
   const rand = seeded(i * 977 + 13);
@@ -51,9 +51,7 @@ export const USERS: User[] = NAMES.map((name, i) => {
   return {
     id: `usr-${String(i + 1).padStart(3, "0")}`,
     name,
-    email: `${name.split(" ")[0].toLowerCase()}.${name.split(" ").pop()!.toLowerCase()}@${
-      i % 3 === 0 ? "cmpdi" : "coalindia"
-    }.co.in`,
+    email: `${name.split(" ")[0].toLowerCase()}.${name.split(" ").pop()!.toLowerCase()}@bhumi.gov.in`,
     role: i === 0 ? "Administrator" : roles[Math.floor(rand() * 4)],
     subsidiary: SUBS[i % SUBS.length],
     designation: DESIGNATIONS[i % DESIGNATIONS.length],
@@ -442,7 +440,7 @@ const PQ_SUBJECTS = [
   "Investment in coal gasification projects under CIL subsidiaries",
   "Compensation disbursed for land acquired in Talcher coalfield",
   "Safety incidents reported in underground mines during FY 2025-26",
-  "Renewable energy capacity commissioned by Coal India Limited",
+  "Renewable energy capacity commissioned across coal subsidiaries",
   "Coal import substitution progress and domestic supply adequacy",
   "Coal despatch to power utilities and pending railway rakes",
   "Steps taken to improve coal quality and reduce grade slippage",
@@ -602,7 +600,7 @@ export const INTEGRATIONS: Integration[] = [
   ["BCCL Land Records Interface", "BCCL", "Land acquisition, compensation and rehabilitation records.", "connected", 240, 1_486],
   ["Ministry of Coal e-Office", "MoC", "Parliamentary query intake and reply submission channel.", "connected", 15, 372],
   ["ECL Legacy Archive (FTP)", "ECL", "Historical scanned records prior to 2015 digitisation drive.", "disconnected", 1440, 0],
-  ["CMPDI Geological Repository", "CMPDI", "Survey reports, seam correlation and geotechnical assessments.", "connected", 180, 3_628],
+  ["BHUMI Geological Repository", "BHUMI", "Survey reports, seam correlation and geotechnical assessments.", "connected", 180, 3_628],
   ["CCL Production Reporting", "CCL", "Daily raw coal output, despatch and pithead stock positions.", "connected", 30, 6_284],
   ["WCL Safety Incident Register", "WCL", "DGMS-reportable incidents, inspections and remediation status.", "connected", 60, 842],
   ["NEC Operations Feed", "NEC", "North Eastern Coalfields production and manpower returns.", "degraded", 180, 214],
@@ -650,7 +648,7 @@ export const NOTIFICATIONS: AppNotification[] = [
 }));
 
 export const HELP_RESOURCES: HelpResource[] = [
-  ["Getting Started with the CMPDI Platform", "End-to-end walkthrough covering login, navigation and your first document upload.", "guide", "Onboarding", "12 min read"],
+  ["Getting Started with the BHUMI Platform", "End-to-end walkthrough covering login, navigation and your first document upload.", "guide", "Onboarding", "12 min read"],
   ["Uploading and Digitising Legacy Records", "Best practices for scanning quality, batch uploads and handling multi-language documents.", "guide", "Document Management", "8 min read"],
   ["Human-in-Loop Validation Workflow", "How to review low-confidence extractions, apply corrections and approve records.", "video", "Data Quality", "14 min"],
   ["Asking Effective Questions in the AI Query System", "Phrasing queries for precise answers and interpreting source citations.", "guide", "AI Query", "6 min read"],

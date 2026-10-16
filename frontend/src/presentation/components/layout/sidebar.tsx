@@ -23,8 +23,8 @@ export function SidebarContent({
         </span>
         {!collapsed ? (
           <Link href="/dashboard" className="min-w-0">
-            <p className="type-wordmark truncate text-ink-0">CMPDI</p>
-            <p className="truncate text-[11.5px] text-muted">Coal India Limited</p>
+            <p className="type-wordmark truncate text-ink-0">BHUMI</p>
+            <p className="truncate text-[11.5px] text-muted">Unified Mining Intelligence</p>
           </Link>
         ) : null}
       </div>

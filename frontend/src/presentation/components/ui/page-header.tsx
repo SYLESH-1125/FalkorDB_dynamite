@@ -20,7 +20,7 @@ export function PageHeader({
       <nav aria-label="Breadcrumb" className="mb-2.5">
         <ol className="flex flex-wrap items-center gap-1 text-[12px] text-muted">
           <li>
-            <Link href="/dashboard" className="transition-colors hover:text-ink-0">CMPDI</Link>
+            <Link href="/dashboard" className="transition-colors hover:text-ink-0">BHUMI</Link>
           </li>
           {breadcrumbs.map((crumb) => (
             <li key={crumb.label} className="flex items-center gap-1">

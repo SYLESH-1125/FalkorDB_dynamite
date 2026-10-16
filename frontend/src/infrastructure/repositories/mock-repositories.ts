@@ -33,7 +33,7 @@ const KIND_BY_EXT: Record<string, IngestedDocument["kind"]> = {
 export const authRepository: AuthRepository = {
   async signIn({ employeeId }) {
     return delay({
-      user: { ...fixtures.CURRENT_USER, email: `${employeeId.toLowerCase()}@cmpdi.co.in` },
+      user: { ...fixtures.CURRENT_USER, email: `${employeeId.toLowerCase()}@bhumi.gov.in` },
       token: `mock-jwt-${employeeId}`,
       issuedAt: new Date().toISOString(),
     }, 700);
