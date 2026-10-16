@@ -51,7 +51,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
               id="global-search"
               type="search"
               placeholder="Search documents, reports, queries…"
-              className="h-9 w-full rounded-full border border-sand-400 bg-sand-200/70 pr-3 pl-9 text-sm text-ink-800 placeholder:text-sand-500 focus:border-clay-400 focus:bg-white"
+              className="h-9 w-full rounded-[2px] border border-sand-400 bg-sand-200/70 pr-3 pl-9 text-sm text-ink-800 placeholder:text-sand-500 focus:border-clay-400 focus:bg-white"
             />
           </div>
         </div>
@@ -75,7 +75,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
             >
               <Bell className="size-4.5" aria-hidden />
               {unread.length > 0 ? (
-                <span className="absolute top-1.5 right-1.5 grid size-4 place-items-center rounded-full bg-clay-500 text-[9px] font-bold text-white">
+                <span className="absolute top-1.5 right-1.5 grid size-4 place-items-center rounded-[2px] bg-clay-500 text-[9px] font-bold text-white">
                   {unread.length}
                 </span>
               ) : null}
@@ -119,7 +119,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
               aria-label="Account menu"
               className="flex items-center gap-2 rounded-lg py-1 pr-1.5 pl-1 hover:bg-sand-200"
             >
-              <span className="grid size-7 place-items-center rounded-full bg-ink-800 text-[11px] font-semibold text-white">
+              <span className="grid size-7 place-items-center rounded-[2px] bg-ink-800 text-[11px] font-semibold text-white">
                 {CURRENT_USER.name.split(" ").map((p) => p[0]).slice(0, 2).join("")}
               </span>
               <span className="hidden text-left sm:block">

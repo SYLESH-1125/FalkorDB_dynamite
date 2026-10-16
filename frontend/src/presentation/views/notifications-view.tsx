@@ -85,7 +85,7 @@ export function NotificationsView() {
               type="button"
               onClick={() => setFilter(item)}
               className={cn(
-                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
+                "shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 filter === item
                   ? "bg-ink-800 text-white"
                   : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
@@ -93,7 +93,7 @@ export function NotificationsView() {
             >
               {item === "all" ? "All" : item[0].toUpperCase() + item.slice(1)}
               {item === "unread" && unread > 0 ? (
-                <span className="ml-1.5 rounded-full bg-clay-500 px-1.5 text-[10px] text-white">{unread}</span>
+                <span className="ml-1.5 rounded-[2px] bg-clay-500 px-1.5 text-[10px] text-white">{unread}</span>
               ) : null}
             </button>
           ))}
@@ -134,7 +134,7 @@ export function NotificationsView() {
                           {item.title}
                         </p>
                         <Badge tone={SEVERITY_TONES[item.severity]}>{item.severity}</Badge>
-                        {!item.read ? <span className="size-1.5 rounded-full bg-clay-500" aria-label="Unread" /> : null}
+                        {!item.read ? <span className="size-1.5 rounded-[2px] bg-clay-500" aria-label="Unread" /> : null}
                       </div>
                       <p className="mt-1 text-xs leading-relaxed text-ink-400">{item.body}</p>
                       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">

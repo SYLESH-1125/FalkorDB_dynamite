@@ -94,7 +94,7 @@ export function AnalyticsView() {
             <SlidersHorizontal className="size-4" aria-hidden />
             Filters
             {activeFilters.length > 0 ? (
-              <span className="ml-1 grid size-4 place-items-center rounded-full bg-clay-500 text-[9px] text-white">
+              <span className="ml-1 grid size-4 place-items-center rounded-[2px] bg-clay-500 text-[9px] text-white">
                 {activeFilters.length}
               </span>
             ) : null}
@@ -158,7 +158,7 @@ export function AnalyticsView() {
               <p className="mb-2 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Active</p>
               <div className="flex flex-wrap gap-1.5">
                 {activeFilters.map(([label, value]) => (
-                  <span key={label} className="inline-flex items-center gap-1 rounded-full bg-clay-50 px-2 py-0.5 text-[10px] text-clay-700">
+                  <span key={label} className="inline-flex items-center gap-1 rounded-[2px] bg-clay-50 px-2 py-0.5 text-[10px] text-clay-700">
                     {value}
                     <button
                       type="button"

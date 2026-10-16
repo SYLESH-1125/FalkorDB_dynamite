@@ -131,9 +131,9 @@ export function Bars<T extends object>({
                 {v.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="mt-1 h-1 w-full overflow-hidden rounded-full bg-sand-300">
+            <div className="mt-1 h-1 w-full overflow-hidden rounded-[2px] bg-sand-300">
               <div
-                className={cn("h-full rounded-full", tone === "clay" ? "bg-clay-500" : "bg-ink-700")}
+                className={cn("h-full rounded-[2px]", tone === "clay" ? "bg-clay-500" : "bg-ink-700")}
                 style={{ width: `${(v / max) * 100}%` }}
               />
             </div>

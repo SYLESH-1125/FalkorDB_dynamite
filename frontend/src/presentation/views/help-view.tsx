@@ -69,7 +69,7 @@ export function HelpView() {
               placeholder="Search for a topic…"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="h-11 rounded-full pl-10"
+              className="h-11 rounded-[2px] pl-10"
             />
           </div>
         </div>
@@ -81,7 +81,7 @@ export function HelpView() {
               type="button"
               onClick={() => setKindFilter(kind)}
               className={cn(
-                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
+                "shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 kindFilter === kind
                   ? "bg-ink-800 text-white"
                   : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",

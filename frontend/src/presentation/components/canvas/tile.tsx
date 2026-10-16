@@ -39,7 +39,7 @@ export function Tile({
   return (
     <section
       className={cn(
-        "relative flex min-w-0 flex-col overflow-hidden rounded-[14px] border",
+        "relative flex min-w-0 flex-col overflow-hidden rounded-[2px] border",
         tone !== "outline" && "shadow-[0_1px_1px_rgba(28,25,23,0.03),0_12px_28px_-20px_rgba(28,25,23,0.30)]",
         TONES[tone],
         className,

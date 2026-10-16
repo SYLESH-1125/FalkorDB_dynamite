@@ -19,7 +19,7 @@ export default function LoginPage() {
         <div className="w-full max-w-5xl overflow-hidden rounded-2xl border border-sand-300 bg-white shadow-[0_1px_2px_rgba(11,37,69,0.04),0_24px_64px_-28px_rgba(11,37,69,0.3)] lg:grid lg:grid-cols-2">
           <div className="hidden flex-col justify-between bg-ink-800 p-10 lg:flex">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[10px] font-medium tracking-wider text-clay-300 uppercase">
+              <span className="inline-flex items-center gap-1.5 rounded-[2px] bg-white/10 px-3 py-1 text-[10px] font-medium tracking-wider text-clay-300 uppercase">
                 <Landmark className="size-3" aria-hidden />
                 Government of India
               </span>

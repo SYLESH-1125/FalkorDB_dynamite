@@ -111,7 +111,7 @@ export function ReportsView() {
                     >
                       <span
                         className={cn(
-                          "grid size-5 shrink-0 place-items-center rounded-full text-[10px]",
+                          "grid size-5 shrink-0 place-items-center rounded-[2px] text-[10px]",
                           active && "bg-clay-500 text-white",
                           done && "bg-emerald-100 text-emerald-700",
                           !active && !done && "bg-sand-300 text-ink-300",

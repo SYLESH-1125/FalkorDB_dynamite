@@ -74,7 +74,7 @@ export function TemplatesView() {
               type="button"
               onClick={() => setFilter(category)}
               className={cn(
-                "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
+                "shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 filter === category
                   ? "bg-ink-800 text-white"
                   : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",

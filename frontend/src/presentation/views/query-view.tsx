@@ -26,7 +26,7 @@ function CitationCard({ citation }: { citation: Citation }) {
         <FileText className="size-3.5 shrink-0 text-ink-300" aria-hidden />
         <span className="min-w-0 flex-1 truncate text-xs text-ink-600">{citation.documentName}</span>
         <span className="shrink-0 text-[10px] text-ink-300">p. {citation.page}</span>
-        <span className="shrink-0 rounded-full bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-700">
+        <span className="shrink-0 rounded-[2px] bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-700">
           {Math.round(citation.relevance * 100)}%
         </span>
         <ChevronDown
@@ -208,8 +208,8 @@ export function QueryView() {
                         className={cn(
                           "rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-line",
                           message.role === "user"
-                            ? "rounded-br-sm bg-ink-800 text-white"
-                            : "rounded-bl-sm bg-sand-200/70 text-ink-700",
+                            ? "rounded-[2px] bg-ink-800 text-white"
+                            : "rounded-[2px] bg-sand-200/70 text-ink-700",
                         )}
                       >
                         {message.content}
@@ -233,7 +233,7 @@ export function QueryView() {
 
                 {thinking ? (
                   <li className="flex justify-start">
-                    <div className="flex items-center gap-2 rounded-2xl rounded-bl-sm bg-sand-200/70 px-4 py-3">
+                    <div className="flex items-center gap-2 rounded-2xl rounded-[2px] bg-sand-200/70 px-4 py-3">
                       <Loader2 className="size-3.5 animate-spin text-clay-500" aria-hidden />
                       <span className="text-sm text-ink-400">Searching the corpus…</span>
                     </div>
@@ -251,7 +251,7 @@ export function QueryView() {
                     key={query}
                     type="button"
                     onClick={() => void submit(query)}
-                    className="shrink-0 rounded-full border border-sand-300 bg-sand-200/60 px-3 py-1 text-[11px] whitespace-nowrap text-ink-500 hover:border-clay-200 hover:text-ink-800"
+                    className="shrink-0 rounded-[2px] border border-sand-300 bg-sand-200/60 px-3 py-1 text-[11px] whitespace-nowrap text-ink-500 hover:border-clay-200 hover:text-ink-800"
                   >
                     {query.length > 46 ? `${query.slice(0, 46)}…` : query}
                   </button>

@@ -30,7 +30,7 @@ export function DashboardView() {
         <Skeleton className="h-9 w-64 rounded-lg" />
         <div className="mt-8 grid grid-cols-2 gap-2.5 lg:grid-cols-6 xl:grid-cols-12">
           {[6, 3, 3, 4, 4, 4, 8, 4, 6, 6].map((span, i) => (
-            <Skeleton key={i} className={cn("h-40 rounded-[14px]", `col-span-2 xl:col-span-${span}`)} />
+            <Skeleton key={i} className={cn("h-40 rounded-[2px]", `col-span-2 xl:col-span-${span}`)} />
           ))}
         </div>
       </div>
@@ -66,14 +66,14 @@ export function DashboardView() {
           <div className="flex flex-wrap gap-2">
             <Link
               href="/upload"
-              className="inline-flex h-9 items-center gap-1.5 rounded-full border border-sand-400 bg-sand-50 px-4 text-[13px] font-medium text-ink-700 transition-colors hover:bg-white"
+              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] border border-sand-400 bg-sand-50 px-4 text-[13px] font-medium text-ink-700 transition-colors hover:bg-white"
             >
               <Upload className="size-3.5" aria-hidden />
               Upload
             </Link>
             <Link
               href="/reports"
-              className="inline-flex h-9 items-center gap-1.5 rounded-full bg-ink-800 px-4 text-[13px] font-medium text-sand-50 transition-colors hover:bg-ink-700"
+              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] bg-ink-800 px-4 text-[13px] font-medium text-sand-50 transition-colors hover:bg-ink-700"
             >
               <FileBarChart className="size-3.5" aria-hidden />
               Generate report
@@ -98,7 +98,7 @@ export function DashboardView() {
                   Every answer cites the source document and the page it came from.
                 </p>
               </div>
-              <span className="mt-5 flex items-center gap-2 rounded-full border border-white/12 bg-white/5 px-4 py-2.5">
+              <span className="mt-5 flex items-center gap-2 rounded-[2px] border border-white/12 bg-white/5 px-4 py-2.5">
                 <span className="flex-1 truncate text-[12.5px] text-white/40">
                   Which mines exceeded their stripping ratio?
                 </span>
@@ -171,8 +171,8 @@ export function DashboardView() {
                       {formatNumber(s.count)}
                     </span>
                   </div>
-                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-sand-300">
-                    <div className="h-full rounded-full bg-clay-500" style={{ width: `${s.share}%` }} />
+                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-300">
+                    <div className="h-full rounded-[2px] bg-clay-500" style={{ width: `${s.share}%` }} />
                   </div>
                 </li>
               ))}
@@ -206,7 +206,7 @@ export function DashboardView() {
                     </div>
                     <span
                       className={cn(
-                        "shrink-0 rounded-full px-1.5 py-0.5 text-[9.5px] font-semibold tabular-nums",
+                        "shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9.5px] font-semibold tabular-nums",
                         late || soon ? "bg-clay-100 text-clay-700" : "bg-sand-300 text-ink-500",
                       )}
                     >
@@ -232,7 +232,7 @@ export function DashboardView() {
             label="Production against target"
             hint="Million tonnes by subsidiary"
             action={
-              <span className="rounded-full bg-sage-400/15 px-2 py-0.5 text-[10px] font-medium text-sage-500">
+              <span className="rounded-[2px] bg-sage-400/15 px-2 py-0.5 text-[10px] font-medium text-sage-500">
                 {leader.subsidiary} +{leader.variance.toFixed(1)}%
               </span>
             }
@@ -379,8 +379,8 @@ export function DashboardView() {
                     {health.storageUsedGb} / {formatNumber(health.storageTotalGb)} GB
                   </span>
                 </div>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-sand-50">
-                  <div className="h-full rounded-full bg-ink-700" style={{ width: `${storagePct}%` }} />
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-50">
+                  <div className="h-full rounded-[2px] bg-ink-700" style={{ width: `${storagePct}%` }} />
                 </div>
               </div>
             </div>

@@ -227,7 +227,7 @@ export function ArchiveView() {
                 {versions.map((version, i) => (
                   <li key={version.version} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ink-800 text-[10px] font-semibold text-white">
+                      <span className="grid size-6 shrink-0 place-items-center rounded-[2px] bg-ink-800 text-[10px] font-semibold text-white">
                         {version.version}
                       </span>
                       {i < versions.length - 1 ? (

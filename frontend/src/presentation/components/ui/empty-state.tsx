@@ -11,7 +11,7 @@ export function EmptyState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <div className="mb-3 grid size-11 place-items-center rounded-full bg-sand-200 text-ink-300">
+      <div className="mb-3 grid size-11 place-items-center rounded-[2px] bg-sand-200 text-ink-300">
         {icon ?? <Inbox className="size-5" aria-hidden />}
       </div>
       <p className="text-sm font-medium text-ink-700">{title}</p>

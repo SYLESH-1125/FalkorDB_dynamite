@@ -194,16 +194,16 @@ export function TopicsView() {
                       </span>
                     </div>
 
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-sand-300">
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-300">
                       <div
-                        className="h-full rounded-full bg-clay-500"
+                        className="h-full rounded-[2px] bg-clay-500"
                         style={{ width: `${(cluster.frequency / max) * 100}%` }}
                       />
                     </div>
 
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {cluster.terms.map((term) => (
-                        <span key={term} className="rounded-full bg-sand-200 px-2 py-0.5 text-[11px] text-ink-500">
+                        <span key={term} className="rounded-[2px] bg-sand-200 px-2 py-0.5 text-[11px] text-ink-500">
                           {term}
                         </span>
                       ))}

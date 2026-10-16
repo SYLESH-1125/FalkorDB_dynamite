@@ -138,9 +138,9 @@ export function ProcessingView() {
                                 {stage.message}
                               </p>
                               {stage.status === "running" ? (
-                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden rounded-full bg-sand-300">
+                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden rounded-[2px] bg-sand-300">
                                   <div
-                                    className="h-full rounded-full bg-clay-500"
+                                    className="h-full rounded-[2px] bg-clay-500"
                                     style={{ width: `${stage.progress}%` }}
                                   />
                                 </div>

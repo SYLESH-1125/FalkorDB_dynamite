@@ -41,13 +41,13 @@ export function Toggle({
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={cn(
-        "relative h-5 w-9 shrink-0 rounded-full transition-colors",
+        "relative h-5 w-9 shrink-0 rounded-[2px] transition-colors",
         checked ? "bg-clay-500" : "bg-sand-400",
       )}
     >
       <span
         className={cn(
-          "absolute top-0.5 size-4 rounded-full bg-white shadow transition-transform",
+          "absolute top-0.5 size-4 rounded-[2px] bg-white shadow transition-transform",
           checked ? "translate-x-4.5" : "translate-x-0.5",
         )}
       />

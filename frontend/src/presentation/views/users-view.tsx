@@ -69,7 +69,7 @@ export function UsersView() {
       key: "name", header: "User", sortValue: (u) => u.name,
       render: (u) => (
         <div className="flex items-center gap-2.5">
-          <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ink-800 text-[10px] font-semibold text-white">
+          <span className="grid size-8 shrink-0 place-items-center rounded-[2px] bg-ink-800 text-[10px] font-semibold text-white">
             {u.name.split(" ").map((p) => p[0]).slice(0, 2).join("")}
           </span>
           <div className="min-w-0">

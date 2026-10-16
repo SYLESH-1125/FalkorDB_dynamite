@@ -118,7 +118,7 @@ export function ParliamentaryView() {
                   <div key={s} className="w-56 shrink-0">
                     <div className="mb-2 flex items-center justify-between">
                       <p className="text-xs font-semibold text-ink-600">{STAGE_LABELS[s]}</p>
-                      <span className="rounded-full bg-sand-300 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
+                      <span className="rounded-[2px] bg-sand-300 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
                         {items.length}
                       </span>
                     </div>
@@ -252,7 +252,7 @@ export function ParliamentaryView() {
                       <div className="flex flex-col items-center gap-1">
                         <span
                           className={cn(
-                            "grid size-6 place-items-center rounded-full text-[10px] font-semibold",
+                            "grid size-6 place-items-center rounded-[2px] text-[10px] font-semibold",
                             reached ? "bg-clay-500 text-white" : "bg-sand-300 text-ink-300",
                           )}
                         >

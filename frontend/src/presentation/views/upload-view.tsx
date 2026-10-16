@@ -163,7 +163,7 @@ export function UploadView() {
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {["Native PDF", "Scanned records", "Spreadsheets", "Photographs", "Hindi + English OCR"].map((tag) => (
-              <span key={tag} className="rounded-full bg-sand-200 px-2.5 py-1 text-[11px] text-ink-500">
+              <span key={tag} className="rounded-[2px] bg-sand-200 px-2.5 py-1 text-[11px] text-ink-500">
                 {tag}
               </span>
             ))}
@@ -249,9 +249,9 @@ export function UploadView() {
                         ) : null}
                       </p>
                       {active ? (
-                        <div className="mt-2 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand-300">
+                        <div className="mt-2 h-1 w-full max-w-xs overflow-hidden rounded-[2px] bg-sand-300">
                           <div
-                            className="h-full rounded-full bg-clay-500 transition-[width] duration-500"
+                            className="h-full rounded-[2px] bg-clay-500 transition-[width] duration-500"
                             style={{ width: `${doc.progress}%` }}
                           />
                         </div>

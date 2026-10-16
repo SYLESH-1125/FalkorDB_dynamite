@@ -21,7 +21,7 @@ export default function LandingPage() {
   return (
     <div className="gradient-hero min-h-screen bg-sand-100">
       <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
-        <nav className="flex items-center gap-3 rounded-full border border-white/70 bg-sand-300/70 px-3 py-2 shadow-sm backdrop-blur sm:px-5">
+        <nav className="flex items-center gap-3 rounded-[2px] border border-white/70 bg-sand-300/70 px-3 py-2 shadow-sm backdrop-blur sm:px-5">
           <Link href="/" className="flex shrink-0 items-center gap-2">
             <span className="grid size-8 place-items-center rounded-lg bg-ink-800 font-serif text-sm font-bold text-white">C</span>
             <span className="font-serif text-lg font-semibold tracking-tight text-ink-800">CMPDI</span>
@@ -46,13 +46,13 @@ export default function LandingPage() {
           <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
             <Link
               href="/help"
-              className="hidden h-9 items-center rounded-full border border-sand-400 bg-white px-4 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200 sm:inline-flex"
+              className="hidden h-9 items-center rounded-[2px] border border-sand-400 bg-white px-4 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200 sm:inline-flex"
             >
               Help
             </Link>
             <Link
               href="/login"
-              className="inline-flex h-9 items-center rounded-full bg-ink-800 px-5 text-sm font-medium text-white transition-colors hover:bg-ink-700"
+              className="inline-flex h-9 items-center rounded-[2px] bg-ink-800 px-5 text-sm font-medium text-white transition-colors hover:bg-ink-700"
             >
               Login
             </Link>
@@ -61,7 +61,7 @@ export default function LandingPage() {
       </div>
 
       <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 text-center sm:px-6 sm:pt-16 lg:pt-24">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-clay-200 bg-white/70 px-3 py-1 text-[11px] font-medium tracking-wide text-clay-700 uppercase">
+        <span className="inline-flex items-center gap-1.5 rounded-[2px] border border-clay-200 bg-white/70 px-3 py-1 text-[11px] font-medium tracking-wide text-clay-700 uppercase">
           <Landmark className="size-3" aria-hidden />
           Central Mine Planning &amp; Design Institute
         </span>
@@ -81,14 +81,14 @@ export default function LandingPage() {
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/dashboard"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-ink-800 px-7 text-sm font-medium text-white transition-colors hover:bg-ink-700"
+            className="inline-flex h-11 items-center gap-2 rounded-[2px] bg-ink-800 px-7 text-sm font-medium text-white transition-colors hover:bg-ink-700"
           >
             Open dashboard
             <ArrowRight className="size-4" aria-hidden />
           </Link>
           <Link
             href="/query"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-sand-400 bg-white px-7 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200"
+            className="inline-flex h-11 items-center gap-2 rounded-[2px] border border-sand-400 bg-white px-7 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200"
           >
             <Sparkles className="size-4 text-clay-500" aria-hidden />
             Try the query system
@@ -165,7 +165,7 @@ export default function LandingPage() {
             </ul>
             <Link
               href="/parliamentary"
-              className="mt-8 inline-flex h-10 items-center gap-2 rounded-full bg-clay-500 px-6 text-sm font-medium text-white transition-colors hover:bg-clay-600"
+              className="mt-8 inline-flex h-10 items-center gap-2 rounded-[2px] bg-clay-500 px-6 text-sm font-medium text-white transition-colors hover:bg-clay-600"
             >
               View the tracker
               <ArrowRight className="size-4" aria-hidden />
