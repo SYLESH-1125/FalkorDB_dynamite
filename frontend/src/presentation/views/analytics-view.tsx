@@ -102,7 +102,7 @@ export function AnalyticsView() {
         }
       />
 
-      <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[15rem_1fr] lg:p-8">
+      <div className="grid min-w-0 gap-5 p-4 sm:p-6 lg:grid-cols-[15rem_1fr] lg:p-8">
         <aside
           className={cn(
             "h-fit rounded-xl border border-navy-100 bg-white lg:sticky lg:top-20",

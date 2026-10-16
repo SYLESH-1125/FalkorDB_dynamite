@@ -97,8 +97,8 @@ export function ValidationView() {
           ))}
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[19rem_1fr]">
-          <Card className={cn(selected && "hidden lg:block")}>
+        <div className="grid min-w-0 gap-5 lg:grid-cols-[19rem_1fr]">
+          <Card className={cn("min-w-0", selected && "hidden lg:block")}>
             <CardHeader title="Review queue" description={`${records.length} records awaiting review`} />
             {loading ? (
               <div className="space-y-2 p-4">
@@ -141,7 +141,7 @@ export function ValidationView() {
           </Card>
 
           {selected ? (
-            <Card>
+            <Card className="min-w-0">
               <CardHeader
                 title={
                   <span className="flex items-center gap-2">

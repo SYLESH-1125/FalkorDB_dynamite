@@ -5,7 +5,7 @@ export function Card({ className, children }: { className?: string; children: Re
   return (
     <section
       className={cn(
-        "rounded-xl border border-navy-100 bg-white shadow-[0_1px_2px_rgba(11,37,69,0.04),0_8px_24px_-12px_rgba(11,37,69,0.12)]",
+        "min-w-0 rounded-xl border border-navy-100 bg-white shadow-[0_1px_2px_rgba(11,37,69,0.04),0_8px_24px_-12px_rgba(11,37,69,0.12)]",
         className,
       )}
     >
@@ -28,7 +28,7 @@ export function CardHeader({
         <h2 className="text-sm font-semibold tracking-tight text-navy-900">{title}</h2>
         {description ? <p className="mt-0.5 text-xs text-navy-400">{description}</p> : null}
       </div>
-      {action ? <div className="shrink-0">{action}</div> : null}
+      {action ? <div className="min-w-0 max-w-full">{action}</div> : null}
     </div>
   );
 }

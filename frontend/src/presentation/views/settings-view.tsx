@@ -65,7 +65,7 @@ export function SettingsView() {
       />
 
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="scrollbar-thin mb-5 flex gap-1 overflow-x-auto border-b border-navy-100 pb-px">
+        <div className="scrollbar-thin mb-5 flex min-w-0 gap-1 overflow-x-auto border-b border-navy-100 pb-px">
           {TABS.map((item) => {
             const Icon = item.icon;
             const active = tab === item.id;
@@ -112,11 +112,11 @@ export function SettingsView() {
                 {Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-40 rounded-xl" />)}
               </div>
             ) : (
-              <div className="grid gap-4 lg:grid-cols-2">
+              <div className="grid min-w-0 gap-4 lg:grid-cols-2">
                 {integrations.map((integration) => (
-                  <Card key={integration.id}>
-                    <CardBody>
-                      <div className="flex items-start justify-between gap-3">
+                  <Card key={integration.id} className="min-w-0">
+                    <CardBody className="min-w-0">
+                      <div className="flex min-w-0 items-start justify-between gap-3">
                         <div className="flex min-w-0 gap-3">
                           <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-500">
                             <Globe className="size-4" aria-hidden />
@@ -134,7 +134,7 @@ export function SettingsView() {
 
                       <p className="mt-3 text-xs leading-relaxed text-navy-500">{integration.description}</p>
 
-                      <code className="mt-3 block truncate rounded-md bg-navy-50 px-2.5 py-1.5 text-[11px] text-navy-600">
+                      <code className="mt-3 block overflow-hidden rounded-md bg-navy-50 px-2.5 py-1.5 text-[11px] text-ellipsis whitespace-nowrap text-navy-600">
                         {integration.endpoint}
                       </code>
 

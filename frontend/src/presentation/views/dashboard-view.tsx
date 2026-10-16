@@ -76,7 +76,7 @@ export function DashboardView() {
                   series={[
                     { key: "reports", label: "Reports" },
                     { key: "queries", label: "Queries" },
-                    { key: "documents", label: "Documents" },
+                    { key: "documents", label: "Documents", axis: "right" as const },
                   ]}
                 />
               )}

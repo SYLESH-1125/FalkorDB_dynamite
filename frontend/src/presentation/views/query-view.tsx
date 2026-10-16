@@ -116,7 +116,7 @@ export function QueryView() {
         }
       />
 
-      <div className="grid gap-5 p-4 sm:p-6 lg:grid-cols-[16rem_1fr] lg:p-8">
+      <div className="grid min-w-0 gap-5 p-4 sm:p-6 lg:grid-cols-[16rem_1fr] lg:p-8">
         <aside
           className={cn(
             "rounded-xl border border-navy-100 bg-white",
@@ -158,7 +158,7 @@ export function QueryView() {
           </ul>
         </aside>
 
-        <div className="flex min-h-[34rem] flex-col overflow-hidden rounded-xl border border-navy-100 bg-white">
+        <div className="flex min-h-[34rem] min-w-0 flex-col overflow-hidden rounded-xl border border-navy-100 bg-white">
           <div ref={scrollRef} className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6">
             {loading ? (
               <p className="text-center text-sm text-navy-400">Loading conversation…</p>

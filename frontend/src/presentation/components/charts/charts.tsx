@@ -12,20 +12,25 @@ export function TrendLineChart({
   data, series, height = 260,
 }: {
   data: readonly object[];
-  series: { key: string; label: string }[];
+  series: { key: string; label: string; axis?: "left" | "right" }[];
   height?: number;
 }) {
+  const usesRight = series.some((s) => s.axis === "right");
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={data} margin={{ top: 6, right: 8, left: -18, bottom: 0 }}>
+      <LineChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid {...GRID} vertical={false} />
         <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
-        <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={48} />
+        <YAxis yAxisId="left" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
+        {usesRight ? (
+          <YAxis yAxisId="right" orientation="right" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
+        ) : null}
         <Tooltip contentStyle={TOOLTIP_STYLE} />
         <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} iconType="circle" iconSize={7} />
         {series.map((s, i) => (
           <Line
             key={s.key}
+            yAxisId={s.axis === "right" ? "right" : "left"}
             type="monotone"
             dataKey={s.key}
             name={s.label}
@@ -50,7 +55,7 @@ export function TrendAreaChart({
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <AreaChart data={data} margin={{ top: 6, right: 8, left: -18, bottom: 0 }}>
+      <AreaChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#e06f22" stopOpacity={0.28} />
@@ -59,7 +64,7 @@ export function TrendAreaChart({
         </defs>
         <CartesianGrid {...GRID} vertical={false} />
         <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
-        <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={48} />
+        <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         <Tooltip contentStyle={TOOLTIP_STYLE} />
         <Area
           type="monotone"
@@ -89,7 +94,7 @@ export function CategoryBarChart({
       <BarChart
         data={data}
         layout={layout}
-        margin={{ top: 6, right: 12, left: vertical ? 8 : -18, bottom: 0 }}
+        margin={{ top: 6, right: 12, left: vertical ? 8 : 0, bottom: 0 }}
         barCategoryGap={vertical ? "22%" : "28%"}
       >
         <CartesianGrid {...GRID} vertical={vertical} horizontal={!vertical} />
@@ -101,7 +106,7 @@ export function CategoryBarChart({
         ) : (
           <>
             <XAxis dataKey={xKey} tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
-            <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={48} />
+            <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
           </>
         )}
         <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(224,111,34,0.06)" }} />
