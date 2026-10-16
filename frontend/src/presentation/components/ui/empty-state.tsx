@@ -10,13 +10,13 @@ export function EmptyState({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-      <div className="mb-3 grid size-11 place-items-center rounded-[2px] bg-sand-200 text-ink-300">
+    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="mb-3.5 grid size-11 place-items-center rounded-xl bg-surface-soft text-muted">
         {icon ?? <Inbox className="size-5" aria-hidden />}
       </div>
-      <p className="text-sm font-medium text-ink-700">{title}</p>
-      {description ? <p className="mt-1 max-w-sm text-xs text-ink-300">{description}</p> : null}
-      {action ? <div className="mt-4">{action}</div> : null}
+      <p className="title-sm text-ink-0">{title}</p>
+      {description ? <p className="mt-1.5 max-w-sm text-[12.5px] text-body">{description}</p> : null}
+      {action ? <div className="mt-5">{action}</div> : null}
     </div>
   );
 }

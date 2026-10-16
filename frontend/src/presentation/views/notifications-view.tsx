@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCheck, Info, CheckCircle2, AlertTriangle, AlertOctagon, ArrowRight } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
-import { relativeTime } from "@/src/application/services/formatting";
+import { relativeTime, formatLabel } from "@/src/application/services/formatting";
 import type { NotificationSeverity } from "@/src/domain/entities/notification";
 import { PageHeader } from "../components/ui/page-header";
 import { Card, CardHeader } from "../components/ui/card";
@@ -66,14 +66,14 @@ export function NotificationsView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Unread", unread, "text-clay-600"],
-            ["Critical", notifications.filter((n) => n.severity === "critical").length, "text-red-600"],
-            ["Warnings", notifications.filter((n) => n.severity === "warning").length, "text-clay-600"],
-            ["Total", notifications.length, "text-ink-800"],
+            ["Unread", unread, "text-link"],
+            ["Critical", notifications.filter((n) => n.severity === "critical").length, "text-danger"],
+            ["Warnings", notifications.filter((n) => n.severity === "warning").length, "text-link"],
+            ["Total", notifications.length, "text-ink-0"],
           ].map(([label, value, tone]) => (
-            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
-              <p className="text-xs text-ink-400">{label as string}</p>
-              <p className={cn("mt-1 font-serif text-2xl font-semibold", tone as string)}>{value as number}</p>
+            <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
+              <p className="type-caption text-muted">{label as string}</p>
+              <p className={cn("mt-1 numeral text-2xl", tone as string)}>{value as number}</p>
             </div>
           ))}
         </div>
@@ -85,15 +85,15 @@ export function NotificationsView() {
               type="button"
               onClick={() => setFilter(item)}
               className={cn(
-                "shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
+                "shrink-0 px-3.5 py-1.5 text-xs font-normal whitespace-nowrap transition-colors",
                 filter === item
-                  ? "bg-ink-800 text-white"
-                  : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
+                  ? "bg-surface-card text-ink-0"
+                  : "border border-hairline-strong bg-surface-card text-body hover:bg-surface-soft",
               )}
             >
               {item === "all" ? "All" : item[0].toUpperCase() + item.slice(1)}
               {item === "unread" && unread > 0 ? (
-                <span className="ml-1.5 rounded-[2px] bg-clay-500 px-1.5 text-[10px] text-white">{unread}</span>
+                <span className="numeral ml-2 rounded-full bg-primary-600 px-1.5 text-[10px] text-white">{unread}</span>
               ) : null}
             </button>
           ))}
@@ -108,21 +108,21 @@ export function NotificationsView() {
           ) : visible.length === 0 ? (
             <EmptyState title="Nothing here" description="No notifications match the selected filter." />
           ) : (
-            <ul className="divide-y divide-sand-200">
+            <ul className="divide-y divide-hairline">
               {visible.map((item) => {
                 const Icon = SEVERITY_ICONS[item.severity];
                 return (
                   <li
                     key={item.id}
-                    className={cn("flex gap-3 px-4 py-3.5 sm:px-5", !item.read && "bg-clay-50/30")}
+                    className={cn("flex gap-3 px-4 py-3.5 sm:px-5", !item.read && "bg-surface-elevated/30")}
                   >
                     <span
                       className={cn(
-                        "mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg",
-                        item.severity === "critical" && "bg-red-50 text-red-600",
-                        item.severity === "warning" && "bg-clay-50 text-clay-600",
-                        item.severity === "success" && "bg-emerald-50 text-emerald-600",
-                        item.severity === "info" && "bg-sand-200 text-ink-400",
+                        "mt-0.5 grid size-8 shrink-0 place-items-center ",
+                        item.severity === "critical" && "bg-danger/10 text-danger",
+                        item.severity === "warning" && "bg-surface-elevated text-link",
+                        item.severity === "success" && "bg-success/10 text-success",
+                        item.severity === "info" && "bg-surface-soft text-muted",
                       )}
                     >
                       <Icon className="size-4" aria-hidden />
@@ -130,21 +130,21 @@ export function NotificationsView() {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className={cn("text-[13px]", item.read ? "font-medium text-ink-600" : "font-semibold text-ink-800")}>
+                        <p className={cn("text-[13px]", item.read ? "font-normal text-body" : "font-normal text-ink-0")}>
                           {item.title}
                         </p>
-                        <Badge tone={SEVERITY_TONES[item.severity]}>{item.severity}</Badge>
-                        {!item.read ? <span className="size-1.5 rounded-[2px] bg-clay-500" aria-label="Unread" /> : null}
+                        <Badge tone={SEVERITY_TONES[item.severity]}>{formatLabel(item.severity)}</Badge>
+                        {!item.read ? <span className="size-1.5 rounded-full bg-primary-600" aria-label="Unread" /> : null}
                       </div>
-                      <p className="mt-1 text-xs leading-relaxed text-ink-400">{item.body}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-muted">{item.body}</p>
                       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="text-[10px] text-ink-300">
+                        <span className="type-caption text-muted-soft">
                           {item.source} · {relativeTime(item.createdAt)}
                         </span>
                         {item.link ? (
                           <Link
                             href={item.link}
-                            className="inline-flex items-center gap-0.5 text-[11px] font-medium text-clay-600 hover:underline"
+                            className="inline-flex items-center gap-0.5 text-[11px] font-normal text-link hover:underline"
                           >
                             View
                             <ArrowRight className="size-3" aria-hidden />
@@ -154,7 +154,7 @@ export function NotificationsView() {
                           <button
                             type="button"
                             onClick={() => void markRead(item.id)}
-                            className="text-[11px] font-medium text-ink-400 hover:text-ink-700 hover:underline"
+                            className="type-caption text-muted transition-colors hover:text-ink-0"
                           >
                             Mark as read
                           </button>

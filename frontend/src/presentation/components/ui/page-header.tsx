@@ -16,19 +16,19 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="border-b border-sand-300 bg-white/70 px-4 py-5 backdrop-blur sm:px-6 lg:px-8">
-      <nav aria-label="Breadcrumb" className="mb-2">
-        <ol className="flex flex-wrap items-center gap-1 text-[11px] text-ink-300">
+    <header className="border-b border-hairline bg-canvas px-4 py-6 sm:px-6 lg:px-8">
+      <nav aria-label="Breadcrumb" className="mb-2.5">
+        <ol className="flex flex-wrap items-center gap-1 text-[12px] text-muted">
           <li>
-            <Link href="/dashboard" className="hover:text-ink-600">CMPDI</Link>
+            <Link href="/dashboard" className="transition-colors hover:text-ink-0">CMPDI</Link>
           </li>
           {breadcrumbs.map((crumb) => (
             <li key={crumb.label} className="flex items-center gap-1">
               <ChevronRight className="size-3" aria-hidden />
               {crumb.href ? (
-                <Link href={crumb.href} className="hover:text-ink-600">{crumb.label}</Link>
+                <Link href={crumb.href} className="transition-colors hover:text-ink-0">{crumb.label}</Link>
               ) : (
-                <span className="text-ink-500">{crumb.label}</span>
+                <span className="text-body">{crumb.label}</span>
               )}
             </li>
           ))}
@@ -36,14 +36,12 @@ export function PageHeader({
       </nav>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="font-serif text-2xl leading-tight font-semibold tracking-tight text-ink-800 sm:text-[28px]">
-            {title}
-          </h1>
+          <h1 className="display-md text-ink-0">{title}</h1>
           {description ? (
-            <p className="mt-1 max-w-2xl text-sm text-ink-400">{description}</p>
+            <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-body">{description}</p>
           ) : null}
         </div>
-        {action ? <div className="flex shrink-0 flex-wrap gap-2">{action}</div> : null}
+        {action ? <div className="flex shrink-0 flex-wrap gap-2.5">{action}</div> : null}
       </div>
     </header>
   );

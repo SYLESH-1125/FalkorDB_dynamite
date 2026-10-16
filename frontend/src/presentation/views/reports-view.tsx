@@ -89,7 +89,7 @@ export function ReportsView() {
 
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <Card>
-          <div className="scrollbar-thin overflow-x-auto border-b border-sand-300 px-4 py-4 sm:px-5">
+          <div className="scrollbar-thin overflow-x-auto border-b border-hairline px-4 py-4 sm:px-5">
             <ol className="flex min-w-max items-center gap-1">
               {STEPS.map((s, i) => {
                 const Icon = s.icon;
@@ -103,18 +103,18 @@ export function ReportsView() {
                       disabled={i > step}
                       aria-current={active ? "step" : undefined}
                       className={cn(
-                        "flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
-                        active && "bg-ink-800 text-white",
-                        done && "text-emerald-600 hover:bg-emerald-50",
-                        !active && !done && "text-sand-500",
+                        "type-nav flex items-center gap-2.5 px-3 py-2 transition-colors",
+                        active && "bg-surface-card text-ink-0",
+                        done && "text-success hover:bg-success/10",
+                        !active && !done && "text-muted-soft",
                       )}
                     >
                       <span
                         className={cn(
-                          "grid size-5 shrink-0 place-items-center rounded-[2px] text-[10px]",
-                          active && "bg-clay-500 text-white",
-                          done && "bg-emerald-100 text-emerald-700",
-                          !active && !done && "bg-sand-300 text-ink-300",
+                          "numeral grid size-5 shrink-0 place-items-center text-[10px]",
+                          active && "bg-primary-600 text-white",
+                          done && "bg-success/15 text-success",
+                          !active && !done && "bg-hairline text-muted-soft",
                         )}
                       >
                         {done ? <Check className="size-3" aria-hidden /> : i + 1}
@@ -123,7 +123,7 @@ export function ReportsView() {
                       <span className="whitespace-nowrap">{s.label}</span>
                     </button>
                     {i < STEPS.length - 1 ? (
-                      <ChevronRight className="mx-0.5 size-3.5 shrink-0 text-sand-400" aria-hidden />
+                      <ChevronRight className="mx-0.5 size-3.5 shrink-0 text-muted" aria-hidden />
                     ) : null}
                   </li>
                 );
@@ -134,8 +134,8 @@ export function ReportsView() {
           <CardBody>
             {step === 0 ? (
               <div>
-                <h3 className="text-sm font-semibold text-ink-800">Select data sources</h3>
-                <p className="mt-1 text-xs text-ink-400">
+                <h3 className="title-sm text-ink-0">Select data sources</h3>
+                <p className="mt-1 text-xs text-muted">
                   Only validated and extracted documents can be used as report inputs.
                 </p>
                 {documents.loading ? (
@@ -150,21 +150,21 @@ export function ReportsView() {
                         <li key={doc.id}>
                           <label
                             className={cn(
-                              "flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors",
+                              "flex cursor-pointer items-center gap-3 border p-3 transition-colors",
                               checked
-                                ? "border-clay-300 bg-clay-50/50"
-                                : "border-sand-300 hover:border-sand-400 hover:bg-sand-200/50",
+                                ? "border-hairline-strong bg-surface-elevated/50"
+                                : "border-hairline hover:border-hairline-strong hover:bg-surface-soft/50",
                             )}
                           >
                             <input
                               type="checkbox"
                               checked={checked}
                               onChange={() => toggleSource(doc.id)}
-                              className="size-4 shrink-0 rounded border-sand-500 accent-clay-500"
+                              className="size-4 shrink-0 border-hairline-strong accent-ink-0"
                             />
                             <span className="min-w-0 flex-1">
-                              <span className="block truncate text-[13px] font-medium text-ink-800">{doc.name}</span>
-                              <span className="block text-[11px] text-ink-300">
+                              <span className="block truncate text-[13px] font-normal text-ink-0">{doc.name}</span>
+                              <span className="block text-[11px] text-muted-soft">
                                 {doc.subsidiary} · {doc.pageCount} pages · {doc.confidence.toFixed(1)}% confidence
                               </span>
                             </span>
@@ -174,7 +174,7 @@ export function ReportsView() {
                     })}
                   </ul>
                 )}
-                <p className="mt-3 text-xs text-ink-400">
+                <p className="mt-3 text-xs text-muted">
                   {config.dataSourceIds.length} document{config.dataSourceIds.length === 1 ? "" : "s"} selected
                 </p>
               </div>
@@ -182,8 +182,8 @@ export function ReportsView() {
 
             {step === 1 ? (
               <div>
-                <h3 className="text-sm font-semibold text-ink-800">Choose a template</h3>
-                <p className="mt-1 text-xs text-ink-400">
+                <h3 className="title-sm text-ink-0">Choose a template</h3>
+                <p className="mt-1 text-xs text-muted">
                   Templates determine section structure, tone and statutory formatting.
                 </p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -195,19 +195,19 @@ export function ReportsView() {
                         type="button"
                         onClick={() => setConfig((prev) => ({ ...prev, templateId: template.id }))}
                         className={cn(
-                          "rounded-xl border p-4 text-left transition-colors",
+                          " border p-4 text-left transition-colors",
                           active
-                            ? "border-clay-400 bg-clay-50/50 ring-1 ring-clay-200"
-                            : "border-sand-300 hover:border-sand-400 hover:bg-sand-200/40",
+                            ? "border-primary-400 bg-primary-50/50 ring-1 ring-hairline-strong"
+                            : "border-hairline hover:border-hairline-strong hover:bg-surface-soft/40",
                         )}
                       >
                         <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-medium text-ink-800">{template.name}</p>
-                          {active ? <Check className="size-4 shrink-0 text-clay-600" aria-hidden /> : null}
+                          <p className="text-sm font-normal text-ink-0">{template.name}</p>
+                          {active ? <Check className="size-4 shrink-0 text-link" aria-hidden /> : null}
                         </div>
                         <Badge tone="info" className="mt-1.5">{template.category}</Badge>
-                        <p className="mt-2 text-xs leading-relaxed text-ink-400">{template.description}</p>
-                        <p className="mt-2 text-[10px] text-ink-300">
+                        <p className="mt-2 text-xs leading-relaxed text-muted">{template.description}</p>
+                        <p className="mt-2 text-[10px] text-muted-soft">
                           {template.sections.filter((s) => s.enabled).length} sections · used {template.usageCount} times
                         </p>
                       </button>
@@ -219,7 +219,7 @@ export function ReportsView() {
 
             {step === 2 ? (
               <div>
-                <h3 className="text-sm font-semibold text-ink-800">Configure parameters</h3>
+                <h3 className="title-sm text-ink-0">Configure parameters</h3>
                 <div className="mt-4 grid gap-4 sm:grid-cols-2">
                   <div className="sm:col-span-2">
                     <Label htmlFor="report-title">Report title</Label>
@@ -255,15 +255,15 @@ export function ReportsView() {
                   </div>
                 </div>
 
-                <div className="mt-5 space-y-3 border-t border-sand-300 pt-4">
+                <div className="mt-5 space-y-3 border-t border-hairline pt-4">
                   {[
                     ["includeCharts", "Include charts and visualisations", "Embed trend lines and comparison charts in the document"],
                     ["includeCitations", "Include source citations", "Append a page-level annexure tracing every figure to its source"],
                   ].map(([key, label, help]) => (
                     <div key={key} className="flex items-start justify-between gap-4">
                       <div className="min-w-0">
-                        <p className="text-[13px] font-medium text-ink-700">{label}</p>
-                        <p className="mt-0.5 text-xs text-ink-400">{help}</p>
+                        <p className="text-[13px] font-normal text-body-strong">{label}</p>
+                        <p className="mt-0.5 text-xs text-muted">{help}</p>
                       </div>
                       <Toggle
                         label={label}
@@ -278,32 +278,32 @@ export function ReportsView() {
 
             {step === 3 ? (
               <div>
-                <h3 className="text-sm font-semibold text-ink-800">Preview</h3>
-                <p className="mt-1 text-xs text-ink-400">Review the structure before generating.</p>
-                <div className="mt-4 rounded-xl border border-sand-300 bg-sand-200/50 p-5 sm:p-8">
-                  <p className="text-[10px] tracking-wider text-ink-300 uppercase">
+                <h3 className="title-sm text-ink-0">Preview</h3>
+                <p className="mt-1 text-xs text-muted">Review the structure before generating.</p>
+                <div className="mt-4 rounded-xl border border-hairline bg-surface-soft/50 p-5 sm:p-8">
+                  <p className="text-[10px] tracking-wider text-muted-soft uppercase">
                     Central Mine Planning &amp; Design Institute Limited
                   </p>
-                  <h4 className="mt-2 font-serif text-2xl font-semibold text-ink-800">
+                  <h4 className="display-sm mt-2 text-ink-0">
                     {config.title || "Untitled Report"}
                   </h4>
-                  <p className="mt-1 text-sm text-ink-400">
+                  <p className="mt-1 text-sm text-muted">
                     {config.period} · {config.subsidiary}
                   </p>
-                  <div className="mt-5 border-t border-sand-400 pt-4">
-                    <p className="mb-2 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">
+                  <div className="mt-5 border-t border-hairline-strong pt-4">
+                    <p className="mb-2 text-[10px] font-normal tracking-wider text-muted-soft uppercase">
                       Contents
                     </p>
                     <ol className="space-y-1.5">
                       {selectedTemplate?.sections.filter((s) => s.enabled).map((section, i) => (
-                        <li key={section.id} className="flex items-baseline gap-2 text-sm text-ink-600">
-                          <span className="text-xs tabular-nums text-ink-300">{i + 1}.</span>
+                        <li key={section.id} className="flex items-baseline gap-2 text-sm text-body">
+                          <span className="text-xs tabular-nums text-muted-soft">{i + 1}.</span>
                           {section.title}
                         </li>
                       ))}
                     </ol>
                   </div>
-                  <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-sand-400 pt-4 text-xs sm:grid-cols-4">
+                  <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-hairline-strong pt-4 text-xs sm:grid-cols-4">
                     {[
                       ["Sources", `${config.dataSourceIds.length} documents`],
                       ["Template", selectedTemplate?.name ?? "—"],
@@ -311,8 +311,8 @@ export function ReportsView() {
                       ["Citations", config.includeCitations ? "Included" : "Excluded"],
                     ].map(([label, value]) => (
                       <div key={label}>
-                        <dt className="text-ink-300">{label}</dt>
-                        <dd className="mt-0.5 truncate font-medium text-ink-700">{value}</dd>
+                        <dt className="text-muted-soft">{label}</dt>
+                        <dd className="mt-0.5 truncate font-normal text-body-strong">{value}</dd>
                       </div>
                     ))}
                   </dl>
@@ -322,8 +322,8 @@ export function ReportsView() {
 
             {step === 4 ? (
               <div>
-                <h3 className="text-sm font-semibold text-ink-800">Export format</h3>
-                <p className="mt-1 text-xs text-ink-400">Choose the output format and generate.</p>
+                <h3 className="title-sm text-ink-0">Export format</h3>
+                <p className="mt-1 text-xs text-muted">Choose the output format and generate.</p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   {([
                     ["PDF", FileText, "Portable, print-ready, tamper-evident"],
@@ -337,15 +337,15 @@ export function ReportsView() {
                         type="button"
                         onClick={() => setConfig((prev) => ({ ...prev, format }))}
                         className={cn(
-                          "rounded-xl border p-4 text-left transition-colors",
+                          " border p-4 text-left transition-colors",
                           active
-                            ? "border-clay-400 bg-clay-50/50 ring-1 ring-clay-200"
-                            : "border-sand-300 hover:border-sand-400",
+                            ? "border-primary-400 bg-primary-50/50 ring-1 ring-hairline-strong"
+                            : "border-hairline hover:border-hairline-strong",
                         )}
                       >
-                        <Icon className={cn("size-5", active ? "text-clay-600" : "text-ink-300")} aria-hidden />
-                        <p className="mt-2 text-sm font-medium text-ink-800">{format}</p>
-                        <p className="mt-0.5 text-[11px] text-ink-400">{help}</p>
+                        <Icon className={cn("size-5", active ? "text-link" : "text-muted-soft")} aria-hidden />
+                        <p className="mt-2 text-sm font-normal text-ink-0">{format}</p>
+                        <p className="mt-0.5 text-[11px] text-muted">{help}</p>
                       </button>
                     );
                   })}
@@ -354,7 +354,7 @@ export function ReportsView() {
             ) : null}
           </CardBody>
 
-          <div className="flex items-center justify-between gap-3 border-t border-sand-300 px-4 py-3.5 sm:px-5">
+          <div className="flex items-center justify-between gap-3 border-t border-hairline px-4 py-3.5 sm:px-5">
             <Button
               variant="secondary"
               onClick={() => setStep((s) => Math.max(0, s - 1))}
@@ -392,12 +392,12 @@ export function ReportsView() {
           <div className="scrollbar-thin max-h-96 overflow-auto">
             <table className="w-full min-w-[40rem] text-sm">
               <thead className="sticky top-0 z-10">
-                <tr className="bg-sand-200/90 backdrop-blur">
+                <tr className="bg-surface-soft backdrop-blur">
                   {["Report", "Template", "Subsidiary", "Version", "Status", "Updated"].map((h) => (
                     <th
                       key={h}
                       scope="col"
-                      className="border-b border-sand-300 px-3 py-2.5 text-left text-[11px] font-semibold tracking-wide text-ink-500 uppercase first:pl-4 last:pr-4"
+                      className="type-caption border-b border-hairline px-3 py-3 text-left text-muted first:pl-5 last:pr-5"
                     >
                       {h}
                     </th>
@@ -406,13 +406,13 @@ export function ReportsView() {
               </thead>
               <tbody>
                 {reports.data?.slice(0, 8).map((report) => (
-                  <tr key={report.id} className="border-b border-sand-200 last:border-0 hover:bg-clay-50/30">
-                    <td className="max-w-xs truncate px-3 py-2.5 pl-4 font-medium text-ink-800">{report.title}</td>
-                    <td className="px-3 py-2.5 text-ink-500">{report.templateName}</td>
-                    <td className="px-3 py-2.5 text-ink-500">{report.subsidiary}</td>
-                    <td className="px-3 py-2.5 tabular-nums text-ink-500">v{report.version}</td>
+                  <tr key={report.id} className="border-b border-hairline last:border-0 hover:bg-surface-elevated/30">
+                    <td className="max-w-xs truncate px-3 py-2.5 pl-4 font-normal text-ink-0">{report.title}</td>
+                    <td className="px-3 py-2.5 text-body">{report.templateName}</td>
+                    <td className="px-3 py-2.5 text-body">{report.subsidiary}</td>
+                    <td className="px-3 py-2.5 tabular-nums text-body">v{report.version}</td>
                     <td className="px-3 py-2.5"><ReportStatusBadge status={report.status} /></td>
-                    <td className="px-3 py-2.5 pr-4 text-ink-400">{formatDate(report.updatedAt)}</td>
+                    <td className="px-3 py-2.5 pr-4 text-muted">{formatDate(report.updatedAt)}</td>
                   </tr>
                 ))}
               </tbody>

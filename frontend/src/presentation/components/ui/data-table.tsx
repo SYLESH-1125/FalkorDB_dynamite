@@ -48,7 +48,7 @@ export function DataTable<T extends { id: string }>({
   }
 
   if (rows.length === 0) {
-    return <p className="px-5 py-10 text-center text-sm text-ink-300">{emptyMessage}</p>;
+    return <p className="px-5 py-12 text-center text-[13px] text-body">{emptyMessage}</p>;
   }
 
   return (
@@ -56,7 +56,7 @@ export function DataTable<T extends { id: string }>({
       <table className="w-full min-w-[42rem] border-collapse text-sm">
         {caption ? <caption className="sr-only">{caption}</caption> : null}
         <thead className="sticky top-0 z-10">
-          <tr className="bg-sand-200/90 backdrop-blur">
+          <tr className="bg-surface-soft/80 backdrop-blur">
             {columns.map((column) => {
               const active = sortKey === column.key;
               return (
@@ -65,7 +65,7 @@ export function DataTable<T extends { id: string }>({
                   scope="col"
                   aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
                   className={cn(
-                    "border-b border-sand-300 px-3 py-2.5 text-[11px] font-semibold tracking-wide text-ink-500 uppercase first:pl-4 last:pr-4",
+                    "border-b border-hairline px-3 py-2.5 text-[11px] font-semibold tracking-wide text-muted uppercase first:pl-5 last:pr-5",
                     column.align === "right" && "text-right",
                     column.align === "center" && "text-center",
                     column.align !== "right" && column.align !== "center" && "text-left",
@@ -76,7 +76,7 @@ export function DataTable<T extends { id: string }>({
                       type="button"
                       onClick={() => toggleSort(column.key)}
                       className={cn(
-                        "inline-flex items-center gap-1 hover:text-ink-800",
+                        "inline-flex items-center gap-1.5 transition-colors hover:text-ink-0",
                         column.align === "right" && "flex-row-reverse",
                       )}
                     >
@@ -111,16 +111,16 @@ export function DataTable<T extends { id: string }>({
                   : undefined
               }
               className={cn(
-                "border-b border-sand-200 last:border-0",
-                onRowClick && "cursor-pointer hover:bg-clay-50/40",
+                "border-b border-hairline last:border-0 transition-colors",
+                onRowClick && "cursor-pointer hover:bg-primary-50/40",
               )}
             >
               {columns.map((column) => (
                 <td
                   key={column.key}
                   className={cn(
-                    "px-3 py-2.5 align-middle text-ink-600 first:pl-4 last:pr-4",
-                    column.align === "right" && "text-right tabular-nums",
+                    "px-3 py-3 align-middle text-[13px] text-body-strong first:pl-5 last:pr-5",
+                    column.align === "right" && "numeral text-right",
                     column.align === "center" && "text-center",
                     column.className,
                   )}

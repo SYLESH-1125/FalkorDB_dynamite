@@ -2,11 +2,11 @@ import type { InputHTMLAttributes, SelectHTMLAttributes, ReactNode } from "react
 import { cn } from "./cn";
 
 const CONTROL =
-  "w-full rounded-lg border border-sand-400 bg-white px-3 py-2 text-sm text-ink-800 placeholder:text-sand-500 focus:border-clay-400 disabled:bg-sand-200";
+  "w-full rounded-lg border border-hairline-strong bg-surface-card px-3 py-2 text-[13.5px] text-ink-0 placeholder:text-muted-soft focus:border-primary-400 focus:outline-none disabled:bg-surface-soft disabled:text-muted";
 
 export function Label({ htmlFor, children }: { htmlFor?: string; children: ReactNode }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-medium text-ink-500">
+    <label htmlFor={htmlFor} className="type-caption mb-1.5 block text-body">
       {children}
     </label>
   );
@@ -41,13 +41,13 @@ export function Toggle({
       aria-label={label}
       onClick={() => onChange(!checked)}
       className={cn(
-        "relative h-5 w-9 shrink-0 rounded-[2px] transition-colors",
-        checked ? "bg-clay-500" : "bg-sand-400",
+        "relative h-5 w-9 shrink-0 rounded-full transition-colors",
+        checked ? "bg-primary-500" : "bg-hairline-strong",
       )}
     >
       <span
         className={cn(
-          "absolute top-0.5 size-4 rounded-[2px] bg-white shadow transition-transform",
+          "absolute top-0.5 size-4 rounded-full bg-white shadow-sm transition-transform",
           checked ? "translate-x-4.5" : "translate-x-0.5",
         )}
       />

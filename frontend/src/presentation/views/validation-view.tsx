@@ -90,9 +90,9 @@ export function ValidationView() {
             ["Avg. confidence", "86.4%"],
             ["Corrections today", 34],
           ].map(([label, value]) => (
-            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
-              <p className="text-xs text-ink-400">{label as string}</p>
-              <p className="mt-1 font-serif text-2xl font-semibold text-ink-800">{value as string | number}</p>
+            <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
+              <p className="type-caption text-muted">{label as string}</p>
+              <p className="mt-1 numeral text-2xl text-ink-0">{value as string | number}</p>
             </div>
           ))}
         </div>
@@ -105,7 +105,7 @@ export function ValidationView() {
                 {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-14 w-full" />)}
               </div>
             ) : (
-              <ul className="scrollbar-thin max-h-[34rem] divide-y divide-sand-200 overflow-y-auto">
+              <ul className="scrollbar-thin max-h-[34rem] divide-y divide-hairline overflow-y-auto">
                 {records.map((record) => {
                   const pending = pendingCount(record);
                   return (
@@ -115,14 +115,14 @@ export function ValidationView() {
                         onClick={() => selectRecord(record.id)}
                         aria-current={record.id === selectedId ? "true" : undefined}
                         className={cn(
-                          "w-full px-4 py-3 text-left transition-colors hover:bg-sand-200",
-                          record.id === selectedId && "border-l-2 border-clay-500 bg-clay-50/40",
+                          "w-full px-4 py-3 text-left transition-colors hover:bg-surface-soft",
+                          record.id === selectedId && "border-l-2 border-primary-400 bg-primary-50",
                         )}
                       >
-                        <p className="truncate text-[13px] font-medium text-ink-800" title={record.documentName}>
+                        <p className="truncate text-[13px] font-normal text-ink-0" title={record.documentName}>
                           {record.documentName}
                         </p>
-                        <p className="mt-0.5 text-[11px] text-ink-300">
+                        <p className="mt-0.5 text-[11px] text-muted-soft">
                           {record.subsidiary} · {relativeTime(record.submittedAt)}
                         </p>
                         <div className="mt-1.5">
@@ -149,7 +149,7 @@ export function ValidationView() {
                       type="button"
                       onClick={() => selectRecord(null)}
                       aria-label="Back to queue"
-                      className="rounded p-0.5 text-ink-300 hover:text-ink-600 lg:hidden"
+                      className="p-0.5 text-muted-soft hover:text-body lg:hidden"
                     >
                       <ChevronLeft className="size-4" aria-hidden />
                     </button>
@@ -162,12 +162,12 @@ export function ValidationView() {
               <div className="scrollbar-thin max-h-[34rem] overflow-auto">
                 <table className="w-full min-w-[44rem] text-sm">
                   <thead className="sticky top-0 z-10">
-                    <tr className="bg-sand-200/90 backdrop-blur">
+                    <tr className="bg-surface-soft backdrop-blur">
                       {["Field", "Extracted value", "Confidence", "Source", "Status", ""].map((h) => (
                         <th
                           key={h}
                           scope="col"
-                          className="border-b border-sand-300 px-3 py-2.5 text-left text-[11px] font-semibold tracking-wide text-ink-500 uppercase first:pl-4 last:pr-4"
+                          className="type-caption border-b border-hairline px-3 py-3 text-left text-muted first:pl-5 last:pr-5"
                         >
                           {h}
                         </th>
@@ -182,11 +182,11 @@ export function ValidationView() {
                         <tr
                           key={field.id}
                           className={cn(
-                            "border-b border-sand-200 last:border-0",
-                            field.status === "error" && !editing && "bg-red-50/40",
+                            "border-b border-hairline last:border-0",
+                            field.status === "error" && !editing && "bg-danger/10/40",
                           )}
                         >
-                          <td className="px-3 py-2.5 pl-4 font-medium text-ink-700">{field.label}</td>
+                          <td className="px-3 py-2.5 pl-4 font-normal text-body-strong">{field.label}</td>
                           <td className="px-3 py-2.5">
                             {editing ? (
                               <TextInput
@@ -197,16 +197,16 @@ export function ValidationView() {
                                 className="h-8 py-1 text-[13px]"
                               />
                             ) : (
-                              <span className="text-ink-600">
+                              <span className="text-body">
                                 {value}
                                 {field.correctedValue ? (
-                                  <span className="ml-2 text-[10px] text-clay-600">corrected</span>
+                                  <span className="ml-2 text-[10px] text-link">corrected</span>
                                 ) : null}
                               </span>
                             )}
                           </td>
                           <td className="px-3 py-2.5"><ConfidenceBar value={field.confidence} /></td>
-                          <td className="px-3 py-2.5 text-[11px] text-ink-300">{field.boundingBoxHint}</td>
+                          <td className="px-3 py-2.5 text-[11px] text-muted-soft">{field.boundingBoxHint}</td>
                           <td className="px-3 py-2.5"><FieldStatusBadge status={field.status} /></td>
                           <td className="px-3 py-2.5 pr-4">
                             {editing ? (
@@ -215,7 +215,7 @@ export function ValidationView() {
                                   type="button"
                                   onClick={() => void saveField(selected, field)}
                                   aria-label="Save correction"
-                                  className="rounded-md p-1.5 text-emerald-600 hover:bg-emerald-50"
+                                  className=" p-1.5 text-success hover:bg-success/10"
                                 >
                                   <Check className="size-3.5" aria-hidden />
                                 </button>
@@ -223,7 +223,7 @@ export function ValidationView() {
                                   type="button"
                                   onClick={() => setEditingId(null)}
                                   aria-label="Cancel"
-                                  className="rounded-md p-1.5 text-ink-300 hover:bg-sand-200"
+                                  className=" p-1.5 text-muted-soft hover:bg-surface-soft"
                                 >
                                   <X className="size-3.5" aria-hidden />
                                 </button>
@@ -233,7 +233,7 @@ export function ValidationView() {
                                 type="button"
                                 onClick={() => startEdit(field)}
                                 aria-label={`Edit ${field.label}`}
-                                className="rounded-md p-1.5 text-ink-300 hover:bg-sand-200 hover:text-ink-600"
+                                className=" p-1.5 text-muted-soft hover:bg-surface-soft hover:text-body"
                               >
                                 <Pencil className="size-3.5" aria-hidden />
                               </button>

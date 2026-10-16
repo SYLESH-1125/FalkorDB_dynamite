@@ -4,9 +4,10 @@ import {
   ResponsiveContainer, LineChart, Line, BarChart, Bar, PieChart, Pie, Cell,
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 } from "recharts";
-import { CHART_COLORS, AXIS_STYLE, TOOLTIP_STYLE } from "./palette";
+import { CHART_COLORS, AXIS_STYLE, TOOLTIP_STYLE, GRID_STROKE, AXIS_LINE } from "./palette";
 
-const GRID = { stroke: "#e9e1d3", strokeDasharray: "2 4" };
+const GRID = { stroke: GRID_STROKE, strokeDasharray: "2 4" };
+const LEGEND_STYLE = { fontSize: 11.5, paddingTop: 8, fontFamily: "var(--font-inter)" };
 
 export function TrendLineChart({
   data, series, height = 260,
@@ -20,13 +21,13 @@ export function TrendLineChart({
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid {...GRID} vertical={false} />
-        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
+        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: AXIS_LINE }} />
         <YAxis yAxisId="left" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         {usesRight ? (
           <YAxis yAxisId="right" orientation="right" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         ) : null}
         <Tooltip contentStyle={TOOLTIP_STYLE} />
-        <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} iconType="circle" iconSize={7} />
+        <Legend wrapperStyle={LEGEND_STYLE} iconType="circle" iconSize={7} />
         {series.map((s, i) => (
           <Line
             key={s.key}
@@ -37,7 +38,7 @@ export function TrendLineChart({
             stroke={CHART_COLORS[i % CHART_COLORS.length]}
             strokeWidth={2}
             dot={false}
-            activeDot={{ r: 4 }}
+            activeDot={{ r: 4, strokeWidth: 0 }}
           />
         ))}
       </LineChart>
@@ -58,19 +59,19 @@ export function TrendAreaChart({
       <AreaChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#cc5d28" stopOpacity={0.28} />
-            <stop offset="100%" stopColor="#cc5d28" stopOpacity={0.02} />
+            <stop offset="0%" stopColor="#1a3f70" stopOpacity={0.26} />
+            <stop offset="100%" stopColor="#1a3f70" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid {...GRID} vertical={false} />
-        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
+        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: AXIS_LINE }} />
         <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         <Tooltip contentStyle={TOOLTIP_STYLE} />
         <Area
           type="monotone"
           dataKey={dataKey}
           name={label}
-          stroke="#cc5d28"
+          stroke="#1a3f70"
           strokeWidth={2}
           fill={`url(#grad-${dataKey})`}
         />
@@ -105,12 +106,12 @@ export function CategoryBarChart({
           </>
         ) : (
           <>
-            <XAxis dataKey={xKey} tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
+            <XAxis dataKey={xKey} tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: AXIS_LINE }} />
             <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
           </>
         )}
-        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(204,93,40,0.06)" }} />
-        {series.length > 1 ? <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} iconType="circle" iconSize={7} /> : null}
+        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(26,63,112,0.06)" }} />
+        {series.length > 1 ? <Legend wrapperStyle={LEGEND_STYLE} iconType="circle" iconSize={7} /> : null}
         {series.map((s, i) => (
           <Bar
             key={s.key}
@@ -142,14 +143,15 @@ export function DonutChart({
           innerRadius="56%"
           outerRadius="82%"
           paddingAngle={2}
-          stroke="none"
+          stroke="#ffffff"
+          strokeWidth={2}
         >
           {data.map((entry, i) => (
             <Cell key={entry.name} fill={CHART_COLORS[i % CHART_COLORS.length]} />
           ))}
         </Pie>
         <Tooltip contentStyle={TOOLTIP_STYLE} />
-        <Legend wrapperStyle={{ fontSize: 11 }} iconType="circle" iconSize={7} />
+        <Legend wrapperStyle={LEGEND_STYLE} iconType="circle" iconSize={7} />
       </PieChart>
     </ResponsiveContainer>
   );

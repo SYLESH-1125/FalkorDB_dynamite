@@ -4,12 +4,12 @@ import { cn } from "./cn";
 export type BadgeTone = "success" | "warning" | "danger" | "info" | "neutral" | "accent";
 
 const TONES: Record<BadgeTone, string> = {
-  success: "bg-emerald-50 text-emerald-700 ring-emerald-600/20",
-  warning: "bg-clay-50 text-clay-700 ring-clay-600/20",
-  danger: "bg-red-50 text-red-700 ring-red-600/20",
-  info: "bg-sand-200 text-ink-600 ring-ink-500/20",
-  neutral: "bg-slate-100 text-slate-600 ring-slate-500/20",
-  accent: "bg-clay-500/10 text-clay-700 ring-clay-500/25",
+  success: "bg-success/10 text-success ring-success/20",
+  warning: "bg-warning/10 text-warning ring-warning/20",
+  danger: "bg-danger/10 text-danger ring-danger/20",
+  info: "bg-tint-navy text-body-strong ring-hairline-strong/60",
+  neutral: "bg-surface-soft text-body ring-hairline",
+  accent: "bg-primary-50 text-primary-600 ring-primary-200/70",
 };
 
 export function Badge({
@@ -22,7 +22,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-[2px] px-2 py-0.5 text-[11px] font-medium ring-1 ring-inset whitespace-nowrap",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11.5px] font-medium ring-1 ring-inset whitespace-nowrap",
         TONES[tone],
         className,
       )}
@@ -34,8 +34,8 @@ export function Badge({
 
 export function StatusDot({ tone = "neutral" }: { tone?: BadgeTone }) {
   const dot: Record<BadgeTone, string> = {
-    success: "bg-emerald-500", warning: "bg-clay-500", danger: "bg-red-500",
-    info: "bg-ink-400", neutral: "bg-slate-400", accent: "bg-clay-500",
+    success: "bg-success", warning: "bg-warning", danger: "bg-danger",
+    info: "bg-primary-400", neutral: "bg-muted-soft", accent: "bg-primary-500",
   };
-  return <span className={cn("size-1.5 rounded-[2px]", dot[tone])} aria-hidden />;
+  return <span className={cn("size-1.5 shrink-0 rounded-full", dot[tone])} aria-hidden />;
 }

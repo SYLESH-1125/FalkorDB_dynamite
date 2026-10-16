@@ -74,10 +74,10 @@ export function TemplatesView() {
               type="button"
               onClick={() => setFilter(category)}
               className={cn(
-                "shrink-0 rounded-[2px] px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
+                "shrink-0 px-3.5 py-1.5 text-xs font-normal whitespace-nowrap transition-colors",
                 filter === category
-                  ? "bg-ink-800 text-white"
-                  : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
+                  ? "bg-surface-card text-ink-0"
+                  : "border border-hairline-strong bg-surface-card text-body hover:bg-surface-soft",
               )}
             >
               {category === "all" ? "All templates" : category}
@@ -87,7 +87,7 @@ export function TemplatesView() {
 
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-56 w-full rounded-xl" />)}
+            {Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-56 w-full " />)}
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -95,7 +95,7 @@ export function TemplatesView() {
               <Card key={template.id} className="flex flex-col">
                 <CardBody className="flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sand-200 text-ink-400">
+                    <span className="grid size-9 shrink-0 place-items-center bg-surface-soft text-muted">
                       <LayoutTemplate className="size-4" aria-hidden />
                     </span>
                     {template.isDefault ? (
@@ -106,27 +106,27 @@ export function TemplatesView() {
                     ) : null}
                   </div>
 
-                  <h3 className="mt-3 text-sm font-semibold text-ink-800">{template.name}</h3>
+                  <h3 className="title-sm mt-3 text-ink-0">{template.name}</h3>
                   <Badge tone={CATEGORY_TONES[template.category]} className="mt-1.5">
                     {template.category}
                   </Badge>
-                  <p className="mt-2.5 text-xs leading-relaxed text-ink-400">{template.description}</p>
+                  <p className="mt-2.5 text-xs leading-relaxed text-muted">{template.description}</p>
 
-                  <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-sand-300 pt-3 text-center">
+                  <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-hairline pt-3 text-center">
                     {[
                       ["Sections", template.sections.filter((s) => s.enabled).length],
                       ["Used", template.usageCount],
                       ["Updated", formatDate(template.updatedAt).split(" ").slice(0, 2).join(" ")],
                     ].map(([label, value]) => (
                       <div key={label as string}>
-                        <dt className="text-[10px] text-ink-300">{label as string}</dt>
-                        <dd className="mt-0.5 text-xs font-medium text-ink-700">{value as string | number}</dd>
+                        <dt className="type-caption text-muted-soft">{label as string}</dt>
+                        <dd className="mt-0.5 text-xs font-normal text-body-strong">{value as string | number}</dd>
                       </div>
                     ))}
                   </dl>
                 </CardBody>
 
-                <div className="flex gap-2 border-t border-sand-300 px-4 py-3">
+                <div className="flex gap-2 border-t border-hairline px-4 py-3">
                   <Button variant="secondary" size="sm" className="flex-1" onClick={() => setEditing(template)}>
                     <Settings2 className="size-3.5" aria-hidden />
                     Configure
@@ -170,7 +170,7 @@ export function TemplatesView() {
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-medium text-ink-500">
+              <p className="mb-2 text-xs font-normal text-body">
                 Sections · {editing.sections.filter((s) => s.enabled).length} of {editing.sections.length} enabled
               </p>
               <ul className="space-y-2">
@@ -178,16 +178,16 @@ export function TemplatesView() {
                   <li
                     key={section.id}
                     className={cn(
-                      "flex items-start gap-3 rounded-lg border p-3 transition-colors",
-                      section.enabled ? "border-sand-300 bg-white" : "border-sand-300 bg-sand-200/50",
+                      "flex items-start gap-3 border p-3 transition-colors",
+                      section.enabled ? "border-hairline bg-surface-card" : "border-hairline bg-surface-soft/50",
                     )}
                   >
-                    <GripVertical className="mt-0.5 size-4 shrink-0 cursor-grab text-sand-400" aria-hidden />
+                    <GripVertical className="mt-0.5 size-4 shrink-0 cursor-grab text-muted" aria-hidden />
                     <div className="min-w-0 flex-1">
-                      <p className={cn("text-[13px] font-medium", section.enabled ? "text-ink-800" : "text-ink-300")}>
+                      <p className={cn("text-[13px] font-normal", section.enabled ? "text-ink-0" : "text-muted-soft")}>
                         {section.title}
                       </p>
-                      <p className="mt-0.5 text-xs text-ink-400">{section.description}</p>
+                      <p className="mt-0.5 text-xs text-muted">{section.description}</p>
                     </div>
                     <Toggle
                       label={`Toggle ${section.title}`}

@@ -26,11 +26,11 @@ export function DashboardView() {
 
   if (loading || !data) {
     return (
-      <div className="min-h-screen bg-sand-100 p-4 sm:p-6 lg:p-8">
-        <Skeleton className="h-9 w-64 rounded-lg" />
+      <div className="min-h-screen bg-canvas p-4 sm:p-6 lg:p-8">
+        <Skeleton className="h-9 w-64 " />
         <div className="mt-8 grid grid-cols-2 gap-2.5 lg:grid-cols-6 xl:grid-cols-12">
           {[6, 3, 3, 4, 4, 4, 8, 4, 6, 6].map((span, i) => (
-            <Skeleton key={i} className={cn("h-40 rounded-[2px]", `col-span-2 xl:col-span-${span}`)} />
+            <Skeleton key={i} className={cn("h-40 ", `col-span-2 xl:col-span-${span}`)} />
           ))}
         </div>
       </div>
@@ -48,32 +48,32 @@ export function DashboardView() {
   const storagePct = (health.storageUsedGb / health.storageTotalGb) * 100;
 
   return (
-    <div className="min-h-screen bg-sand-100">
-      <div className="gradient-hero px-4 pt-8 pb-6 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-canvas">
+      <div className="border-b border-hairline px-4 pt-10 pb-8 sm:px-6 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-5">
           <div className="min-w-0">
-            <p className="text-[10px] font-semibold tracking-[0.14em] text-ink-300 uppercase">
+            <p className="text-[10px] font-normal tracking-[0.14em] text-muted-soft uppercase">
               {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
             </p>
-            <h1 className="mt-2 font-serif text-[34px] leading-[1.05] font-semibold tracking-tight text-ink-800 sm:text-[42px]">
+            <h1 className="display-md mt-3 text-[30px] leading-[1.1] tracking-[2px] text-ink-0 sm:text-[38px]">
               Good morning, {CURRENT_USER.name.split(" ")[0]}
             </h1>
-            <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-ink-400">
+            <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-muted">
               {formatNumber(126)} fields need review and {deadlines.length} parliamentary replies
               are due this week. The index last refreshed {health.indexFreshnessMin} minutes ago.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/upload"
-              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] border border-sand-400 bg-sand-50 px-4 text-[13px] font-medium text-ink-700 transition-colors hover:bg-white"
+              className="inline-flex h-9.5 items-center gap-2 rounded-full border border-hairline-strong bg-surface-card px-4.5 text-[13.5px] font-medium text-body-strong transition-colors hover:bg-surface-soft"
             >
               <Upload className="size-3.5" aria-hidden />
               Upload
             </Link>
             <Link
               href="/reports"
-              className="inline-flex h-9 items-center gap-1.5 rounded-[2px] bg-ink-800 px-4 text-[13px] font-medium text-sand-50 transition-colors hover:bg-ink-700"
+              className="inline-flex h-9.5 items-center gap-2 rounded-full bg-primary-600 px-4.5 text-[13.5px] font-medium text-white transition-colors hover:bg-primary-700"
             >
               <FileBarChart className="size-3.5" aria-hidden />
               Generate report
@@ -88,21 +88,21 @@ export function DashboardView() {
           <Tile tone="ink" className="col-span-2 sm:row-span-3 lg:col-span-4 xl:col-span-5" flush>
             <Link href="/query" className="group flex h-full flex-col justify-between p-5">
               <div>
-                <p className="text-[10px] font-semibold tracking-[0.14em] text-clay-300 uppercase">
+                <p className="text-[11px] font-semibold tracking-wide text-white/60 uppercase">
                   AI Query
                 </p>
-                <p className="mt-4 font-serif text-[26px] leading-[1.15] font-semibold text-white sm:text-[30px]">
+                <p className="display-sm mt-3.5 leading-[1.25] text-white sm:text-[26px]">
                   Ask anything of {formatNumber(18942)} indexed documents.
                 </p>
-                <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-white/55">
+                <p className="mt-3 max-w-sm text-[13px] leading-relaxed text-white/65">
                   Every answer cites the source document and the page it came from.
                 </p>
               </div>
-              <span className="mt-5 flex items-center gap-2 rounded-[2px] border border-white/12 bg-white/5 px-4 py-2.5">
-                <span className="flex-1 truncate text-[12.5px] text-white/40">
+              <span className="mt-5 flex items-center gap-2 rounded-xl border border-white/15 bg-white/8 px-4 py-2.5">
+                <span className="flex-1 truncate text-[12.5px] text-white/55">
                   Which mines exceeded their stripping ratio?
                 </span>
-                <ArrowRight className="size-4 shrink-0 text-clay-300 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                <ArrowRight className="size-4 shrink-0 text-white/70 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </span>
             </Link>
           </Tile>
@@ -132,8 +132,8 @@ export function DashboardView() {
           <Tile className="col-span-2 sm:row-span-1 xl:col-span-4" label="Throughput" flush>
             <div className="flex h-full items-center gap-4 px-4 pb-3">
               <div className="shrink-0">
-                <p className="font-serif text-xl leading-none font-semibold text-ink-800">{kpis[1].value}</p>
-                <p className="mt-1 text-[10px] text-ink-300">avg. per document</p>
+                <p className="numeral text-xl leading-none text-ink-0">{kpis[1].value}</p>
+                <p className="mt-1 text-[10px] text-muted-soft">avg. per document</p>
               </div>
               <Spark values={timeSeries.map((t) => t.documents)} className="h-8 flex-1" />
             </div>
@@ -145,7 +145,7 @@ export function DashboardView() {
             label="Activity"
             hint="Reports, queries and documents over twelve months"
             action={
-              <Link href="/analytics" className="text-[11px] font-medium text-clay-600 hover:underline">
+              <Link href="/analytics" className="type-caption text-link hover:underline">
                 Analytics
               </Link>
             }
@@ -166,13 +166,13 @@ export function DashboardView() {
               {pipeline.map((s) => (
                 <li key={s.stage}>
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-[11.5px] text-ink-500">{s.stage}</span>
-                    <span className="shrink-0 text-[11.5px] font-medium tabular-nums text-ink-800">
+                    <span className="truncate text-[11.5px] text-body">{s.stage}</span>
+                    <span className="shrink-0 text-[11.5px] font-normal tabular-nums text-ink-0">
                       {formatNumber(s.count)}
                     </span>
                   </div>
-                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-300">
-                    <div className="h-full rounded-[2px] bg-clay-500" style={{ width: `${s.share}%` }} />
+                  <div className="mt-1 h-1.5 w-full overflow-hidden bg-hairline">
+                    <div className="h-full rounded-full bg-primary-500" style={{ width: `${s.share}%` }} />
                   </div>
                 </li>
               ))}
@@ -185,7 +185,7 @@ export function DashboardView() {
             label="Due this week"
             hint="Parliamentary replies"
             action={
-              <Link href="/parliamentary" className="text-[11px] font-medium text-clay-600 hover:underline">
+              <Link href="/parliamentary" className="type-caption text-link hover:underline">
                 Tracker
               </Link>
             }
@@ -197,17 +197,17 @@ export function DashboardView() {
                 const soon = days >= 0 && days <= 3;
                 return (
                   <li key={d.id} className="flex items-start gap-2.5">
-                    <Landmark className="mt-0.5 size-3 shrink-0 text-ink-300" aria-hidden />
+                    <Landmark className="mt-0.5 size-3 shrink-0 text-muted-soft" aria-hidden />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-[11.5px] font-medium text-ink-700" title={d.subject}>
+                      <p className="truncate text-[11.5px] font-normal text-body-strong" title={d.subject}>
                         {d.subject}
                       </p>
-                      <p className="mt-0.5 truncate text-[10px] text-ink-300">{d.referenceNo}</p>
+                      <p className="mt-0.5 truncate text-[10px] text-muted-soft">{d.referenceNo}</p>
                     </div>
                     <span
                       className={cn(
-                        "shrink-0 rounded-[2px] px-1.5 py-0.5 text-[9.5px] font-semibold tabular-nums",
-                        late || soon ? "bg-clay-100 text-clay-700" : "bg-sand-300 text-ink-500",
+                        "shrink-0 px-1.5 py-0.5 text-[9.5px] font-normal tabular-nums",
+                        late || soon ? "bg-muted-soft/50 text-ink-0" : "bg-hairline text-body",
                       )}
                     >
                       {late ? `${Math.abs(days)}d late` : `${days}d`}
@@ -232,7 +232,7 @@ export function DashboardView() {
             label="Production against target"
             hint="Million tonnes by subsidiary"
             action={
-              <span className="rounded-[2px] bg-sage-400/15 px-2 py-0.5 text-[10px] font-medium text-sage-500">
+              <span className="type-caption px-2 py-0.5 text-success ring-1 ring-inset ring-success/40">
                 {leader.subsidiary} +{leader.variance.toFixed(1)}%
               </span>
             }
@@ -258,14 +258,14 @@ export function DashboardView() {
               {activity.slice(0, 7).map((e) => {
                 const Icon = ACTIVITY_ICONS[e.kind];
                 return (
-                  <li key={e.id} className="flex gap-2.5 border-b border-sand-200 py-2 last:border-0">
-                    <Icon className="mt-0.5 size-3 shrink-0 text-ink-300" aria-hidden />
+                  <li key={e.id} className="flex gap-2.5 border-b border-hairline py-2 last:border-0">
+                    <Icon className="mt-0.5 size-3 shrink-0 text-muted-soft" aria-hidden />
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11.5px] leading-snug text-ink-500">
-                        <span className="font-medium text-ink-800">{e.actor}</span> {e.action}{" "}
-                        <span className="text-ink-600">{e.target}</span>
+                      <p className="text-[11.5px] leading-snug text-body">
+                        <span className="font-normal text-ink-0">{e.actor}</span> {e.action}{" "}
+                        <span className="text-body">{e.target}</span>
                       </p>
-                      <p className="mt-0.5 text-[9.5px] text-ink-300">{relativeTime(e.createdAt)}</p>
+                      <p className="mt-0.5 text-[9.5px] text-muted-soft">{relativeTime(e.createdAt)}</p>
                     </div>
                   </li>
                 );
@@ -279,7 +279,7 @@ export function DashboardView() {
             label="Dominant themes"
             hint="Most frequent terms in the corpus"
             action={
-              <Link href="/topics" className="text-[11px] font-medium text-clay-600 hover:underline">
+              <Link href="/topics" className="type-caption text-link hover:underline">
                 Explore
               </Link>
             }
@@ -290,10 +290,10 @@ export function DashboardView() {
                   key={t.text}
                   href="/topics"
                   className={cn(
-                    "font-serif leading-tight font-semibold transition-colors hover:text-clay-600",
-                    t.weight >= 75 ? "text-lg text-ink-800" :
-                    t.weight >= 55 ? "text-base text-ink-600" :
-                    t.weight >= 40 ? "text-[13px] text-ink-500" : "text-[12px] text-ink-300",
+                    "leading-tight font-normal transition-colors hover:text-link",
+                    t.weight >= 75 ? "text-lg text-ink-0" :
+                    t.weight >= 55 ? "text-base text-body" :
+                    t.weight >= 40 ? "text-[13px] text-body" : "text-[12px] text-muted-soft",
                   )}
                 >
                   {t.text}
@@ -305,13 +305,13 @@ export function DashboardView() {
           <Tile tone="sand" className="col-span-1 sm:row-span-3 lg:col-span-3 xl:col-span-3">
             <Link href="/validation" className="group flex h-full flex-col justify-between">
               <div>
-                <p className="text-[10px] font-semibold tracking-[0.09em] text-ink-400 uppercase">Review queue</p>
-                <p className="mt-4 font-serif text-[56px] leading-[0.9] font-semibold text-ink-800">126</p>
-                <p className="mt-2.5 text-[12px] leading-snug text-ink-400">
+                <p className="text-[10px] font-normal tracking-[0.09em] text-muted uppercase">Review queue</p>
+                <p className="mt-4 numeral text-[56px] leading-[0.9] text-ink-0">126</p>
+                <p className="mt-2.5 text-[12px] leading-snug text-muted">
                   low-confidence fields awaiting a human decision
                 </p>
               </div>
-              <span className="mt-3 inline-flex items-center gap-1 text-[11.5px] font-medium text-clay-600">
+              <span className="mt-3 inline-flex items-center gap-1 text-[11.5px] font-normal text-link">
                 Open queue
                 <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </span>
@@ -321,16 +321,16 @@ export function DashboardView() {
           <Tile className="col-span-1 sm:row-span-3 lg:col-span-3 xl:col-span-4" label="Accuracy climbing" hint="Corrections falling as models improve">
             <div className="flex h-full flex-col justify-between">
               <div className="flex items-baseline gap-2">
-                <span className="font-serif text-[26px] leading-none font-semibold text-ink-800">
+                <span className="numeral text-[26px] leading-none text-ink-0">
                   {latestAccuracy.accuracy}%
                 </span>
-                <span className="inline-flex items-center gap-0.5 text-[11px] font-medium text-sage-500">
+                <span className="inline-flex items-center gap-0.5 text-[11px] font-normal text-success">
                   <ArrowUpRight className="size-3" aria-hidden />
                   {accuracyGain.toFixed(1)} pts
                 </span>
               </div>
               <Spark values={accuracyTrend.map((a) => a.accuracy)} className="h-12" />
-              <p className="text-[10px] text-ink-300">
+              <p className="type-caption text-muted-soft">
                 {latestAccuracy.humanCorrections} corrections last month, from {accuracyTrend[0].humanCorrections}
               </p>
             </div>
@@ -341,10 +341,10 @@ export function DashboardView() {
             <ul className="flex h-full flex-col justify-between gap-1.5">
               {topQueries.slice(0, 4).map((q) => (
                 <li key={q.id} className="flex gap-1.5">
-                  <Quote className="mt-1 size-2.5 shrink-0 text-sand-500" aria-hidden />
+                  <Quote className="mt-1 size-2.5 shrink-0 text-muted-soft" aria-hidden />
                   <div className="min-w-0">
-                    <p className="line-clamp-2 text-[11.5px] leading-snug text-ink-600">{q.question}</p>
-                    <p className="mt-0.5 text-[9.5px] text-ink-300">
+                    <p className="line-clamp-2 text-[11.5px] leading-snug text-body">{q.question}</p>
+                    <p className="mt-0.5 text-[9.5px] text-muted-soft">
                       {q.citationCount} sources · {(q.responseMs / 1000).toFixed(1)}s
                     </p>
                   </div>
@@ -367,20 +367,20 @@ export function DashboardView() {
                   ["Index lag", `${health.indexFreshnessMin} min`],
                 ].map(([k, v]) => (
                   <div key={k}>
-                    <dt className="text-[9.5px] tracking-wide text-ink-300 uppercase">{k}</dt>
-                    <dd className="mt-0.5 text-[13px] font-semibold text-ink-800">{v}</dd>
+                    <dt className="text-[9.5px] tracking-wide text-muted-soft uppercase">{k}</dt>
+                    <dd className="mt-0.5 text-[13px] font-normal text-ink-0">{v}</dd>
                   </div>
                 ))}
               </dl>
               <div>
                 <div className="flex items-baseline justify-between gap-2">
-                  <span className="text-[9.5px] tracking-wide text-ink-300 uppercase">Storage</span>
-                  <span className="text-[10.5px] font-medium tabular-nums text-ink-500">
+                  <span className="text-[9.5px] tracking-wide text-muted-soft uppercase">Storage</span>
+                  <span className="text-[10.5px] font-normal tabular-nums text-body">
                     {health.storageUsedGb} / {formatNumber(health.storageTotalGb)} GB
                   </span>
                 </div>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-50">
-                  <div className="h-full rounded-[2px] bg-ink-700" style={{ width: `${storagePct}%` }} />
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-soft">
+                  <div className="h-full rounded-full bg-surface-elevated" style={{ width: `${storagePct}%` }} />
                 </div>
               </div>
             </div>

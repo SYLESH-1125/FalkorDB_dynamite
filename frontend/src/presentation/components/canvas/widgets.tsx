@@ -4,7 +4,7 @@ import type { IngestionHeatCell } from "@/src/domain/entities/analytics";
 import { cn } from "../ui/cn";
 
 export function Spark({
-  values, className, stroke = "#cc5d28", area = true,
+  values, className, stroke = "#1a3f70", area = true,
 }: {
   values: number[];
   className?: string;
@@ -26,7 +26,7 @@ export function Spark({
     <svg viewBox="0 0 100 28" preserveAspectRatio="none" className={cn("w-full", className)} aria-hidden>
       <defs>
         <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={stroke} stopOpacity={0.22} />
+          <stop offset="0%" stopColor={stroke} stopOpacity={0.24} />
           <stop offset="100%" stopColor={stroke} stopOpacity={0} />
         </linearGradient>
       </defs>
@@ -52,22 +52,22 @@ export function Dial({ value, display, caption }: { value: number; display: stri
     <div className="flex h-full flex-col items-center justify-center">
       <div className="relative w-[7.5rem] max-w-full">
         <svg viewBox="0 0 128 128" className="w-full -rotate-90">
-          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(255,255,255,0.18)" strokeWidth={10} />
+          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,42,78,0.18)" strokeWidth={10} />
           <circle
-            cx="64" cy="64" r={r} fill="none" stroke="#fdfcfa" strokeWidth={10}
+            cx="64" cy="64" r={r} fill="none" stroke="#0f2a4e" strokeWidth={10}
             strokeLinecap="round" strokeDasharray={`${dash} ${c}`}
           />
         </svg>
         <div className="absolute inset-0 grid place-items-center">
-          <span className="font-serif text-[26px] leading-none font-semibold text-white">{display}</span>
+          <span className="numeral text-[26px] leading-none text-primary-700">{display}</span>
         </div>
       </div>
-      <p className="mt-2.5 text-center text-[11px] text-white/70">{caption}</p>
+      <p className="mt-2.5 text-center text-[11.5px] text-primary-700/75">{caption}</p>
     </div>
   );
 }
 
-const HEAT = ["bg-sand-200", "bg-clay-100", "bg-clay-200", "bg-clay-300", "bg-clay-500"];
+const HEAT = ["bg-surface-soft", "bg-primary-100", "bg-primary-200", "bg-primary-400", "bg-primary-600"];
 
 export function Heatmap({ cells }: { cells: IngestionHeatCell[] }) {
   const days = [...new Set(cells.map((c) => c.day))];
@@ -84,14 +84,14 @@ export function Heatmap({ cells }: { cells: IngestionHeatCell[] }) {
           <tbody>
             {days.map((day) => (
               <tr key={day}>
-                <th scope="row" className="pr-1 text-right text-[8.5px] font-medium text-ink-300">{day}</th>
+                <th scope="row" className="pr-1.5 text-right text-[9px] font-medium text-muted-soft">{day}</th>
                 {hours.map((hour) => {
                   const v = cells.find((c) => c.day === day && c.hour === hour)?.value ?? 0;
                   return (
                     <td key={hour} className="p-0">
                       <span
                         title={`${day} ${hour}:00 — ${v} documents`}
-                        className={cn("block size-[11px] rounded-[2px]", step(v))}
+                        className={cn("block size-[11px] rounded-[3px]", step(v))}
                       />
                     </td>
                   );
@@ -102,9 +102,9 @@ export function Heatmap({ cells }: { cells: IngestionHeatCell[] }) {
         </table>
       </div>
       <div className="flex items-center gap-1">
-        <span className="text-[8.5px] text-ink-300">Less</span>
-        {HEAT.map((h) => <span key={h} className={cn("size-2 rounded-[2px]", h)} />)}
-        <span className="text-[8.5px] text-ink-300">More</span>
+        <span className="text-[9px] text-muted-soft">Less</span>
+        {HEAT.map((h) => <span key={h} className={cn("size-2 rounded-[3px]", h)} />)}
+        <span className="text-[9px] text-muted-soft">More</span>
       </div>
     </div>
   );
@@ -126,14 +126,14 @@ export function Bars<T extends object>({
         return (
           <li key={String(item[labelKey])}>
             <div className="flex items-baseline justify-between gap-2">
-              <span className="truncate text-[11px] text-ink-500">{String(item[labelKey])}</span>
-              <span className="shrink-0 text-[11px] font-medium tabular-nums text-ink-700">
+              <span className="truncate text-[11.5px] text-body">{String(item[labelKey])}</span>
+              <span className="numeral shrink-0 text-[11.5px] text-ink-0">
                 {v.toLocaleString("en-IN")}
               </span>
             </div>
-            <div className="mt-1 h-1 w-full overflow-hidden rounded-[2px] bg-sand-300">
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-soft">
               <div
-                className={cn("h-full rounded-[2px]", tone === "clay" ? "bg-clay-500" : "bg-ink-700")}
+                className={cn("h-full rounded-full", tone === "clay" ? "bg-primary-500" : "bg-secondary-400")}
                 style={{ width: `${(v / max) * 100}%` }}
               />
             </div>

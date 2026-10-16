@@ -73,10 +73,10 @@ export function AnalyticsView() {
   // conditional formatting scale for the pivot table
   function heatFor(value: number, min: number, max: number): string {
     const ratio = max === min ? 0.5 : (value - min) / (max - min);
-    if (ratio > 0.75) return "bg-emerald-100 text-emerald-900";
-    if (ratio > 0.5) return "bg-emerald-50 text-emerald-800";
-    if (ratio > 0.25) return "bg-clay-50 text-clay-700";
-    return "bg-red-50 text-red-800";
+    if (ratio > 0.75) return "bg-success/15 text-success";
+    if (ratio > 0.5) return "bg-success/10 text-success";
+    if (ratio > 0.25) return "bg-surface-elevated text-ink-0";
+    return "bg-danger/10 text-danger";
   }
 
   const productions = rows.map((r) => r.production);
@@ -94,7 +94,7 @@ export function AnalyticsView() {
             <SlidersHorizontal className="size-4" aria-hidden />
             Filters
             {activeFilters.length > 0 ? (
-              <span className="ml-1 grid size-4 place-items-center rounded-[2px] bg-clay-500 text-[9px] text-white">
+              <span className="numeral ml-1 grid size-4 place-items-center rounded-full bg-primary-600 text-[9px] text-white">
                 {activeFilters.length}
               </span>
             ) : null}
@@ -105,19 +105,19 @@ export function AnalyticsView() {
       <div className="grid min-w-0 gap-5 p-4 sm:p-6 lg:grid-cols-[15rem_1fr] lg:p-8">
         <aside
           className={cn(
-            "h-fit rounded-xl border border-sand-300 bg-white lg:sticky lg:top-20",
+            "h-fit card-raise rounded-xl border border-hairline bg-surface-card lg:sticky lg:top-20",
             !railOpen && "hidden lg:block",
           )}
         >
-          <div className="flex items-center justify-between border-b border-sand-300 px-4 py-3">
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-ink-700">
+          <div className="flex items-center justify-between border-b border-hairline px-4 py-3">
+            <p className="type-caption flex items-center gap-2 text-muted">
               <SlidersHorizontal className="size-3.5" aria-hidden />
               Filters
             </p>
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1 text-[11px] text-clay-600 hover:underline"
+              className="type-caption inline-flex items-center gap-1.5 text-link hover:underline"
             >
               <RotateCcw className="size-3" aria-hidden />
               Reset
@@ -154,11 +154,11 @@ export function AnalyticsView() {
           </div>
 
           {activeFilters.length > 0 ? (
-            <div className="border-t border-sand-300 p-4">
-              <p className="mb-2 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Active</p>
+            <div className="border-t border-hairline p-4">
+              <p className="mb-2 text-[10px] font-normal tracking-wider text-muted-soft uppercase">Active</p>
               <div className="flex flex-wrap gap-1.5">
                 {activeFilters.map(([label, value]) => (
-                  <span key={label} className="inline-flex items-center gap-1 rounded-[2px] bg-clay-50 px-2 py-0.5 text-[10px] text-clay-700">
+                  <span key={label} className="inline-flex items-center gap-1 bg-surface-elevated px-2 py-0.5 text-[10px] text-ink-0">
                     {value}
                     <button
                       type="button"
@@ -183,14 +183,14 @@ export function AnalyticsView() {
           <Card>
             <CardBody className="py-3.5">
               <form onSubmit={askQuestion} className="flex items-center gap-2">
-                <Sparkles className="size-4 shrink-0 text-clay-500" aria-hidden />
+                <Sparkles className="size-4 shrink-0 text-ink-0" aria-hidden />
                 <label htmlFor="qa-bar" className="sr-only">Ask a question about this data</label>
                 <input
                   id="qa-bar"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="Ask a question about this data — e.g. which subsidiary had the highest production?"
-                  className="min-w-0 flex-1 border-0 bg-transparent text-sm text-ink-800 placeholder:text-sand-500 focus:outline-none"
+                  className="min-w-0 flex-1 border-0 bg-transparent text-sm text-ink-0 placeholder:text-muted-soft focus:outline-none"
                 />
                 <Button type="submit" size="sm" disabled={!question.trim()}>
                   <Send className="size-3.5" aria-hidden />
@@ -198,14 +198,14 @@ export function AnalyticsView() {
                 </Button>
               </form>
               {answer ? (
-                <div className="mt-3 flex items-start gap-2 rounded-lg bg-sand-200/70 px-3.5 py-2.5">
-                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-clay-500" aria-hidden />
-                  <p className="text-[13px] leading-relaxed text-ink-700">{answer}</p>
+                <div className="mt-3 flex items-start gap-2 bg-surface-soft px-3.5 py-2.5">
+                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-ink-0" aria-hidden />
+                  <p className="text-[13px] leading-relaxed text-body-strong">{answer}</p>
                   <button
                     type="button"
                     onClick={() => setAnswer(null)}
                     aria-label="Dismiss answer"
-                    className="ml-auto shrink-0 text-sand-500 hover:text-ink-500"
+                    className="ml-auto shrink-0 text-muted-soft hover:text-body"
                   >
                     <X className="size-3.5" aria-hidden />
                   </button>
@@ -216,7 +216,7 @@ export function AnalyticsView() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {kpis.loading
-              ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)
+              ? Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-28 " />)
               : kpis.data?.slice(0, 3).map((metric) => <KpiCard key={metric.id} metric={metric} />)}
           </div>
 
@@ -287,13 +287,13 @@ export function AnalyticsView() {
             <div className="scrollbar-thin overflow-x-auto">
               <table className="w-full min-w-[46rem] text-sm">
                 <thead>
-                  <tr className="bg-sand-200/80">
+                  <tr className="bg-surface-soft/80">
                     {["Subsidiary", "Production (MT)", "Target (MT)", "Variance", "Accuracy", "Reports", "Open queries"].map((h, i) => (
                       <th
                         key={h}
                         scope="col"
                         className={cn(
-                          "border-b border-sand-300 px-3 py-2.5 text-[11px] font-semibold tracking-wide text-ink-500 uppercase first:pl-4 last:pr-4",
+                          "border-b border-hairline px-3 py-2.5 text-[11px] font-normal tracking-wide text-body uppercase first:pl-4 last:pr-4",
                           i === 0 ? "text-left" : "text-right",
                         )}
                       >
@@ -304,47 +304,47 @@ export function AnalyticsView() {
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.subsidiary} className="border-b border-sand-200 last:border-0">
-                      <td className="px-3 py-2.5 pl-4 font-medium text-ink-800">{row.subsidiary}</td>
+                    <tr key={row.subsidiary} className="border-b border-hairline last:border-0">
+                      <td className="px-3 py-2.5 pl-4 font-normal text-ink-0">{row.subsidiary}</td>
                       <td className="px-1 py-1.5">
-                        <span className={cn("block rounded px-2 py-1.5 text-right tabular-nums", heatFor(row.production, minProd, maxProd))}>
+                        <span className={cn("block px-2 py-1.5 text-right tabular-nums", heatFor(row.production, minProd, maxProd))}>
                           {formatNumber(row.production, 1)}
                         </span>
                       </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-400">{formatNumber(row.target, 1)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-muted">{formatNumber(row.target, 1)}</td>
                       <td className="px-3 py-2.5 text-right">
-                        <span className={cn("inline-flex items-center gap-0.5 text-xs font-medium", row.variance >= 0 ? "text-emerald-600" : "text-red-600")}>
+                        <span className={cn("inline-flex items-center gap-0.5 text-xs font-normal", row.variance >= 0 ? "text-success" : "text-danger")}>
                           {row.variance >= 0 ? <TrendingUp className="size-3" aria-hidden /> : <TrendingDown className="size-3" aria-hidden />}
                           {row.variance >= 0 ? "+" : ""}{row.variance.toFixed(1)}%
                         </span>
                       </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">{row.accuracy.toFixed(1)}%</td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">{row.reports}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-body">{row.accuracy.toFixed(1)}%</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-body">{row.reports}</td>
                       <td className="px-3 py-2.5 pr-4 text-right">
                         {row.pendingQueries > 6 ? (
                           <Badge tone="danger">{row.pendingQueries}</Badge>
                         ) : (
-                          <span className="tabular-nums text-ink-600">{row.pendingQueries}</span>
+                          <span className="tabular-nums text-body">{row.pendingQueries}</span>
                         )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-sand-200/60 font-medium">
-                    <td className="px-3 py-2.5 pl-4 text-ink-800">Total</td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-800">
+                  <tr className="bg-surface-soft font-normal">
+                    <td className="px-3 py-2.5 pl-4 text-ink-0">Total</td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-0">
                       {formatNumber(rows.reduce((s, r) => s + r.production, 0), 1)}
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">
+                    <td className="px-3 py-2.5 text-right tabular-nums text-body">
                       {formatNumber(rows.reduce((s, r) => s + r.target, 0), 1)}
                     </td>
                     <td className="px-3 py-2.5" />
                     <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-800">
+                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-0">
                       {rows.reduce((s, r) => s + r.reports, 0)}
                     </td>
-                    <td className="px-3 py-2.5 pr-4 text-right tabular-nums text-ink-800">
+                    <td className="px-3 py-2.5 pr-4 text-right tabular-nums text-ink-0">
                       {rows.reduce((s, r) => s + r.pendingQueries, 0)}
                     </td>
                   </tr>

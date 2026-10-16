@@ -18,7 +18,7 @@ import { isoDaysAgo, seeded, pick } from "./seed";
 
 export const CURRENT_USER: User = {
   id: "usr-001",
-  name: "Priyanka Menon",
+  name: "Prieyan Mogger",
   email: "p.menon@cmpdi.co.in",
   role: "Administrator",
   subsidiary: "CMPDI",
@@ -29,7 +29,7 @@ export const CURRENT_USER: User = {
 };
 
 const NAMES = [
-  "Priyanka Menon", "Rajesh Kumar Sinha", "Anjali Deshmukh", "S. Venkatraman",
+  "Prieyan Mogger", "Rajesh Kumar Sinha", "Anjali Deshmukh", "S. Venkatraman",
   "Mohammed Irfan", "Kavita Bhattacharya", "Arun Prakash Nair", "Deepak Mahto",
   "Sunita Rani Gupta", "T. Selvaraj", "Neha Agarwal", "Bikash Chandra Das",
   "Ramesh Chandra Behera", "Fatima Sheikh", "Jagdish Prasad Meena",

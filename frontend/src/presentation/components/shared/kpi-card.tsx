@@ -11,24 +11,22 @@ export function KpiCard({ metric }: { metric: KpiMetric }) {
   const Icon = metric.delta === 0 ? Minus : falling ? ArrowDownRight : ArrowUpRight;
 
   return (
-    <div className="rounded-xl border border-sand-300 bg-white p-4 shadow-[0_1px_2px_rgba(11,37,69,0.04)] transition-shadow hover:shadow-[0_8px_24px_-12px_rgba(11,37,69,0.18)]">
-      <p className="truncate text-xs font-medium text-ink-400" title={metric.helpText}>
+    <div className="card-raise rounded-xl border border-hairline bg-surface-card p-5 transition-shadow hover:card-float">
+      <p className="truncate text-[12px] font-medium text-body" title={metric.helpText}>
         {metric.label}
       </p>
-      <p className="mt-2 font-serif text-3xl leading-none font-semibold tracking-tight text-ink-800">
-        {metric.value}
-      </p>
-      <div className="mt-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
+      <p className="numeral mt-2.5 text-[30px] leading-none text-ink-0">{metric.value}</p>
+      <div className="mt-2.5 flex flex-wrap items-center gap-x-2 gap-y-1">
         <span
           className={cn(
-            "inline-flex items-center gap-0.5 text-xs font-medium",
-            positive ? "text-emerald-600" : "text-red-600",
+            "inline-flex items-center gap-0.5 text-[12px] font-medium",
+            positive ? "text-success" : "text-danger",
           )}
         >
-          <Icon className="size-3.5" aria-hidden />
+          <Icon className="size-3" aria-hidden />
           {Math.abs(metric.delta).toFixed(1)}%
         </span>
-        <span className="truncate text-[11px] text-ink-300">{metric.unit}</span>
+        <span className="truncate text-[11.5px] text-muted">{metric.unit}</span>
       </div>
     </div>
   );

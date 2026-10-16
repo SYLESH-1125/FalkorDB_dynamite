@@ -5,7 +5,7 @@ export function TileGrid({ children, className }: { children: ReactNode; classNa
   return (
     <div
       className={cn(
-        "grid grid-flow-dense grid-cols-2 gap-2.5 auto-rows-min sm:auto-rows-[5.5rem] lg:grid-cols-6 xl:grid-cols-12",
+        "grid grid-flow-dense auto-rows-min grid-cols-2 gap-3 sm:auto-rows-[5.5rem] lg:grid-cols-6 xl:grid-cols-12",
         className,
       )}
     >
@@ -17,11 +17,11 @@ export function TileGrid({ children, className }: { children: ReactNode; classNa
 export type TileTone = "paper" | "sand" | "ink" | "clay" | "outline";
 
 const TONES: Record<TileTone, string> = {
-  paper: "bg-sand-50 border-sand-300/70",
-  sand: "bg-sand-200/60 border-sand-300",
-  ink: "bg-ink-800 border-ink-700 text-sand-100",
-  clay: "bg-clay-500 border-clay-600 text-white",
-  outline: "bg-transparent border-sand-400 border-dashed",
+  paper: "bg-surface-card border-hairline",
+  sand: "bg-surface-soft border-hairline",
+  ink: "gradient-navy border-primary-700 text-white",
+  clay: "bg-secondary-400 border-secondary-500 text-primary-700",
+  outline: "border-hairline-strong border-dashed bg-transparent",
 };
 
 export function Tile({
@@ -39,8 +39,8 @@ export function Tile({
   return (
     <section
       className={cn(
-        "relative flex min-w-0 flex-col overflow-hidden rounded-[2px] border",
-        tone !== "outline" && "shadow-[0_1px_1px_rgba(28,25,23,0.03),0_12px_28px_-20px_rgba(28,25,23,0.30)]",
+        "relative flex min-w-0 flex-col overflow-hidden rounded-xl border",
+        tone !== "outline" && "card-raise",
         TONES[tone],
         className,
       )}
@@ -50,14 +50,16 @@ export function Tile({
           <div className="min-w-0">
             <h2
               className={cn(
-                "truncate text-[10px] font-semibold tracking-[0.09em] uppercase",
-                dark ? "text-white/55" : "text-ink-300",
+                "truncate text-[11px] font-semibold tracking-wide uppercase",
+                dark ? "text-white/60" : "text-muted",
               )}
             >
               {label}
             </h2>
             {hint ? (
-              <p className={cn("mt-1 truncate text-[11px]", dark ? "text-white/45" : "text-ink-300")}>{hint}</p>
+              <p className={cn("mt-1 truncate text-[11.5px]", dark ? "text-white/50" : "text-muted-soft")}>
+                {hint}
+              </p>
             ) : null}
           </div>
           {action ? <div className="shrink-0">{action}</div> : null}
@@ -79,10 +81,12 @@ export function Metric({
 }) {
   return (
     <div className={cn("flex h-full flex-col justify-center", className)}>
-      <p className="font-serif text-[30px] leading-none font-semibold tracking-tight text-ink-800">{value}</p>
-      <p className="mt-1.5 text-[11px] leading-tight text-ink-400">{caption}</p>
+      <p className="numeral text-[30px] leading-none text-ink-0">{value}</p>
+      <p className="mt-1.5 text-[11.5px] leading-tight text-body">{caption}</p>
       {delta ? (
-        <p className={cn("mt-1 text-[11px] font-medium", positive ? "text-sage-500" : "text-clay-600")}>{delta}</p>
+        <p className={cn("mt-1 text-[11.5px] font-medium", positive ? "text-success" : "text-danger")}>
+          {delta}
+        </p>
       ) : null}
     </div>
   );

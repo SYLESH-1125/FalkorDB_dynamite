@@ -4,7 +4,7 @@ import { useState } from "react";
 import { UserPlus, Shield, Search, MoreVertical, Check } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
-import { relativeTime, formatDate } from "@/src/application/services/formatting";
+import { relativeTime, formatDate, formatLabel } from "@/src/application/services/formatting";
 import { ROLE_PERMISSIONS, type User, type UserRole } from "@/src/domain/entities/user";
 import { PageHeader } from "../components/ui/page-header";
 import { Card, CardHeader } from "../components/ui/card";
@@ -19,7 +19,7 @@ import { useToast } from "../components/ui/toast";
 const ROLES: UserRole[] = ["Administrator", "Analyst", "Reviewer", "Viewer"];
 
 const ROLE_TONES: Record<UserRole, BadgeTone> = {
-  Administrator: "danger", Analyst: "accent", Reviewer: "info", Viewer: "neutral",
+  Administrator: "accent", Analyst: "info", Reviewer: "neutral", Viewer: "neutral",
 };
 
 const STATUS_TONES: Record<User["status"], BadgeTone> = {
@@ -69,23 +69,23 @@ export function UsersView() {
       key: "name", header: "User", sortValue: (u) => u.name,
       render: (u) => (
         <div className="flex items-center gap-2.5">
-          <span className="grid size-8 shrink-0 place-items-center rounded-[2px] bg-ink-800 text-[10px] font-semibold text-white">
+          <span className="grid size-8 shrink-0 place-items-center bg-surface-card text-[10px] font-normal text-ink-0">
             {u.name.split(" ").map((p) => p[0]).slice(0, 2).join("")}
           </span>
           <div className="min-w-0">
-            <p className="truncate font-medium text-ink-800">{u.name}</p>
-            <p className="truncate text-[11px] text-ink-300">{u.email}</p>
+            <p className="truncate font-normal text-ink-0">{u.name}</p>
+            <p className="truncate text-[11px] text-muted-soft">{u.email}</p>
           </div>
         </div>
       ),
     },
-    { key: "designation", header: "Designation", sortValue: (u) => u.designation, render: (u) => <span className="text-ink-500">{u.designation}</span> },
+    { key: "designation", header: "Designation", sortValue: (u) => u.designation, render: (u) => <span className="text-body">{u.designation}</span> },
     { key: "subsidiary", header: "Subsidiary", sortValue: (u) => u.subsidiary, render: (u) => u.subsidiary },
     { key: "role", header: "Role", sortValue: (u) => u.role, render: (u) => <Badge tone={ROLE_TONES[u.role]}>{u.role}</Badge> },
-    { key: "status", header: "Status", sortValue: (u) => u.status, render: (u) => <Badge tone={STATUS_TONES[u.status]}>{u.status}</Badge> },
+    { key: "status", header: "Status", sortValue: (u) => u.status, render: (u) => <Badge tone={STATUS_TONES[u.status]}>{formatLabel(u.status)}</Badge> },
     {
       key: "lastActive", header: "Last active", sortValue: (u) => u.lastActive,
-      render: (u) => <span className="whitespace-nowrap text-ink-400">{relativeTime(u.lastActive)}</span>,
+      render: (u) => <span className="whitespace-nowrap text-muted">{relativeTime(u.lastActive)}</span>,
     },
     {
       key: "actions", header: "", align: "right",
@@ -94,7 +94,7 @@ export function UsersView() {
           type="button"
           onClick={(e) => { e.stopPropagation(); setSelected(u); }}
           aria-label={`Manage ${u.name}`}
-          className="rounded-md p-1.5 text-ink-300 hover:bg-sand-200 hover:text-ink-600"
+          className=" p-1.5 text-muted-soft hover:bg-surface-soft hover:text-body"
         >
           <MoreVertical className="size-3.5" aria-hidden />
         </button>
@@ -119,9 +119,9 @@ export function UsersView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {ROLES.map((role) => (
-            <div key={role} className="rounded-xl border border-sand-300 bg-white p-4">
-              <p className="text-xs text-ink-400">{role}s</p>
-              <p className="mt-1 font-serif text-2xl font-semibold text-ink-800">
+            <div key={role} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
+              <p className="type-caption text-muted">{role}s</p>
+              <p className="mt-1 numeral text-2xl text-ink-0">
                 {users.filter((u) => u.role === role).length}
               </p>
             </div>
@@ -135,7 +135,7 @@ export function UsersView() {
             action={
               <div className="flex flex-wrap gap-2">
                 <div className="relative">
-                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-sand-500" aria-hidden />
+                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-muted-soft" aria-hidden />
                   <TextInput
                     aria-label="Search users"
                     placeholder="Search name or email…"
@@ -173,20 +173,20 @@ export function UsersView() {
           <CardHeader
             title="Permission matrix"
             description="Capabilities granted by each role"
-            action={<Shield className="size-4 text-ink-300" aria-hidden />}
+            action={<Shield className="size-4 text-muted-soft" aria-hidden />}
           />
           <div className="scrollbar-thin overflow-x-auto">
             <table className="w-full min-w-[40rem] text-sm">
               <thead>
-                <tr className="bg-sand-200/80">
-                  <th scope="col" className="border-b border-sand-300 px-3 py-2.5 pl-4 text-left text-[11px] font-semibold tracking-wide text-ink-500 uppercase">
+                <tr className="bg-surface-soft/80">
+                  <th scope="col" className="border-b border-hairline px-3 py-2.5 pl-4 text-left text-[11px] font-normal tracking-wide text-body uppercase">
                     Role
                   </th>
                   {ALL_PERMISSIONS.map((permission) => (
                     <th
                       key={permission}
                       scope="col"
-                      className="border-b border-sand-300 px-3 py-2.5 text-center text-[11px] font-semibold tracking-wide text-ink-500 uppercase last:pr-4"
+                      className="border-b border-hairline px-3 py-2.5 text-center text-[11px] font-normal tracking-wide text-body uppercase last:pr-4"
                     >
                       {permission.replace("-", " ")}
                     </th>
@@ -195,16 +195,16 @@ export function UsersView() {
               </thead>
               <tbody>
                 {ROLES.map((role) => (
-                  <tr key={role} className="border-b border-sand-200 last:border-0">
+                  <tr key={role} className="border-b border-hairline last:border-0">
                     <td className="px-3 py-2.5 pl-4">
                       <Badge tone={ROLE_TONES[role]}>{role}</Badge>
                     </td>
                     {ALL_PERMISSIONS.map((permission) => (
                       <td key={permission} className="px-3 py-2.5 text-center last:pr-4">
                         {ROLE_PERMISSIONS[role].includes(permission) ? (
-                          <Check className="mx-auto size-4 text-emerald-600" aria-label="Granted" />
+                          <Check className="mx-auto size-4 text-success" aria-label="Granted" />
                         ) : (
-                          <span className="text-sand-400" aria-label="Not granted">—</span>
+                          <span className="text-muted" aria-label="Not granted">—</span>
                         )}
                       </td>
                     ))}
@@ -245,9 +245,9 @@ export function UsersView() {
                 ["Status", selected.status],
                 ["Member since", formatDate(selected.createdAt)],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-lg bg-sand-200 px-3 py-2">
-                  <dt className="text-[10px] text-ink-300">{label}</dt>
-                  <dd className="mt-0.5 truncate text-xs font-medium text-ink-700">{value}</dd>
+                <div key={label} className=" bg-surface-soft px-3 py-2">
+                  <dt className="type-caption text-muted-soft">{label}</dt>
+                  <dd className="mt-0.5 truncate text-xs font-normal text-body-strong">{value}</dd>
                 </div>
               ))}
             </dl>
@@ -261,7 +261,7 @@ export function UsersView() {
               >
                 {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
               </Select>
-              <p className="mt-2 text-[11px] text-ink-400">
+              <p className="mt-2 text-[11px] text-muted">
                 Grants: {ROLE_PERMISSIONS[selected.role].join(", ")}
               </p>
             </div>

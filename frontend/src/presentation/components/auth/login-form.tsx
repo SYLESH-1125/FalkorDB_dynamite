@@ -35,7 +35,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="mt-7 space-y-4" noValidate>
       {error ? (
-        <p role="alert" className="flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2.5 text-xs text-red-700">
+        <p role="alert" className="flex items-start gap-2 rounded-lg bg-danger/10 px-3 py-2.5 text-[12.5px] text-danger">
           <AlertCircle className="mt-px size-3.5 shrink-0" aria-hidden />
           {error}
         </p>
@@ -70,7 +70,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1.5 text-ink-300 hover:text-ink-600"
+            className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-1.5 text-muted transition-colors hover:text-ink-0"
           >
             {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
           </button>
@@ -78,11 +78,11 @@ export function LoginForm() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <label className="flex items-center gap-2 text-xs text-ink-500">
-          <input type="checkbox" className="size-3.5 rounded border-sand-500 accent-clay-500" />
+        <label className="flex items-center gap-2 text-[12.5px] text-body">
+          <input type="checkbox" className="size-3.5 rounded border-hairline-strong accent-primary-500" />
           Keep me signed in
         </label>
-        <a href="#" className="text-xs font-medium text-clay-600 hover:underline">
+        <a href="#" className="text-[12.5px] font-medium text-primary-600 hover:underline">
           Forgot password?
         </a>
       </div>
@@ -99,9 +99,9 @@ export function LoginForm() {
       </Button>
 
       <div className="flex items-center gap-3 pt-1">
-        <span className="h-px flex-1 bg-sand-300" aria-hidden />
-        <span className="text-[10px] tracking-wider text-sand-500 uppercase">or</span>
-        <span className="h-px flex-1 bg-sand-300" aria-hidden />
+        <span className="h-px flex-1 bg-hairline" aria-hidden />
+        <span className="text-[11px] font-medium tracking-wide text-muted-soft uppercase">or</span>
+        <span className="h-px flex-1 bg-hairline" aria-hidden />
       </div>
 
       <Button
@@ -113,7 +113,7 @@ export function LoginForm() {
         Continue with NIC Single Sign-On
       </Button>
 
-      <p className="pt-2 text-center text-[11px] text-ink-300">
+      <p className="pt-1 text-center text-[11.5px] text-muted">
         Demo build — any credentials will sign you in.
       </p>
     </form>

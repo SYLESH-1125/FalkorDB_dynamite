@@ -1,59 +1,63 @@
 import type { Metadata } from "next";
-import { LoginForm } from "@/src/presentation/components/auth/login-form";
 import Link from "next/link";
-import { ShieldCheck, Landmark } from "lucide-react";
+import { ShieldCheck, Sparkles } from "lucide-react";
+import { LoginForm } from "@/src/presentation/components/auth/login-form";
 
 export const metadata: Metadata = { title: "Sign in" };
 
+const PROOF = [
+  ["18,942", "documents indexed and query-ready"],
+  ["94.7%", "extraction accuracy on validated fields"],
+];
+
 export default function LoginPage() {
   return (
-    <div className="gradient-hero flex min-h-screen flex-col bg-sand-100">
+    <div className="flex min-h-screen flex-col bg-canvas">
       <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6">
         <Link href="/" className="inline-flex items-center gap-2">
-          <span className="grid size-8 place-items-center rounded-lg bg-ink-800 font-serif text-sm font-bold text-white">C</span>
-          <span className="font-serif text-lg font-semibold tracking-tight text-ink-800">CMPDI</span>
+          <span className="grid size-8 place-items-center rounded-lg bg-primary-600 text-[13px] font-semibold text-white">
+            C
+          </span>
+          <span className="type-wordmark text-ink-0">CMPDI</span>
         </Link>
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-        <div className="w-full max-w-5xl overflow-hidden rounded-2xl border border-sand-300 bg-white shadow-[0_1px_2px_rgba(11,37,69,0.04),0_24px_64px_-28px_rgba(11,37,69,0.3)] lg:grid lg:grid-cols-2">
-          <div className="hidden flex-col justify-between bg-ink-800 p-10 lg:flex">
+        <div className="card-float w-full max-w-5xl overflow-hidden rounded-2xl border border-hairline bg-surface-card lg:grid lg:grid-cols-2">
+          <div className="gradient-upsell hidden flex-col justify-between p-10 lg:flex">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-[2px] bg-white/10 px-3 py-1 text-[10px] font-medium tracking-wider text-clay-300 uppercase">
-                <Landmark className="size-3" aria-hidden />
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-card/70 px-3 py-1 text-[11.5px] font-medium text-ink-0">
+                <Sparkles className="size-3" aria-hidden />
                 Government of India
               </span>
-              <h2 className="mt-7 font-serif text-3xl leading-tight font-semibold text-white">
-                Intelligence Platform for Coal India Limited
+              <h2 className="display-sm mt-6 text-ink-0">
+                Intelligence platform for Coal India Limited
               </h2>
-              <p className="mt-4 text-sm leading-relaxed text-sand-400">
-                Document digitisation, AI-assisted query and automated reporting across
-                nine subsidiaries — with full traceability from every published figure
-                back to its source page.
+              <p className="mt-3.5 text-[14px] leading-relaxed text-ink-0/70">
+                Document digitisation, AI-assisted query and automated reporting across nine
+                subsidiaries — with full traceability from every published figure back to its
+                source page.
               </p>
             </div>
 
-            <div className="space-y-4">
-              {[
-                ["18,942", "documents indexed and query-ready"],
-                ["94.7%", "extraction accuracy on validated fields"],
-              ].map(([value, label]) => (
+            <div className="mt-10 space-y-4">
+              {PROOF.map(([value, label]) => (
                 <div key={label}>
-                  <p className="font-serif text-2xl font-semibold text-clay-400">{value}</p>
-                  <p className="text-xs text-sand-500">{label}</p>
+                  <p className="numeral text-[24px] leading-none text-ink-0">{value}</p>
+                  <p className="mt-1 text-[12px] text-ink-0/65">{label}</p>
                 </div>
               ))}
-              <p className="flex items-start gap-2 border-t border-ink-700 pt-4 text-[11px] text-ink-300">
+              <p className="flex items-start gap-2 border-t border-ink-0/10 pt-4 text-[11.5px] leading-relaxed text-ink-0/60">
                 <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-                Authorised personnel only. All access is logged and subject to audit
-                under CIL information security policy.
+                Authorised personnel only. All access is logged and subject to audit under CIL
+                information security policy.
               </p>
             </div>
           </div>
 
           <div className="p-6 sm:p-10">
-            <h1 className="font-serif text-2xl font-semibold tracking-tight text-ink-800">Sign in</h1>
-            <p className="mt-1.5 text-sm text-ink-400">
+            <h1 className="display-sm text-ink-0">Sign in</h1>
+            <p className="mt-1.5 text-[14px] text-body">
               Use your CIL employee credentials to access the platform.
             </p>
             <LoginForm />
@@ -62,7 +66,7 @@ export default function LoginPage() {
       </div>
 
       <footer className="px-4 py-6 text-center">
-        <p className="text-xs text-ink-300">
+        <p className="text-[12px] text-muted">
           Central Mine Planning &amp; Design Institute Limited · Smart India Hackathon 2026
         </p>
       </footer>

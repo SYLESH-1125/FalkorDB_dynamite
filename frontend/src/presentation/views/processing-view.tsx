@@ -17,8 +17,8 @@ const STAGE_ICONS: Record<PipelineStageStatus, typeof Circle> = {
 };
 
 const STAGE_COLORS: Record<PipelineStageStatus, string> = {
-  complete: "text-emerald-500", running: "text-clay-500 animate-spin",
-  failed: "text-red-500", pending: "text-sand-400",
+  complete: "text-success", running: "text-ink-0 animate-spin",
+  failed: "text-danger", pending: "text-muted",
 };
 
 function formatDuration(ms: number): string {
@@ -46,19 +46,19 @@ export function ProcessingView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Active jobs", running, Cpu, "text-clay-600"],
-            ["Failed stages", failed, XCircle, "text-red-600"],
-            ["OCR engine", "Tesseract 5.3", ScanText, "text-ink-800"],
-            ["Languages", "Hindi + English", Languages, "text-ink-800"],
+            ["Active jobs", running, Cpu, "text-link"],
+            ["Failed stages", failed, XCircle, "text-danger"],
+            ["OCR engine", "Tesseract 5.3", ScanText, "text-ink-0"],
+            ["Languages", "Hindi + English", Languages, "text-ink-0"],
           ].map(([label, value, Icon, tone]) => {
             const IconComponent = Icon as typeof Cpu;
             return (
-              <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
-                <div className="flex items-center gap-1.5 text-xs text-ink-400">
+              <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
+                <div className="flex items-center gap-1.5 text-xs text-muted">
                   <IconComponent className="size-3.5" aria-hidden />
                   {label as string}
                 </div>
-                <p className={cn("mt-1.5 truncate font-serif text-xl font-semibold", tone as string)}>
+                <p className={cn("mt-1.5 truncate numeral text-xl", tone as string)}>
                   {value as string | number}
                 </p>
               </div>
@@ -68,7 +68,7 @@ export function ProcessingView() {
 
         {loading ? (
           <div className="space-y-4">
-            {Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-64 w-full rounded-xl" />)}
+            {Array.from({ length: 3 }, (_, i) => <Skeleton key={i} className="h-64 w-full " />)}
           </div>
         ) : jobs.length === 0 ? (
           <Card>
@@ -108,7 +108,7 @@ export function ProcessingView() {
                                 <span
                                   className={cn(
                                     "my-1 w-px flex-1",
-                                    stage.status === "complete" ? "bg-emerald-200" : "bg-sand-300",
+                                    stage.status === "complete" ? "bg-success" : "bg-hairline",
                                   )}
                                   aria-hidden
                                 />
@@ -119,28 +119,28 @@ export function ProcessingView() {
                               <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
                                 <p
                                   className={cn(
-                                    "text-sm font-medium",
-                                    stage.status === "pending" ? "text-ink-300" : "text-ink-800",
+                                    "text-sm font-normal",
+                                    stage.status === "pending" ? "text-muted-soft" : "text-ink-0",
                                   )}
                                 >
                                   {stage.name}
                                 </p>
-                                <span className="text-[11px] tabular-nums text-ink-300">
+                                <span className="numeral text-[11px] text-muted-soft">
                                   {formatDuration(stage.durationMs)}
                                 </span>
                               </div>
                               <p
                                 className={cn(
                                   "mt-0.5 text-xs",
-                                  stage.status === "failed" ? "text-red-600" : "text-ink-400",
+                                  stage.status === "failed" ? "text-danger" : "text-muted",
                                 )}
                               >
                                 {stage.message}
                               </p>
                               {stage.status === "running" ? (
-                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden rounded-[2px] bg-sand-300">
+                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden bg-hairline">
                                   <div
-                                    className="h-full rounded-[2px] bg-clay-500"
+                                    className="h-full rounded-full bg-primary-500"
                                     style={{ width: `${stage.progress}%` }}
                                   />
                                 </div>

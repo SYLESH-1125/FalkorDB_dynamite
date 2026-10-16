@@ -11,6 +11,7 @@ import { Badge } from "../components/ui/badge";
 import { Select } from "../components/ui/field";
 import { Skeleton } from "../components/ui/skeleton";
 import { CategoryBarChart } from "../components/charts/charts";
+import { formatLabel } from "@/src/application/services/formatting";
 import { cn } from "../components/ui/cn";
 
 // map term weight onto a discrete type scale so the cloud stays legible
@@ -24,10 +25,10 @@ function sizeFor(weight: number): string {
 }
 
 function toneFor(weight: number): string {
-  if (weight >= 70) return "text-clay-600";
-  if (weight >= 45) return "text-ink-800";
-  if (weight >= 25) return "text-ink-500";
-  return "text-ink-300";
+  if (weight >= 70) return "text-link";
+  if (weight >= 45) return "text-ink-0";
+  if (weight >= 25) return "text-body";
+  return "text-muted-soft";
 }
 
 export function TopicsView() {
@@ -77,9 +78,9 @@ export function TopicsView() {
             ["Documents analysed", "18,942"],
             ["Dominant theme", "Production & Output"],
           ].map(([label, value]) => (
-            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
-              <p className="text-xs text-ink-400">{label as string}</p>
-              <p className="mt-1 truncate font-serif text-xl font-semibold text-ink-800">
+            <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
+              <p className="type-caption text-muted">{label as string}</p>
+              <p className="title-md mt-1 truncate text-ink-0">
                 {value as string | number}
               </p>
             </div>
@@ -91,7 +92,7 @@ export function TopicsView() {
             <CardHeader
               title="Term cloud"
               description="Size and colour reflect frequency across the corpus — select a term to inspect it"
-              action={<Cloud className="size-4 text-clay-500" aria-hidden />}
+              action={<Cloud className="size-4 text-ink-0" aria-hidden />}
             />
             <CardBody>
               {terms.loading ? (
@@ -105,10 +106,10 @@ export function TopicsView() {
                       onClick={() => setSelected(term)}
                       title={`${term.text} — ${term.documentCount} documents`}
                       className={cn(
-                        "rounded px-1 font-serif leading-tight font-semibold transition-all hover:scale-105",
+                        "px-1 leading-tight font-normal uppercase tracking-wide transition-colors",
                         sizeFor(term.weight),
                         toneFor(term.weight),
-                        selected?.text === term.text && "bg-clay-100 ring-2 ring-clay-400",
+                        selected?.text === term.text && "rounded bg-primary-600 text-white",
                       )}
                     >
                       {term.text}
@@ -139,23 +140,23 @@ export function TopicsView() {
 
             {selected ? (
               <Card>
-                <CardHeader title="Selected term" action={<Badge tone="accent">{selected.category}</Badge>} />
+                <CardHeader title="Selected term" action={<Badge tone="accent">{formatLabel(selected.category)}</Badge>} />
                 <CardBody>
-                  <p className="font-serif text-2xl font-semibold text-ink-800">{selected.text}</p>
+                  <p className="display-sm text-ink-0">{selected.text}</p>
                   <dl className="mt-4 grid grid-cols-2 gap-3">
                     {[
                       ["Weight", selected.weight],
                       ["Documents", selected.documentCount],
                     ].map(([label, value]) => (
-                      <div key={label as string} className="rounded-lg bg-sand-200 px-3 py-2">
-                        <dt className="text-[10px] text-ink-300">{label as string}</dt>
-                        <dd className="mt-0.5 text-sm font-semibold text-ink-800">{value as number}</dd>
+                      <div key={label as string} className=" bg-surface-soft px-3 py-2">
+                        <dt className="type-caption text-muted-soft">{label as string}</dt>
+                        <dd className="mt-0.5 text-sm font-normal text-ink-0">{value as number}</dd>
                       </div>
                     ))}
                   </dl>
                   <button
                     type="button"
-                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-clay-600 hover:underline"
+                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-normal text-link hover:underline"
                   >
                     <FileSearch className="size-3.5" aria-hidden />
                     View source documents
@@ -176,34 +177,34 @@ export function TopicsView() {
               {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
           ) : (
-            <ul className="divide-y divide-sand-200">
+            <ul className="divide-y divide-hairline">
               {clusters.data?.map((cluster) => {
                 const Icon = cluster.sentiment > 0.2 ? TrendingUp : cluster.sentiment < -0.1 ? TrendingDown : Minus;
-                const tone = cluster.sentiment > 0.2 ? "text-emerald-600" : cluster.sentiment < -0.1 ? "text-red-600" : "text-ink-300";
+                const tone = cluster.sentiment > 0.2 ? "text-success" : cluster.sentiment < -0.1 ? "text-danger" : "text-muted-soft";
                 const max = clusters.data?.[0]?.frequency ?? 1;
                 return (
                   <li key={cluster.id} className="px-4 py-3.5 sm:px-5">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <p className="text-sm font-medium text-ink-800">{cluster.label}</p>
+                      <p className="text-sm font-normal text-ink-0">{cluster.label}</p>
                       <span className={cn("inline-flex items-center gap-1 text-xs", tone)}>
                         <Icon className="size-3.5" aria-hidden />
                         {cluster.sentiment > 0 ? "+" : ""}{cluster.sentiment.toFixed(2)}
                       </span>
-                      <span className="ml-auto text-xs tabular-nums text-ink-400">
+                      <span className="ml-auto text-xs tabular-nums text-muted">
                         {cluster.frequency} mentions
                       </span>
                     </div>
 
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-[2px] bg-sand-300">
+                    <div className="mt-2 h-1.5 w-full overflow-hidden bg-hairline">
                       <div
-                        className="h-full rounded-[2px] bg-clay-500"
+                        className="h-full rounded-full bg-primary-500"
                         style={{ width: `${(cluster.frequency / max) * 100}%` }}
                       />
                     </div>
 
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {cluster.terms.map((term) => (
-                        <span key={term} className="rounded-[2px] bg-sand-200 px-2 py-0.5 text-[11px] text-ink-500">
+                        <span key={term} className=" bg-surface-soft px-2 py-0.5 text-[11px] text-body">
                           {term}
                         </span>
                       ))}

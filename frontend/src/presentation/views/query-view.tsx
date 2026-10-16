@@ -16,28 +16,28 @@ import { cn } from "../components/ui/cn";
 function CitationCard({ citation }: { citation: Citation }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="overflow-hidden rounded-lg border border-sand-300 bg-sand-200/60">
+    <div className="overflow-hidden rounded-xl border border-hairline bg-surface-soft">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-sand-200/80"
+        className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-surface-soft/80"
       >
-        <FileText className="size-3.5 shrink-0 text-ink-300" aria-hidden />
-        <span className="min-w-0 flex-1 truncate text-xs text-ink-600">{citation.documentName}</span>
-        <span className="shrink-0 text-[10px] text-ink-300">p. {citation.page}</span>
-        <span className="shrink-0 rounded-[2px] bg-emerald-50 px-1.5 py-0.5 text-[9px] font-medium text-emerald-700">
+        <FileText className="size-3.5 shrink-0 text-muted-soft" aria-hidden />
+        <span className="min-w-0 flex-1 truncate text-xs text-body">{citation.documentName}</span>
+        <span className="shrink-0 text-[10px] text-muted-soft">p. {citation.page}</span>
+        <span className="shrink-0 bg-success/10 px-1.5 py-0.5 text-[9px] font-normal text-success">
           {Math.round(citation.relevance * 100)}%
         </span>
         <ChevronDown
-          className={cn("size-3.5 shrink-0 text-sand-500 transition-transform", open && "rotate-180")}
+          className={cn("size-3.5 shrink-0 text-muted-soft transition-transform", open && "rotate-180")}
           aria-hidden
         />
       </button>
       {open ? (
-        <blockquote className="border-t border-sand-300 px-3 py-2.5">
-          <p className="flex gap-1.5 text-xs leading-relaxed text-ink-500 italic">
-            <Quote className="mt-0.5 size-3 shrink-0 text-sand-500" aria-hidden />
+        <blockquote className="border-t border-hairline px-3 py-2.5">
+          <p className="flex gap-1.5 text-xs leading-relaxed text-body italic">
+            <Quote className="mt-0.5 size-3 shrink-0 text-muted-soft" aria-hidden />
             {citation.snippet}
           </p>
         </blockquote>
@@ -119,11 +119,11 @@ export function QueryView() {
       <div className="grid min-w-0 gap-5 p-4 sm:p-6 lg:grid-cols-[16rem_1fr] lg:p-8">
         <aside
           className={cn(
-            "rounded-xl border border-sand-300 bg-white",
+            " card-raise rounded-xl border border-hairline bg-surface-card",
             !threadListOpen && "hidden lg:block",
           )}
         >
-          <div className="border-b border-sand-300 p-3">
+          <div className="border-b border-hairline p-3">
             <Button
               variant="secondary"
               size="sm"
@@ -139,38 +139,38 @@ export function QueryView() {
               New conversation
             </Button>
           </div>
-          <ul className="scrollbar-thin max-h-[24rem] divide-y divide-sand-200 overflow-y-auto lg:max-h-[32rem]">
+          <ul className="scrollbar-thin max-h-[24rem] divide-y divide-hairline overflow-y-auto lg:max-h-[32rem]">
             {threads.map((thread) => (
               <li key={thread.id}>
                 <button
                   type="button"
                   onClick={() => selectThread(thread.id)}
                   className={cn(
-                    "w-full px-3 py-2.5 text-left transition-colors hover:bg-sand-200",
-                    thread.id === activeId && "border-l-2 border-clay-500 bg-clay-50/40",
+                    "w-full px-3 py-2.5 text-left transition-colors hover:bg-surface-soft",
+                    thread.id === activeId && "border-l-2 border-primary-400 bg-primary-50",
                   )}
                 >
-                  <p className="truncate text-[13px] font-medium text-ink-700">{thread.title}</p>
-                  <p className="mt-0.5 text-[10px] text-ink-300">{relativeTime(thread.updatedAt)}</p>
+                  <p className="truncate text-[13px] font-normal text-body-strong">{thread.title}</p>
+                  <p className="mt-0.5 text-[10px] text-muted-soft">{relativeTime(thread.updatedAt)}</p>
                 </button>
               </li>
             ))}
           </ul>
         </aside>
 
-        <div className="flex min-h-[34rem] min-w-0 flex-col overflow-hidden rounded-xl border border-sand-300 bg-white">
+        <div className="flex min-h-[34rem] min-w-0 flex-col overflow-hidden card-raise rounded-xl border border-hairline bg-surface-card">
           <div ref={scrollRef} className="scrollbar-thin flex-1 overflow-y-auto p-4 sm:p-6">
             {loading ? (
-              <p className="text-center text-sm text-ink-300">Loading conversation…</p>
+              <p className="text-center text-sm text-muted-soft">Loading conversation…</p>
             ) : messages.length === 0 && !thinking ? (
               <div className="flex h-full flex-col items-center justify-center py-10 text-center">
-                <span className="grid size-12 place-items-center rounded-2xl bg-clay-50 text-clay-600">
+                <span className="grid size-12 place-items-center bg-surface-elevated text-link">
                   <Sparkles className="size-6" aria-hidden />
                 </span>
-                <h2 className="mt-4 font-serif text-xl font-semibold text-ink-800">
+                <h2 className="title-md mt-4 text-ink-0">
                   Ask anything about the corpus
                 </h2>
-                <p className="mt-1.5 max-w-md text-sm text-ink-400">
+                <p className="mt-1.5 max-w-md text-sm text-muted">
                   18,942 indexed documents across nine subsidiaries. Every answer cites the
                   source document and page it came from.
                 </p>
@@ -180,7 +180,7 @@ export function QueryView() {
                       key={query}
                       type="button"
                       onClick={() => void submit(query)}
-                      className="rounded-lg border border-sand-300 bg-sand-200/60 px-3 py-2.5 text-left text-xs text-ink-600 transition-colors hover:border-clay-200 hover:bg-clay-50/50"
+                      className=" rounded-xl border border-hairline bg-surface-soft px-3 py-2.5 text-left text-xs text-body transition-colors hover:border-hairline-strong hover:bg-surface-elevated/50"
                     >
                       {query}
                     </button>
@@ -197,19 +197,19 @@ export function QueryView() {
                     <div className={cn("max-w-[46rem]", message.role === "user" && "max-w-[34rem]")}>
                       {message.role === "assistant" ? (
                         <div className="mb-1.5 flex items-center gap-1.5">
-                          <span className="grid size-5 place-items-center rounded bg-clay-500 text-white">
+                          <span className="grid size-5 place-items-center rounded-md bg-primary-600 text-white">
                             <Sparkles className="size-3" aria-hidden />
                           </span>
-                          <span className="text-[11px] font-medium text-ink-400">CMPDI Assistant</span>
+                          <span className="type-caption text-muted">CMPDI Assistant</span>
                         </div>
                       ) : null}
 
                       <div
                         className={cn(
-                          "rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-line",
+                          "px-4 py-3 text-base leading-relaxed whitespace-pre-line",
                           message.role === "user"
-                            ? "rounded-[2px] bg-ink-800 text-white"
-                            : "rounded-[2px] bg-sand-200/70 text-ink-700",
+                            ? "bg-primary-50 text-ink-0"
+                            : "bg-surface-soft text-body-strong",
                         )}
                       >
                         {message.content}
@@ -217,7 +217,7 @@ export function QueryView() {
 
                       {message.citations.length > 0 ? (
                         <div className="mt-2.5">
-                          <p className="mb-1.5 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">
+                          <p className="mb-1.5 text-[10px] font-normal tracking-wider text-muted-soft uppercase">
                             Sources · {message.citations.length}
                           </p>
                           <div className="space-y-1.5">
@@ -233,9 +233,9 @@ export function QueryView() {
 
                 {thinking ? (
                   <li className="flex justify-start">
-                    <div className="flex items-center gap-2 rounded-2xl rounded-[2px] bg-sand-200/70 px-4 py-3">
-                      <Loader2 className="size-3.5 animate-spin text-clay-500" aria-hidden />
-                      <span className="text-sm text-ink-400">Searching the corpus…</span>
+                    <div className="flex items-center gap-2 bg-surface-soft px-4 py-3">
+                      <Loader2 className="size-3.5 animate-spin text-ink-0" aria-hidden />
+                      <span className="text-sm text-muted">Searching the corpus…</span>
                     </div>
                   </li>
                 ) : null}
@@ -243,7 +243,7 @@ export function QueryView() {
             )}
           </div>
 
-          <div className="border-t border-sand-300 bg-white p-3 sm:p-4">
+          <div className="border-t border-hairline bg-surface-card p-3 sm:p-4">
             {messages.length > 0 ? (
               <div className="scrollbar-thin mb-2.5 flex gap-1.5 overflow-x-auto pb-1">
                 {SUGGESTED_QUERIES.slice(0, 3).map((query) => (
@@ -251,7 +251,7 @@ export function QueryView() {
                     key={query}
                     type="button"
                     onClick={() => void submit(query)}
-                    className="shrink-0 rounded-[2px] border border-sand-300 bg-sand-200/60 px-3 py-1 text-[11px] whitespace-nowrap text-ink-500 hover:border-clay-200 hover:text-ink-800"
+                    className="shrink-0 rounded-xl border border-hairline bg-surface-soft px-3 py-1 text-[11px] whitespace-nowrap text-body hover:border-hairline-strong hover:text-ink-0"
                   >
                     {query.length > 46 ? `${query.slice(0, 46)}…` : query}
                   </button>
@@ -273,14 +273,14 @@ export function QueryView() {
                   }
                 }}
                 placeholder="Ask about production, clearances, safety, land acquisition…"
-                className="max-h-32 min-h-10 flex-1 resize-none rounded-xl border border-sand-400 px-3.5 py-2.5 text-sm text-ink-800 placeholder:text-sand-500 focus:border-clay-400"
+                className="max-h-32 min-h-10 flex-1 resize-none border border-hairline-strong px-3.5 py-2.5 text-sm text-ink-0 placeholder:text-muted-soft focus:border-ink-0"
               />
               <Button type="submit" disabled={!input.trim() || thinking} aria-label="Send question">
                 <Send className="size-4" aria-hidden />
                 <span className="hidden sm:inline">Send</span>
               </Button>
             </form>
-            <p className="mt-2 text-[10px] text-ink-300">
+            <p className="mt-2 text-[10px] text-muted-soft">
               Answers are generated from indexed documents only. Verify figures against the cited source before publication.
             </p>
           </div>

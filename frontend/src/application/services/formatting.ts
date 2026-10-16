@@ -45,3 +45,8 @@ export function relativeTime(iso: string, now = new Date("2026-08-23T12:00:00Z")
 export function daysUntil(iso: string, now = new Date("2026-08-23T12:00:00Z")): number {
   return Math.ceil((new Date(iso).getTime() - now.getTime()) / 86400000);
 }
+
+// enum values arrive lowercase from the domain; badges show them title-cased
+export function formatLabel(value: string): string {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
