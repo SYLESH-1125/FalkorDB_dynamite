@@ -4,7 +4,7 @@ import { cn } from "./cn";
 export function Card({ className, children }: { className?: string; children: ReactNode }) {
   return (
     <section
-      className={cn("card-raise min-w-0 rounded-lg border border-hairline bg-surface-card", className)}
+      className={cn("card-raise min-w-0 rounded-lg border border-hairline-strong bg-surface-card", className)}
     >
       {children}
     </section>

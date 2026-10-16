@@ -11,7 +11,7 @@ const ICON_BY_ROLE: Record<AppRole, LucideIcon> = {
 };
 
 export function RoleShowcase({ role }: { role: RoleOption }) {
-  const Icon = ICON_BY_ROLE[role.id];
+  const Icon = ICON_BY_ROLE[role.id] ?? Sparkles;
 
   return (
     <div className="gradient-navy hidden flex-col justify-between p-10 lg:flex">

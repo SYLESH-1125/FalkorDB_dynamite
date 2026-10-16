@@ -25,7 +25,7 @@ export function SidebarContent({
         <Image src={bhumiLogo} alt="BHUMI" width={collapsed ? 32 : 120} height={32} className="h-8 w-auto shrink-0 object-contain" priority />
         {!collapsed ? (
           <Link href="/dashboard" className="min-w-0">
-            <p className="truncate text-[11.5px] text-sidebar-text-muted">Unified Mining Intelligence</p>
+            <p className="truncate text-[11.5px] text-sidebar-text-muted"></p>
           </Link>
         ) : null}
       </div>

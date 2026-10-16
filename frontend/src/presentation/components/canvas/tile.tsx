@@ -17,8 +17,8 @@ export function TileGrid({ children, className }: { children: ReactNode; classNa
 export type TileTone = "paper" | "sand" | "ink" | "clay" | "outline";
 
 const TONES: Record<TileTone, string> = {
-  paper: "bg-surface-card border-hairline",
-  sand: "bg-surface-soft border-hairline",
+  paper: "bg-surface-card border-hairline-strong",
+  sand: "bg-surface-soft border-hairline-strong",
   ink: "gradient-navy border-primary-800 text-white",
   clay: "bg-secondary-400 border-secondary-500 text-ink-0",
   outline: "border-hairline-strong border-dashed bg-transparent",
@@ -46,7 +46,12 @@ export function Tile({
       )}
     >
       {label ? (
-        <header className="flex items-baseline justify-between gap-3 px-4 pt-3.5">
+        <header
+          className={cn(
+            "flex items-baseline justify-between gap-3 border-b px-4 py-3",
+            dark ? "border-white/10" : "border-hairline",
+          )}
+        >
           <div className="min-w-0">
             <h2
               className={cn(
@@ -65,7 +70,7 @@ export function Tile({
           {action ? <div className="shrink-0">{action}</div> : null}
         </header>
       ) : null}
-      <div className={cn("min-w-0 flex-1", !flush && (label ? "px-4 pt-2.5 pb-4" : "p-4"))}>{children}</div>
+      <div className={cn("min-w-0 flex-1", !flush && "p-4")}>{children}</div>
     </section>
   );
 }

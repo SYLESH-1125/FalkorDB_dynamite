@@ -109,7 +109,7 @@ export function ProcessingView() {
                   <CardBody>
                     <ol className="space-y-0">
                       {job.stages.map((stage, index) => {
-                        const Icon = STAGE_ICONS[stage.status];
+                        const Icon = STAGE_ICONS[stage.status] ?? Circle;
                         const last = index === job.stages.length - 1;
                         return (
                           <li key={stage.name} className="flex gap-3">

@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Upload, Cpu, CheckSquare, MessageSquareText, FileBarChart,
   LayoutTemplate, Cloud, Archive, Landmark, TrendingUp, Users, ScrollText,
-  Settings, Bell, LifeBuoy, type LucideIcon,
+  Settings, Bell, LifeBuoy, Share2, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -19,6 +19,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/query", label: "AI Query System", icon: MessageSquareText, group: "Intelligence" },
   { href: "/topics", label: "Word Cloud & Topics", icon: Cloud, group: "Intelligence" },
   { href: "/analytics", label: "Analytics & Insights", icon: TrendingUp, group: "Intelligence" },
+  { href: "/graph", label: "Knowledge Graph", icon: Share2, group: "Intelligence" },
   { href: "/reports", label: "Report Generation", icon: FileBarChart, group: "Reporting" },
   { href: "/templates", label: "Report Templates", icon: LayoutTemplate, group: "Reporting" },
   { href: "/archive", label: "Report Archive", icon: Archive, group: "Reporting" },

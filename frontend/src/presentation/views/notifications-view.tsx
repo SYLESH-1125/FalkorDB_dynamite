@@ -110,7 +110,7 @@ export function NotificationsView() {
           ) : (
             <ul className="divide-y divide-hairline">
               {visible.map((item) => {
-                const Icon = SEVERITY_ICONS[item.severity];
+                const Icon = SEVERITY_ICONS[item.severity] ?? Info;
                 return (
                   <li
                     key={item.id}

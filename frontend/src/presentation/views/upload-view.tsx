@@ -206,7 +206,7 @@ export function UploadView() {
           ) : (
             <ul className="divide-y divide-hairline">
               {visible.map((doc) => {
-                const Icon = KIND_ICONS[doc.kind];
+                const Icon = KIND_ICONS[doc.kind] ?? FileIcon;
                 const active = doc.status === "uploading" || doc.status === "processing";
                 return (
                   <li key={doc.id} className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap sm:px-5">

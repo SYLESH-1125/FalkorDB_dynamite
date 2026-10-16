@@ -75,7 +75,7 @@ export function AuditView() {
     {
       key: "outcome", header: "Outcome", sortValue: (e) => e.outcome,
       render: (e) => {
-        const Icon = OUTCOME_ICONS[e.outcome];
+        const Icon = OUTCOME_ICONS[e.outcome] ?? AlertTriangle;
         return (
           <Badge tone={OUTCOME_TONES[e.outcome]}>
             <Icon className="size-2.5" aria-hidden />

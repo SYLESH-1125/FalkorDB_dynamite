@@ -99,7 +99,7 @@ export function HelpView() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {visibleResources.map((resource) => {
-              const Icon = KIND_ICONS[resource.kind];
+              const Icon = KIND_ICONS[resource.kind] ?? HelpCircle;
               return (
                 <Card key={resource.id}>
                   <CardBody>

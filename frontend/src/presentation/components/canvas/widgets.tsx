@@ -52,9 +52,9 @@ export function Dial({ value, display, caption }: { value: number; display: stri
     <div className="flex h-full flex-col items-center justify-center">
       <div className="relative w-[7.5rem] max-w-full">
         <svg viewBox="0 0 128 128" className="w-full -rotate-90">
-          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(11,15,20,0.14)" strokeWidth={10} />
+          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(0,0,0,0.14)" strokeWidth={10} />
           <circle
-            cx="64" cy="64" r={r} fill="none" stroke="#0b0f14" strokeWidth={10}
+            cx="64" cy="64" r={r} fill="none" stroke="#000000" strokeWidth={10}
             strokeLinecap="round" strokeDasharray={`${dash} ${c}`}
           />
         </svg>

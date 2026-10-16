@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroVideoBackground } from "@/src/presentation/components/shared/hero-video-background";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
+import bhumiMainLogo from "@/app/assets/bhumi-main-logo.png";
 
 const NAV = [
   ["Dashboard", "/dashboard"], ["Reports", "/reports"], ["Query System", "/query"],
@@ -94,12 +95,12 @@ export function HeroParallax() {
             willChange: "transform, opacity",
           }}
         >
-          <h1
-            className="mx-auto max-w-6xl text-[4rem] leading-[0.95] tracking-tight text-white uppercase sm:text-8xl lg:text-9xl"
-            style={{ fontFamily: "var(--font-impact)" }}
-          >
-            BHUMI
-          </h1>
+          <Image
+            src={bhumiMainLogo}
+            alt="BHUMI"
+            priority
+            className="mx-auto h-auto w-full max-w-3xl px-4 drop-shadow-lg sm:max-w-4xl lg:max-w-5xl"
+          />
 
           <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-white/80 sm:text-base">
             Bharat Hub for Unified Mining Intelligence
