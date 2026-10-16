@@ -11,7 +11,7 @@ const GRID = { stroke: "#e2ebf5", strokeDasharray: "3 3" };
 export function TrendLineChart({
   data, series, height = 260,
 }: {
-  data: Record<string, unknown>[];
+  data: readonly object[];
   series: { key: string; label: string }[];
   height?: number;
 }) {
@@ -43,7 +43,7 @@ export function TrendLineChart({
 export function TrendAreaChart({
   data, dataKey, label, height = 220,
 }: {
-  data: Record<string, unknown>[];
+  data: readonly object[];
   dataKey: string;
   label: string;
   height?: number;
@@ -77,7 +77,7 @@ export function TrendAreaChart({
 export function CategoryBarChart({
   data, xKey, series, height = 260, layout = "horizontal",
 }: {
-  data: Record<string, unknown>[];
+  data: readonly object[];
   xKey: string;
   series: { key: string; label: string }[];
   height?: number;
