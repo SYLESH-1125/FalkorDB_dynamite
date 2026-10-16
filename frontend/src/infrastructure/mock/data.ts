@@ -32,6 +32,9 @@ const NAMES = [
   "Priyanka Menon", "Rajesh Kumar Sinha", "Anjali Deshmukh", "S. Venkatraman",
   "Mohammed Irfan", "Kavita Bhattacharya", "Arun Prakash Nair", "Deepak Mahto",
   "Sunita Rani Gupta", "T. Selvaraj", "Neha Agarwal", "Bikash Chandra Das",
+  "Ramesh Chandra Behera", "Fatima Sheikh", "Jagdish Prasad Meena",
+  "Lalita Kumari Singh", "P. Muthukrishnan", "Abhijit Roy Chowdhury",
+  "Shalini Verma", "Gurpreet Singh Bedi", "Nandini Iyer", "Om Prakash Yadav",
 ];
 
 const DESIGNATIONS = [
@@ -79,6 +82,22 @@ const DOC_NAMES: [string, IngestedDocument["kind"]][] = [
   ["CSR-Expenditure-Statement-FY25.docx", "docx"],
   ["Hydrogeological-Assessment-Singrauli.pdf", "pdf"],
   ["Stowing-Material-Consumption-Log.xlsx", "spreadsheet"],
+  ["Blasting-Vibration-Records-Gevra.xlsx", "spreadsheet"],
+  ["Resettlement-Survey-Belgaria-Phase-IV.pdf", "scan"],
+  ["Dragline-Maintenance-Schedule-2026.xlsx", "spreadsheet"],
+  ["Seam-Correlation-Study-Talcher.pdf", "pdf"],
+  ["Water-Quality-Monitoring-Q2-Results.xlsx", "spreadsheet"],
+  ["Aerial-Survey-Kusmunda-Expansion.jpg", "image"],
+  ["DGMS-Inspection-Report-Mine-7.pdf", "scan"],
+  ["Coal-Evacuation-Rail-Siding-Plan.pdf", "pdf"],
+  ["Contractor-Manpower-Register-Aug.xlsx", "spreadsheet"],
+  ["Afforestation-Compliance-Photographs.jpg", "image"],
+  ["Gasification-Feasibility-Study-Draft.docx", "docx"],
+  ["Pit-Slope-Stability-Analysis-Nigahi.pdf", "pdf"],
+  ["Historical-Production-Ledger-1992-2001.pdf", "scan"],
+  ["Equipment-Availability-Monthly-MCL.xlsx", "spreadsheet"],
+  ["Grievance-Redressal-Register-Q2.docx", "docx"],
+  ["Topographic-Survey-Sheet-Raniganj.jpg", "image"],
 ];
 
 const STATUSES: IngestedDocument["status"][] = [
@@ -86,6 +105,10 @@ const STATUSES: IngestedDocument["status"][] = [
   "error", "validated", "uploading", "queued", "validated",
   "extracted", "validated", "processing", "validated", "error",
   "validated", "extracted", "validated",
+  "validated", "processing", "validated", "extracted", "validated",
+  "error", "validated", "validated", "extracted", "validated",
+  "queued", "validated", "extracted", "validated", "processing",
+  "validated",
 ];
 
 export const DOCUMENTS: IngestedDocument[] = DOC_NAMES.map(([name, kind], i) => {
@@ -166,7 +189,7 @@ const FIELD_VALUES = [
 
 export const VALIDATION_RECORDS: ValidationRecord[] = DOCUMENTS
   .filter((d) => d.status === "extracted" || d.status === "validated")
-  .slice(0, 6)
+  .slice(0, 14)
   .map((doc, i) => {
     const rand = seeded(i * 811 + 29);
     return {
@@ -252,6 +275,12 @@ export const CHAT_THREADS: ChatThread[] = [
     updatedAt: isoDaysAgo(5, 14),
     messages: [],
   },
+  { id: "thr-004", title: "Overburden removal by subsidiary", updatedAt: isoDaysAgo(6, 11), messages: [] },
+  { id: "thr-005", title: "Safety incidents in underground mines", updatedAt: isoDaysAgo(8, 16), messages: [] },
+  { id: "thr-006", title: "Jharia land acquisition and compensation", updatedAt: isoDaysAgo(11, 10), messages: [] },
+  { id: "thr-007", title: "Stripping ratio variance against sanction", updatedAt: isoDaysAgo(14, 15), messages: [] },
+  { id: "thr-008", title: "Coal grade slippage in despatched consignments", updatedAt: isoDaysAgo(18, 12), messages: [] },
+  { id: "thr-009", title: "Capital expenditure against approved outlay", updatedAt: isoDaysAgo(23, 9), messages: [] },
 ];
 
 const TEMPLATE_SECTIONS = [
@@ -271,6 +300,12 @@ export const TEMPLATES: ReportTemplate[] = [
   ["tpl-004", "Environmental Compliance Statement", "Environmental", "Clearance conditions, monitoring data and compliance attestation.", false],
   ["tpl-005", "Quarterly Financial Summary", "Financial", "Capex, opex and realisation figures consolidated across subsidiaries.", false],
   ["tpl-006", "Exploration Progress Report", "Operational", "Drilling metreage, borehole logs and resource estimation updates.", false],
+  ["tpl-007", "Safety Audit Report", "Statutory", "DGMS-aligned safety findings, incident analysis and remediation tracking.", false],
+  ["tpl-008", "Mine Closure Plan Review", "Environmental", "Closure provision utilisation, land reclamation and post-closure monitoring.", false],
+  ["tpl-009", "Land Acquisition Status Brief", "Statutory", "Acquisition progress, compensation disbursed and pending title disputes.", false],
+  ["tpl-010", "Coal Quality Assurance Digest", "Operational", "Grade conformity, ash and moisture variance against declared grades.", false],
+  ["tpl-011", "Ministry Monthly Return", "Statutory", "Prescribed monthly return of production, despatch and stock to the Ministry of Coal.", false],
+  ["tpl-012", "Board Performance Dashboard", "Financial", "Consolidated KPI pack circulated to the CIL board ahead of quarterly review.", false],
 ].map(([id, name, category, description, isDefault], i) => {
   const rand = seeded(i * 457 + 19);
   return {
@@ -303,6 +338,22 @@ const REPORT_TITLES = [
   "Washery Performance Benchmark Study",
   "Overburden Removal Efficiency Analysis",
   "Subsidence Monitoring Annual Report",
+  "Coal Evacuation Infrastructure Assessment",
+  "Parliamentary Brief — Illegal Mining in Dhanbad",
+  "Mine Closure Provision Utilisation Review",
+  "Manpower Productivity Benchmark — Opencast",
+  "Environmental Clearance Compliance Digest Q2",
+  "First Mile Connectivity Project Status",
+  "Coal Gasification Feasibility Assessment",
+  "Rehabilitation & Resettlement Progress — Belgaria",
+  "Dragline Availability & Utilisation Report",
+  "Stowing Material Consumption Analysis",
+  "Ash Content Variance Investigation — SECL",
+  "Renewable Energy Capacity Commissioning Status",
+  "Contractual Manpower Deployment Review",
+  "Hydrogeological Impact Assessment — Singrauli",
+  "Blasting Vibration Monitoring Summary",
+  "Quarterly Despatch Reconciliation — All Subsidiaries",
 ];
 
 export const REPORTS: Report[] = REPORT_TITLES.map((title, i) => {
@@ -344,6 +395,14 @@ export const TOPIC_TERMS: TopicTerm[] = [
   ["moisture content", 14, "Quality"], ["royalty", 13, "Finance"],
   ["dust suppression", 12, "Compliance"], ["evacuation capacity", 11, "Logistics"],
   ["geotechnical", 10, "Exploration"],
+  ["mine ventilation", 24, "Safety"], ["coal washing", 23, "Operations"],
+  ["land compensation", 22, "Social"], ["reclamation", 21, "Compliance"],
+  ["shovel productivity", 20, "Operations"], ["seam gradient", 19, "Exploration"],
+  ["silt management", 18, "Compliance"], ["crusher capacity", 17, "Logistics"],
+  ["overtime deployment", 16, "Operations"], ["core recovery", 15, "Exploration"],
+  ["noise monitoring", 14, "Compliance"], ["fuel consumption", 13, "Finance"],
+  ["township maintenance", 12, "Social"], ["belt conveyor uptime", 11, "Logistics"],
+  ["explosive inventory", 10, "Safety"],
 ].map(([text, weight, category]) => ({
   text: text as string,
   weight: weight as number,
@@ -360,6 +419,12 @@ export const TOPIC_CLUSTERS: TopicCluster[] = [
   ["Land & Rehabilitation", 118, -0.24, ["land acquisition", "rehabilitation", "mine closure", "CSR expenditure"]],
   ["Logistics & Evacuation", 97, 0.31, ["haul road", "conveyor system", "evacuation capacity", "despatch"]],
   ["Financial Performance", 84, 0.44, ["capital expenditure", "royalty", "cost per tonne"]],
+  ["Coal Quality & Grading", 78, 0.08, ["grade slippage", "ash content", "moisture content", "coal washing"]],
+  ["Manpower & Welfare", 71, 0.22, ["manpower productivity", "overtime deployment", "township maintenance"]],
+  ["Equipment & Maintenance", 66, 0.51, ["dragline", "shovel productivity", "equipment availability", "crusher capacity"]],
+  ["Water & Effluent", 54, -0.06, ["water quality", "silt management", "dust suppression"]],
+  ["Statutory Compliance", 48, 0.11, ["royalty", "afforestation", "reclamation", "noise monitoring"]],
+  ["Blasting & Explosives", 39, -0.18, ["blasting", "explosive inventory", "geotechnical"]],
 ].map(([label, frequency, sentiment, terms], i) => ({
   id: `tc-${i + 1}`,
   label: label as string,
@@ -379,6 +444,16 @@ const PQ_SUBJECTS = [
   "Safety incidents reported in underground mines during FY 2025-26",
   "Renewable energy capacity commissioned by Coal India Limited",
   "Coal import substitution progress and domestic supply adequacy",
+  "Coal despatch to power utilities and pending railway rakes",
+  "Steps taken to improve coal quality and reduce grade slippage",
+  "Expenditure incurred on corporate social responsibility activities",
+  "Progress of first mile connectivity projects across subsidiaries",
+  "Status of pending land compensation cases in Talcher coalfield",
+  "Deployment of contractual workers and their welfare measures",
+  "Mine closure fund utilisation and reclamation of abandoned mines",
+  "Water usage and treatment facilities at washery operations",
+  "Adoption of continuous miner technology in underground mines",
+  "Vacancies in executive cadre and recruitment timeline",
 ];
 
 export const PARLIAMENTARY_QUERIES: ParliamentaryQuery[] = PQ_SUBJECTS.map((subject, i) => {
@@ -528,6 +603,12 @@ export const INTEGRATIONS: Integration[] = [
   ["Ministry of Coal e-Office", "MoC", "Parliamentary query intake and reply submission channel.", "connected", 15, 372],
   ["ECL Legacy Archive (FTP)", "ECL", "Historical scanned records prior to 2015 digitisation drive.", "disconnected", 1440, 0],
   ["CMPDI Geological Repository", "CMPDI", "Survey reports, seam correlation and geotechnical assessments.", "connected", 180, 3_628],
+  ["CCL Production Reporting", "CCL", "Daily raw coal output, despatch and pithead stock positions.", "connected", 30, 6_284],
+  ["WCL Safety Incident Register", "WCL", "DGMS-reportable incidents, inspections and remediation status.", "connected", 60, 842],
+  ["NEC Operations Feed", "NEC", "North Eastern Coalfields production and manpower returns.", "degraded", 180, 214],
+  ["Railway Rake Allotment API", "Indian Railways", "Rake availability, placement and loading confirmations.", "connected", 15, 4_918],
+  ["DGMS Compliance Portal", "MoC", "Statutory safety filings and inspection outcome acknowledgements.", "connected", 720, 486],
+  ["MoEFCC Clearance Tracker", "MoEFCC", "Environmental clearance application status and condition compliance.", "degraded", 1440, 128],
 ].map(([name, subsidiary, description, status, syncIntervalMinutes, recordsSynced], i) => ({
   id: `int-${String(i + 1).padStart(3, "0")}`,
   name: name as string,
@@ -549,6 +630,14 @@ export const NOTIFICATIONS: AppNotification[] = [
   ["New user invited", "Sunita Rani Gupta has been invited as Reviewer for WCL.", "info", "User Management", "/users"],
   ["Monthly digest ready", "August 2026 Operations Digest generated from 412 source documents.", "success", "Report Generation", "/reports"],
   ["Scheduled maintenance", "Platform maintenance window on 30 Aug, 02:00–04:00 IST. Uploads will be queued.", "info", "System", undefined],
+  ["Extraction accuracy crossed 94%", "Monthly accuracy reached 94.7%, the highest since deployment.", "success", "Analytics", "/analytics"],
+  ["Bulk upload completed", "42 legacy records from the ECL archive finished digitisation.", "success", "Document Pipeline", "/processing"],
+  ["Template updated", "Parliamentary Question Brief gained a new citations annexure section.", "info", "Report Templates", "/templates"],
+  ["Query volume spike", "Queries rose 38% this week, concentrated on environmental clearances.", "info", "AI Query", "/query"],
+  ["Storage at 36% capacity", "729 GB of 2,048 GB used. No action needed at current growth.", "info", "System", "/settings"],
+  ["Role change recorded", "Kavita Bhattacharya was elevated to Administrator for SECL.", "warning", "User Management", "/users"],
+  ["Audit export ready", "The quarterly audit log export for statutory review is available.", "success", "Audit Log", "/audit"],
+  ["OCR engine updated", "LayoutLMv3 upgraded; scanned-table accuracy improved 2.4 points.", "success", "System", "/processing"],
 ].map(([title, body, severity, source, link], i) => ({
   id: `ntf-${String(i + 1).padStart(3, "0")}`,
   title: title as string,
@@ -571,6 +660,14 @@ export const HELP_RESOURCES: HelpResource[] = [
   ["Role-Based Access Control Reference", "Permission matrix for Administrator, Analyst, Reviewer and Viewer roles.", "download", "Administration", "PDF · 420 KB"],
   ["Data Retention and Audit Policy", "Statutory retention periods, audit log scope and traceability guarantees.", "download", "Compliance", "PDF · 1.2 MB"],
   ["Keyboard Shortcuts Quick Reference", "Navigation and action shortcuts across all modules.", "download", "Productivity", "PDF · 180 KB"],
+  ["Bulk Upload and Batch Processing", "Preparing large archive transfers, naming conventions and queue behaviour.", "guide", "Document Management", "9 min read"],
+  ["Cross-Filtering the Analytics Canvas", "Using slicers, the Q&A bar and pivot matrix to drill into subsidiary data.", "video", "Analytics", "11 min"],
+  ["Managing Users and Permissions", "Inviting officials, assigning roles and handling suspensions.", "guide", "Administration", "8 min read"],
+  ["Configuring Subsidiary Integrations", "Endpoint setup, sync intervals and troubleshooting failed connections.", "guide", "Administration", "13 min read"],
+  ["Reading the Digitisation Funnel", "What each pipeline stage does and how to diagnose drop-off.", "video", "Data Quality", "9 min"],
+  ["Statutory Reporting Calendar", "Submission deadlines for ministry returns and parliamentary replies.", "download", "Compliance", "PDF \u00b7 260 KB"],
+  ["Glossary of Mining and Platform Terms", "Definitions for stripping ratio, OB removal, grade slippage and more.", "download", "Onboarding", "PDF \u00b7 340 KB"],
+  ["Escalation Matrix for Critical Queries", "Who to contact, and within what window, for high-priority items.", "download", "Compliance", "PDF \u00b7 210 KB"],
 ].map(([title, description, kind, category, duration], i) => ({
   id: `hlp-${String(i + 1).padStart(3, "0")}`,
   title: title as string,
@@ -590,6 +687,12 @@ export const FAQS: FaqItem[] = [
   ["How long are audit logs retained?", "Audit entries are retained for seven years in line with statutory record-keeping requirements, and cannot be deleted or modified by any role, including Administrators.", "Compliance"],
   ["Can I use the platform on a tablet or phone?", "Yes. All modules are responsive. On narrower screens the navigation sidebar collapses into a drawer, and dense data tables scroll horizontally within their panel rather than breaking the page layout.", "Onboarding"],
   ["What file formats can I upload?", "PDF (both native-text and scanned), Excel spreadsheets (XLSX and XLS), Word documents (DOCX), and images (JPG, PNG, TIFF). Individual files may be up to 200 MB.", "Document Management"],
+  ["Can I recover a document I deleted by mistake?", "Deleted documents are soft-removed and retained for 30 days. An Administrator can restore them from the audit log entry recording the deletion. After 30 days the file is purged permanently and only the audit record remains.", "Document Management"],
+  ["Why does a report show a different figure than the source spreadsheet?", "Reports draw on validated field values. If a reviewer corrected an extracted figure, the report uses the corrected value while the original spreadsheet is unchanged. The annexure lists both, so the difference is always traceable.", "Reporting"],
+  ["What does the confidence percentage actually measure?", "It is the extraction model's certainty that the captured value matches the source text, combining OCR character confidence with layout-model agreement on the field boundary. It is not a measure of whether the underlying figure is factually correct.", "Data Quality"],
+  ["Can two people validate the same record at once?", "The record locks to the first reviewer who opens it for editing. A second reviewer sees it read-only until the lock is released or the session expires after 20 minutes of inactivity.", "Data Quality"],
+  ["How do I add a new subsidiary integration?", "Integrations are configured by an Administrator under Settings. You will need the endpoint URL, a service account credential and an agreed sync interval. Contact the platform support desk to have the endpoint whitelisted before configuring it.", "Administration"],
+  ["Does the platform work offline or on a slow connection?", "The interface requires a live connection, but it is built to degrade gracefully: tables and charts load progressively, and uploads resume automatically if a transfer is interrupted. Very large uploads are best attempted on a wired connection.", "Onboarding"],
 ].map(([question, answer, category], i) => ({
   id: `faq-${String(i + 1).padStart(3, "0")}`,
   question: question as string,
