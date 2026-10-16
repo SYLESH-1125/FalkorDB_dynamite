@@ -65,7 +65,7 @@ export function SettingsView() {
       />
 
       <div className="p-4 sm:p-6 lg:p-8">
-        <div className="scrollbar-thin mb-5 flex min-w-0 gap-1 overflow-x-auto border-b border-navy-100 pb-px">
+        <div className="scrollbar-thin mb-5 flex min-w-0 gap-1 overflow-x-auto border-b border-sand-300 pb-px">
           {TABS.map((item) => {
             const Icon = item.icon;
             const active = tab === item.id;
@@ -78,8 +78,8 @@ export function SettingsView() {
                 className={cn(
                   "flex shrink-0 items-center gap-1.5 border-b-2 px-3.5 py-2.5 text-sm font-medium whitespace-nowrap transition-colors",
                   active
-                    ? "border-amber-brand-500 text-navy-900"
-                    : "border-transparent text-navy-400 hover:text-navy-700",
+                    ? "border-clay-500 text-ink-800"
+                    : "border-transparent text-ink-300 hover:text-ink-600",
                 )}
               >
                 <Icon className="size-4" aria-hidden />
@@ -94,12 +94,12 @@ export function SettingsView() {
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
               {[
                 ["Connected", integrations.filter((i) => i.status === "connected").length, "text-emerald-600"],
-                ["Degraded", integrations.filter((i) => i.status === "degraded").length, "text-amber-brand-600"],
+                ["Degraded", integrations.filter((i) => i.status === "degraded").length, "text-clay-600"],
                 ["Disconnected", integrations.filter((i) => i.status === "disconnected").length, "text-red-600"],
-                ["Records synced", formatNumber(integrations.reduce((s, i) => s + i.recordsSynced, 0)), "text-navy-900"],
+                ["Records synced", formatNumber(integrations.reduce((s, i) => s + i.recordsSynced, 0)), "text-ink-800"],
               ].map(([label, value, tone]) => (
-                <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-                  <p className="text-xs text-navy-500">{label as string}</p>
+                <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+                  <p className="text-xs text-ink-400">{label as string}</p>
                   <p className={cn("mt-1 font-serif text-2xl font-semibold", tone as string)}>
                     {value as string | number}
                   </p>
@@ -118,12 +118,12 @@ export function SettingsView() {
                     <CardBody className="min-w-0">
                       <div className="flex min-w-0 items-start justify-between gap-3">
                         <div className="flex min-w-0 gap-3">
-                          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-500">
+                          <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sand-200 text-ink-400">
                             <Globe className="size-4" aria-hidden />
                           </span>
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold text-navy-900">{integration.name}</p>
-                            <p className="text-[11px] text-navy-400">{integration.subsidiary}</p>
+                            <p className="truncate text-sm font-semibold text-ink-800">{integration.name}</p>
+                            <p className="text-[11px] text-ink-300">{integration.subsidiary}</p>
                           </div>
                         </div>
                         <Badge tone={STATUS_TONES[integration.status]}>
@@ -132,13 +132,13 @@ export function SettingsView() {
                         </Badge>
                       </div>
 
-                      <p className="mt-3 text-xs leading-relaxed text-navy-500">{integration.description}</p>
+                      <p className="mt-3 text-xs leading-relaxed text-ink-400">{integration.description}</p>
 
-                      <code className="mt-3 block overflow-hidden rounded-md bg-navy-50 px-2.5 py-1.5 text-[11px] text-ellipsis whitespace-nowrap text-navy-600">
+                      <code className="mt-3 block overflow-hidden rounded-md bg-sand-200 px-2.5 py-1.5 text-[11px] text-ellipsis whitespace-nowrap text-ink-500">
                         {integration.endpoint}
                       </code>
 
-                      <dl className="mt-3 grid grid-cols-3 gap-2 border-t border-navy-100 pt-3">
+                      <dl className="mt-3 grid grid-cols-3 gap-2 border-t border-sand-300 pt-3">
                         {[
                           ["Last sync", integration.status === "disconnected" ? "Failed" : relativeTime(integration.lastSyncAt)],
                           ["Records", formatNumber(integration.recordsSynced)],
@@ -147,14 +147,14 @@ export function SettingsView() {
                             : `${integration.syncIntervalMinutes}m`],
                         ].map(([label, value]) => (
                           <div key={label}>
-                            <dt className="text-[10px] text-navy-400">{label}</dt>
-                            <dd className="mt-0.5 truncate text-xs font-medium text-navy-800">{value}</dd>
+                            <dt className="text-[10px] text-ink-300">{label}</dt>
+                            <dd className="mt-0.5 truncate text-xs font-medium text-ink-700">{value}</dd>
                           </div>
                         ))}
                       </dl>
                     </CardBody>
 
-                    <div className="flex gap-2 border-t border-navy-100 px-4 py-3">
+                    <div className="flex gap-2 border-t border-sand-300 px-4 py-3">
                       <Button
                         variant="secondary"
                         size="sm"
@@ -220,10 +220,10 @@ export function SettingsView() {
                   <option>UTC</option>
                 </Select>
               </div>
-              <div className="flex items-start justify-between gap-4 border-t border-navy-100 pt-4">
+              <div className="flex items-start justify-between gap-4 border-t border-sand-300 pt-4">
                 <div>
-                  <p className="text-[13px] font-medium text-navy-800">Auto-validate high-confidence fields</p>
-                  <p className="mt-0.5 text-xs text-navy-500">
+                  <p className="text-[13px] font-medium text-ink-700">Auto-validate high-confidence fields</p>
+                  <p className="mt-0.5 text-xs text-ink-400">
                     Fields extracted above 95% confidence bypass manual review
                   </p>
                 </div>
@@ -233,7 +233,7 @@ export function SettingsView() {
                   onChange={(v) => setPrefs({ ...prefs, autoValidate: v })}
                 />
               </div>
-              <div className="flex justify-end border-t border-navy-100 pt-4">
+              <div className="flex justify-end border-t border-sand-300 pt-4">
                 <Button onClick={() => notify({ tone: "success", title: "Preferences saved" })}>
                   <Check className="size-4" aria-hidden />
                   Save changes
@@ -252,10 +252,10 @@ export function SettingsView() {
                 ["criticalAlerts", "Critical alerts", "Immediate notification for overdue parliamentary queries and failed integrations"],
                 ["weeklyReport", "Weekly performance report", "Subsidiary metrics and accuracy trends every Monday"],
               ].map(([key, label, help]) => (
-                <div key={key} className="flex items-start justify-between gap-4 border-b border-navy-50 pb-4 last:border-0 last:pb-0">
+                <div key={key} className="flex items-start justify-between gap-4 border-b border-sand-200 pb-4 last:border-0 last:pb-0">
                   <div className="min-w-0">
-                    <p className="text-[13px] font-medium text-navy-800">{label}</p>
-                    <p className="mt-0.5 text-xs text-navy-500">{help}</p>
+                    <p className="text-[13px] font-medium text-ink-700">{label}</p>
+                    <p className="mt-0.5 text-xs text-ink-400">{help}</p>
                   </div>
                   <Toggle
                     label={label}
@@ -264,7 +264,7 @@ export function SettingsView() {
                   />
                 </div>
               ))}
-              <div className="flex justify-end border-t border-navy-100 pt-4">
+              <div className="flex justify-end border-t border-sand-300 pt-4">
                 <Button onClick={() => notify({ tone: "success", title: "Notification settings saved" })}>
                   Save changes
                 </Button>
@@ -282,7 +282,7 @@ export function SettingsView() {
                 <Select id="retention-docs" defaultValue="Permanent">
                   {["Permanent", "10 years", "7 years", "5 years"].map((r) => <option key={r} value={r}>{r}</option>)}
                 </Select>
-                <p className="mt-1.5 text-[11px] text-navy-400">
+                <p className="mt-1.5 text-[11px] text-ink-300">
                   Source documents are retained permanently under CIL records policy.
                 </p>
               </div>
@@ -291,18 +291,18 @@ export function SettingsView() {
                 <Select id="retention-audit" defaultValue="7 years" disabled>
                   <option>7 years</option>
                 </Select>
-                <p className="mt-1.5 text-[11px] text-navy-400">
+                <p className="mt-1.5 text-[11px] text-ink-300">
                   Fixed by statute — cannot be reduced by any role.
                 </p>
               </div>
               <div>
                 <Label htmlFor="ocr-threshold">OCR confidence threshold for auto-acceptance</Label>
                 <TextInput id="ocr-threshold" type="number" defaultValue={95} min={70} max={100} />
-                <p className="mt-1.5 text-[11px] text-navy-400">
+                <p className="mt-1.5 text-[11px] text-ink-300">
                   Fields below this threshold are routed to human validation.
                 </p>
               </div>
-              <div className="flex justify-end border-t border-navy-100 pt-4">
+              <div className="flex justify-end border-t border-sand-300 pt-4">
                 <Button onClick={() => notify({ tone: "success", title: "Data settings saved" })}>
                   Save changes
                 </Button>

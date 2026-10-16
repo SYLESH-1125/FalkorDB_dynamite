@@ -75,7 +75,7 @@ export function AnalyticsView() {
     const ratio = max === min ? 0.5 : (value - min) / (max - min);
     if (ratio > 0.75) return "bg-emerald-100 text-emerald-900";
     if (ratio > 0.5) return "bg-emerald-50 text-emerald-800";
-    if (ratio > 0.25) return "bg-amber-brand-50 text-amber-brand-800";
+    if (ratio > 0.25) return "bg-clay-50 text-clay-700";
     return "bg-red-50 text-red-800";
   }
 
@@ -94,7 +94,7 @@ export function AnalyticsView() {
             <SlidersHorizontal className="size-4" aria-hidden />
             Filters
             {activeFilters.length > 0 ? (
-              <span className="ml-1 grid size-4 place-items-center rounded-full bg-amber-brand-500 text-[9px] text-white">
+              <span className="ml-1 grid size-4 place-items-center rounded-full bg-clay-500 text-[9px] text-white">
                 {activeFilters.length}
               </span>
             ) : null}
@@ -105,19 +105,19 @@ export function AnalyticsView() {
       <div className="grid min-w-0 gap-5 p-4 sm:p-6 lg:grid-cols-[15rem_1fr] lg:p-8">
         <aside
           className={cn(
-            "h-fit rounded-xl border border-navy-100 bg-white lg:sticky lg:top-20",
+            "h-fit rounded-xl border border-sand-300 bg-white lg:sticky lg:top-20",
             !railOpen && "hidden lg:block",
           )}
         >
-          <div className="flex items-center justify-between border-b border-navy-100 px-4 py-3">
-            <p className="flex items-center gap-1.5 text-xs font-semibold text-navy-800">
+          <div className="flex items-center justify-between border-b border-sand-300 px-4 py-3">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-ink-700">
               <SlidersHorizontal className="size-3.5" aria-hidden />
               Filters
             </p>
             <button
               type="button"
               onClick={resetFilters}
-              className="inline-flex items-center gap-1 text-[11px] text-amber-brand-600 hover:underline"
+              className="inline-flex items-center gap-1 text-[11px] text-clay-600 hover:underline"
             >
               <RotateCcw className="size-3" aria-hidden />
               Reset
@@ -154,11 +154,11 @@ export function AnalyticsView() {
           </div>
 
           {activeFilters.length > 0 ? (
-            <div className="border-t border-navy-100 p-4">
-              <p className="mb-2 text-[10px] font-semibold tracking-wider text-navy-400 uppercase">Active</p>
+            <div className="border-t border-sand-300 p-4">
+              <p className="mb-2 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Active</p>
               <div className="flex flex-wrap gap-1.5">
                 {activeFilters.map(([label, value]) => (
-                  <span key={label} className="inline-flex items-center gap-1 rounded-full bg-amber-brand-50 px-2 py-0.5 text-[10px] text-amber-brand-700">
+                  <span key={label} className="inline-flex items-center gap-1 rounded-full bg-clay-50 px-2 py-0.5 text-[10px] text-clay-700">
                     {value}
                     <button
                       type="button"
@@ -183,14 +183,14 @@ export function AnalyticsView() {
           <Card>
             <CardBody className="py-3.5">
               <form onSubmit={askQuestion} className="flex items-center gap-2">
-                <Sparkles className="size-4 shrink-0 text-amber-brand-500" aria-hidden />
+                <Sparkles className="size-4 shrink-0 text-clay-500" aria-hidden />
                 <label htmlFor="qa-bar" className="sr-only">Ask a question about this data</label>
                 <input
                   id="qa-bar"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   placeholder="Ask a question about this data — e.g. which subsidiary had the highest production?"
-                  className="min-w-0 flex-1 border-0 bg-transparent text-sm text-navy-900 placeholder:text-navy-300 focus:outline-none"
+                  className="min-w-0 flex-1 border-0 bg-transparent text-sm text-ink-800 placeholder:text-sand-500 focus:outline-none"
                 />
                 <Button type="submit" size="sm" disabled={!question.trim()}>
                   <Send className="size-3.5" aria-hidden />
@@ -198,14 +198,14 @@ export function AnalyticsView() {
                 </Button>
               </form>
               {answer ? (
-                <div className="mt-3 flex items-start gap-2 rounded-lg bg-cream/60 px-3.5 py-2.5">
-                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-amber-brand-500" aria-hidden />
-                  <p className="text-[13px] leading-relaxed text-navy-800">{answer}</p>
+                <div className="mt-3 flex items-start gap-2 rounded-lg bg-sand-200/70 px-3.5 py-2.5">
+                  <Sparkles className="mt-0.5 size-3.5 shrink-0 text-clay-500" aria-hidden />
+                  <p className="text-[13px] leading-relaxed text-ink-700">{answer}</p>
                   <button
                     type="button"
                     onClick={() => setAnswer(null)}
                     aria-label="Dismiss answer"
-                    className="ml-auto shrink-0 text-navy-300 hover:text-navy-600"
+                    className="ml-auto shrink-0 text-sand-500 hover:text-ink-500"
                   >
                     <X className="size-3.5" aria-hidden />
                   </button>
@@ -287,13 +287,13 @@ export function AnalyticsView() {
             <div className="scrollbar-thin overflow-x-auto">
               <table className="w-full min-w-[46rem] text-sm">
                 <thead>
-                  <tr className="bg-navy-50/80">
+                  <tr className="bg-sand-200/80">
                     {["Subsidiary", "Production (MT)", "Target (MT)", "Variance", "Accuracy", "Reports", "Open queries"].map((h, i) => (
                       <th
                         key={h}
                         scope="col"
                         className={cn(
-                          "border-b border-navy-100 px-3 py-2.5 text-[11px] font-semibold tracking-wide text-navy-600 uppercase first:pl-4 last:pr-4",
+                          "border-b border-sand-300 px-3 py-2.5 text-[11px] font-semibold tracking-wide text-ink-500 uppercase first:pl-4 last:pr-4",
                           i === 0 ? "text-left" : "text-right",
                         )}
                       >
@@ -304,47 +304,47 @@ export function AnalyticsView() {
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.subsidiary} className="border-b border-navy-50 last:border-0">
-                      <td className="px-3 py-2.5 pl-4 font-medium text-navy-900">{row.subsidiary}</td>
+                    <tr key={row.subsidiary} className="border-b border-sand-200 last:border-0">
+                      <td className="px-3 py-2.5 pl-4 font-medium text-ink-800">{row.subsidiary}</td>
                       <td className="px-1 py-1.5">
                         <span className={cn("block rounded px-2 py-1.5 text-right tabular-nums", heatFor(row.production, minProd, maxProd))}>
                           {formatNumber(row.production, 1)}
                         </span>
                       </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-navy-500">{formatNumber(row.target, 1)}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-400">{formatNumber(row.target, 1)}</td>
                       <td className="px-3 py-2.5 text-right">
                         <span className={cn("inline-flex items-center gap-0.5 text-xs font-medium", row.variance >= 0 ? "text-emerald-600" : "text-red-600")}>
                           {row.variance >= 0 ? <TrendingUp className="size-3" aria-hidden /> : <TrendingDown className="size-3" aria-hidden />}
                           {row.variance >= 0 ? "+" : ""}{row.variance.toFixed(1)}%
                         </span>
                       </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-navy-700">{row.accuracy.toFixed(1)}%</td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-navy-700">{row.reports}</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">{row.accuracy.toFixed(1)}%</td>
+                      <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">{row.reports}</td>
                       <td className="px-3 py-2.5 pr-4 text-right">
                         {row.pendingQueries > 6 ? (
                           <Badge tone="danger">{row.pendingQueries}</Badge>
                         ) : (
-                          <span className="tabular-nums text-navy-700">{row.pendingQueries}</span>
+                          <span className="tabular-nums text-ink-600">{row.pendingQueries}</span>
                         )}
                       </td>
                     </tr>
                   ))}
                 </tbody>
                 <tfoot>
-                  <tr className="bg-navy-50/60 font-medium">
-                    <td className="px-3 py-2.5 pl-4 text-navy-900">Total</td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-navy-900">
+                  <tr className="bg-sand-200/60 font-medium">
+                    <td className="px-3 py-2.5 pl-4 text-ink-800">Total</td>
+                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-800">
                       {formatNumber(rows.reduce((s, r) => s + r.production, 0), 1)}
                     </td>
-                    <td className="px-3 py-2.5 text-right tabular-nums text-navy-700">
+                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-600">
                       {formatNumber(rows.reduce((s, r) => s + r.target, 0), 1)}
                     </td>
                     <td className="px-3 py-2.5" />
                     <td className="px-3 py-2.5" />
-                    <td className="px-3 py-2.5 text-right tabular-nums text-navy-900">
+                    <td className="px-3 py-2.5 text-right tabular-nums text-ink-800">
                       {rows.reduce((s, r) => s + r.reports, 0)}
                     </td>
-                    <td className="px-3 py-2.5 pr-4 text-right tabular-nums text-navy-900">
+                    <td className="px-3 py-2.5 pr-4 text-right tabular-nums text-ink-800">
                       {rows.reduce((s, r) => s + r.pendingQueries, 0)}
                     </td>
                   </tr>

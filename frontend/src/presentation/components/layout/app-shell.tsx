@@ -10,7 +10,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-canvas">
+    <div className="flex min-h-screen bg-sand-100">
       <aside
         className={cn(
           "sticky top-0 hidden h-screen shrink-0 transition-[width] duration-200 lg:block",

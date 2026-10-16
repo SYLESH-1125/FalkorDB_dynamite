@@ -1,40 +1,46 @@
 @import "tailwindcss";
 
 @theme {
-  --color-navy-50: #f2f6fb;
-  --color-navy-100: #e2ebf5;
-  --color-navy-200: #c4d5e9;
-  --color-navy-300: #93b0d3;
-  --color-navy-400: #5b83b6;
-  --color-navy-500: #38629c;
-  --color-navy-600: #274d80;
-  --color-navy-700: #1c3c68;
-  --color-navy-800: #12294a;
-  --color-navy-900: #0b2545;
-  --color-navy-950: #06172e;
+  /* warm sand ground — the Sarvam canvas, never cold grey */
+  --color-sand-50: #fdfcfa;
+  --color-sand-100: #faf7f2;
+  --color-sand-200: #f4efe6;
+  --color-sand-300: #e9e1d3;
+  --color-sand-400: #d9ccb8;
+  --color-sand-500: #bda88c;
 
-  --color-amber-brand-50: #fef6ed;
-  --color-amber-brand-100: #fbe8d0;
-  --color-amber-brand-200: #f6cd9f;
-  --color-amber-brand-300: #f0ac68;
-  --color-amber-brand-400: #ea8a3c;
-  --color-amber-brand-500: #e06f22;
-  --color-amber-brand-600: #c55418;
-  --color-amber-brand-700: #a33e17;
-  --color-amber-brand-800: #83321a;
-  --color-amber-brand-900: #6b2b18;
+  /* ink — warm near-black for type and dark surfaces */
+  --color-ink-300: #9a9287;
+  --color-ink-400: #6f6759;
+  --color-ink-500: #4d4638;
+  --color-ink-600: #38322a;
+  --color-ink-700: #292420;
+  --color-ink-800: #1c1917;
+  --color-ink-900: #141210;
 
-  --color-cream: #faf7f2;
-  --color-cream-dark: #f2ece2;
-  --color-canvas: #f6f7f9;
+  /* single accent, used sparingly */
+  --color-clay-50: #fdf3ec;
+  --color-clay-100: #fae0cd;
+  --color-clay-200: #f3c19f;
+  --color-clay-300: #e89a6a;
+  --color-clay-400: #dd7742;
+  --color-clay-500: #cc5d28;
+  --color-clay-600: #ad471d;
+  --color-clay-700: #8a381a;
+
+  /* muted supporting hues for data only */
+  --color-sage-400: #7d9471;
+  --color-sage-500: #5f7856;
+  --color-slate-blue-400: #6b82a3;
+  --color-slate-blue-500: #4f6485;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #12294a;
+  --background: #faf7f2;
+  --foreground: #1c1917;
 }
 
 body {
@@ -42,31 +48,25 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /* focus ring applied globally for a11y on a government platform */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 2px solid var(--color-amber-brand-500);
+  outline: 2px solid var(--color-clay-500);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
 @utility gradient-hero {
   background-image:
-    radial-gradient(60rem 32rem at 12% -8%, rgba(224, 111, 34, 0.22), transparent 62%),
-    radial-gradient(52rem 30rem at 92% -4%, rgba(147, 176, 211, 0.32), transparent 60%),
-    radial-gradient(44rem 28rem at 72% 12%, rgba(196, 213, 233, 0.28), transparent 65%);
-}
-
-@utility bento-glow {
-  background-image:
-    radial-gradient(38rem 20rem at 8% 0%, rgba(224, 111, 34, 0.13), transparent 60%),
-    radial-gradient(34rem 18rem at 96% 4%, rgba(147, 176, 211, 0.20), transparent 62%);
+    radial-gradient(52rem 30rem at 10% -10%, rgba(204, 93, 40, 0.16), transparent 62%),
+    radial-gradient(46rem 26rem at 94% -6%, rgba(217, 204, 184, 0.55), transparent 60%);
 }
 
 @utility scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-navy-200) transparent;
+  scrollbar-color: var(--color-sand-400) transparent;
 }
 
 @keyframes shimmer {
@@ -76,7 +76,7 @@ body {
 @utility skeleton {
   position: relative;
   overflow: hidden;
-  background-color: var(--color-navy-100);
+  background-color: var(--color-sand-300);
 }
 .skeleton::after {
   content: "";

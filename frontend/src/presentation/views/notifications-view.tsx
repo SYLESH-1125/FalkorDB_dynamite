@@ -66,13 +66,13 @@ export function NotificationsView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Unread", unread, "text-amber-brand-600"],
+            ["Unread", unread, "text-clay-600"],
             ["Critical", notifications.filter((n) => n.severity === "critical").length, "text-red-600"],
-            ["Warnings", notifications.filter((n) => n.severity === "warning").length, "text-amber-brand-600"],
-            ["Total", notifications.length, "text-navy-900"],
+            ["Warnings", notifications.filter((n) => n.severity === "warning").length, "text-clay-600"],
+            ["Total", notifications.length, "text-ink-800"],
           ].map(([label, value, tone]) => (
-            <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-              <p className="text-xs text-navy-500">{label as string}</p>
+            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+              <p className="text-xs text-ink-400">{label as string}</p>
               <p className={cn("mt-1 font-serif text-2xl font-semibold", tone as string)}>{value as number}</p>
             </div>
           ))}
@@ -87,13 +87,13 @@ export function NotificationsView() {
               className={cn(
                 "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 filter === item
-                  ? "bg-navy-900 text-white"
-                  : "border border-navy-200 bg-white text-navy-600 hover:bg-navy-50",
+                  ? "bg-ink-800 text-white"
+                  : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
               )}
             >
               {item === "all" ? "All" : item[0].toUpperCase() + item.slice(1)}
               {item === "unread" && unread > 0 ? (
-                <span className="ml-1.5 rounded-full bg-amber-brand-500 px-1.5 text-[10px] text-white">{unread}</span>
+                <span className="ml-1.5 rounded-full bg-clay-500 px-1.5 text-[10px] text-white">{unread}</span>
               ) : null}
             </button>
           ))}
@@ -108,21 +108,21 @@ export function NotificationsView() {
           ) : visible.length === 0 ? (
             <EmptyState title="Nothing here" description="No notifications match the selected filter." />
           ) : (
-            <ul className="divide-y divide-navy-50">
+            <ul className="divide-y divide-sand-200">
               {visible.map((item) => {
                 const Icon = SEVERITY_ICONS[item.severity];
                 return (
                   <li
                     key={item.id}
-                    className={cn("flex gap-3 px-4 py-3.5 sm:px-5", !item.read && "bg-amber-brand-50/30")}
+                    className={cn("flex gap-3 px-4 py-3.5 sm:px-5", !item.read && "bg-clay-50/30")}
                   >
                     <span
                       className={cn(
                         "mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg",
                         item.severity === "critical" && "bg-red-50 text-red-600",
-                        item.severity === "warning" && "bg-amber-brand-50 text-amber-brand-600",
+                        item.severity === "warning" && "bg-clay-50 text-clay-600",
                         item.severity === "success" && "bg-emerald-50 text-emerald-600",
-                        item.severity === "info" && "bg-navy-50 text-navy-500",
+                        item.severity === "info" && "bg-sand-200 text-ink-400",
                       )}
                     >
                       <Icon className="size-4" aria-hidden />
@@ -130,21 +130,21 @@ export function NotificationsView() {
 
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <p className={cn("text-[13px]", item.read ? "font-medium text-navy-700" : "font-semibold text-navy-900")}>
+                        <p className={cn("text-[13px]", item.read ? "font-medium text-ink-600" : "font-semibold text-ink-800")}>
                           {item.title}
                         </p>
                         <Badge tone={SEVERITY_TONES[item.severity]}>{item.severity}</Badge>
-                        {!item.read ? <span className="size-1.5 rounded-full bg-amber-brand-500" aria-label="Unread" /> : null}
+                        {!item.read ? <span className="size-1.5 rounded-full bg-clay-500" aria-label="Unread" /> : null}
                       </div>
-                      <p className="mt-1 text-xs leading-relaxed text-navy-500">{item.body}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-ink-400">{item.body}</p>
                       <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="text-[10px] text-navy-400">
+                        <span className="text-[10px] text-ink-300">
                           {item.source} · {relativeTime(item.createdAt)}
                         </span>
                         {item.link ? (
                           <Link
                             href={item.link}
-                            className="inline-flex items-center gap-0.5 text-[11px] font-medium text-amber-brand-600 hover:underline"
+                            className="inline-flex items-center gap-0.5 text-[11px] font-medium text-clay-600 hover:underline"
                           >
                             View
                             <ArrowRight className="size-3" aria-hidden />
@@ -154,7 +154,7 @@ export function NotificationsView() {
                           <button
                             type="button"
                             onClick={() => void markRead(item.id)}
-                            className="text-[11px] font-medium text-navy-500 hover:text-navy-800 hover:underline"
+                            className="text-[11px] font-medium text-ink-400 hover:text-ink-700 hover:underline"
                           >
                             Mark as read
                           </button>

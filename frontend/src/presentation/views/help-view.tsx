@@ -55,15 +55,15 @@ export function HelpView() {
       />
 
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
-        <div className="gradient-hero rounded-2xl border border-navy-100 bg-cream/50 p-6 text-center sm:p-10">
-          <h2 className="font-serif text-2xl font-semibold tracking-tight text-navy-900 sm:text-3xl">
+        <div className="gradient-hero rounded-2xl border border-sand-300 bg-sand-200/60 p-6 text-center sm:p-10">
+          <h2 className="font-serif text-2xl font-semibold tracking-tight text-ink-800 sm:text-3xl">
             How can we help?
           </h2>
-          <p className="mx-auto mt-2 max-w-lg text-sm text-navy-600">
+          <p className="mx-auto mt-2 max-w-lg text-sm text-ink-500">
             Search across guides, training videos and frequently asked questions.
           </p>
           <div className="relative mx-auto mt-5 max-w-lg">
-            <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-navy-300" aria-hidden />
+            <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-sand-500" aria-hidden />
             <TextInput
               aria-label="Search help resources"
               placeholder="Search for a topic…"
@@ -83,8 +83,8 @@ export function HelpView() {
               className={cn(
                 "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 kindFilter === kind
-                  ? "bg-navy-900 text-white"
-                  : "border border-navy-200 bg-white text-navy-600 hover:bg-navy-50",
+                  ? "bg-ink-800 text-white"
+                  : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
               )}
             >
               {kind === "all" ? "All resources" : `${KIND_LABELS[kind as ResourceKind]}s`}
@@ -104,14 +104,14 @@ export function HelpView() {
                 <Card key={resource.id}>
                   <CardBody>
                     <div className="flex items-start justify-between gap-2">
-                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-amber-brand-50 text-amber-brand-600">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-clay-50 text-clay-600">
                         <Icon className="size-4" aria-hidden />
                       </span>
                       <Badge tone="neutral">{KIND_LABELS[resource.kind]}</Badge>
                     </div>
-                    <h3 className="mt-3 text-sm font-semibold text-navy-900">{resource.title}</h3>
-                    <p className="mt-1.5 text-xs leading-relaxed text-navy-500">{resource.description}</p>
-                    <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-navy-100 pt-3 text-[11px] text-navy-400">
+                    <h3 className="mt-3 text-sm font-semibold text-ink-800">{resource.title}</h3>
+                    <p className="mt-1.5 text-xs leading-relaxed text-ink-400">{resource.description}</p>
+                    <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-sand-300 pt-3 text-[11px] text-ink-300">
                       <span>{resource.category}</span>
                       <span aria-hidden>·</span>
                       <span>{resource.duration}</span>
@@ -135,7 +135,7 @@ export function HelpView() {
               {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-12 w-full" />)}
             </div>
           ) : (
-            <ul className="divide-y divide-navy-50">
+            <ul className="divide-y divide-sand-200">
               {visibleFaqs.map((faq) => {
                 const open = openFaq === faq.id;
                 return (
@@ -145,21 +145,21 @@ export function HelpView() {
                         type="button"
                         onClick={() => setOpenFaq(open ? null : faq.id)}
                         aria-expanded={open}
-                        className="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-navy-50/60 sm:px-5"
+                        className="flex w-full items-center gap-3 px-4 py-3.5 text-left hover:bg-sand-200/60 sm:px-5"
                       >
-                        <span className="min-w-0 flex-1 text-[13px] font-medium text-navy-900">
+                        <span className="min-w-0 flex-1 text-[13px] font-medium text-ink-800">
                           {faq.question}
                         </span>
                         <Badge tone="neutral">{faq.category}</Badge>
                         <ChevronDown
-                          className={cn("size-4 shrink-0 text-navy-300 transition-transform", open && "rotate-180")}
+                          className={cn("size-4 shrink-0 text-sand-500 transition-transform", open && "rotate-180")}
                           aria-hidden
                         />
                       </button>
                     </h3>
                     {open ? (
                       <div className="px-4 pb-4 sm:px-5">
-                        <p className="max-w-3xl text-sm leading-relaxed text-navy-600">{faq.answer}</p>
+                        <p className="max-w-3xl text-sm leading-relaxed text-ink-500">{faq.answer}</p>
                       </div>
                     ) : null}
                   </li>
@@ -179,13 +179,13 @@ export function HelpView() {
             ].map(([Icon, title, value, help]) => {
               const IconComponent = Icon as typeof Mail;
               return (
-                <div key={title as string} className="rounded-xl border border-navy-100 bg-cream/30 p-4">
-                  <span className="grid size-9 place-items-center rounded-lg bg-white text-navy-500">
+                <div key={title as string} className="rounded-xl border border-sand-300 bg-sand-200/50 p-4">
+                  <span className="grid size-9 place-items-center rounded-lg bg-white text-ink-400">
                     <IconComponent className="size-4" aria-hidden />
                   </span>
-                  <p className="mt-3 text-[13px] font-medium text-navy-900">{title as string}</p>
-                  <p className="mt-1 text-xs font-medium text-amber-brand-600">{value as string}</p>
-                  <p className="mt-0.5 text-[11px] text-navy-400">{help as string}</p>
+                  <p className="mt-3 text-[13px] font-medium text-ink-800">{title as string}</p>
+                  <p className="mt-1 text-xs font-medium text-clay-600">{value as string}</p>
+                  <p className="mt-0.5 text-[11px] text-ink-300">{help as string}</p>
                 </div>
               );
             })}

@@ -47,31 +47,31 @@ export function AuditView() {
   const columns: Column<AuditEntry>[] = [
     {
       key: "timestamp", header: "Timestamp", sortValue: (e) => e.timestamp,
-      render: (e) => <span className="whitespace-nowrap tabular-nums text-navy-600">{formatDateTime(e.timestamp)}</span>,
+      render: (e) => <span className="whitespace-nowrap tabular-nums text-ink-500">{formatDateTime(e.timestamp)}</span>,
     },
     {
       key: "actor", header: "Actor", sortValue: (e) => e.actor,
       render: (e) => (
         <div className="min-w-0">
-          <p className="truncate font-medium text-navy-900">{e.actor}</p>
-          <p className="text-[11px] text-navy-400">{e.actorRole}</p>
+          <p className="truncate font-medium text-ink-800">{e.actor}</p>
+          <p className="text-[11px] text-ink-300">{e.actorRole}</p>
         </div>
       ),
     },
     {
       key: "action", header: "Action", sortValue: (e) => e.action,
-      render: (e) => <code className="rounded bg-navy-50 px-1.5 py-0.5 text-[11px] text-navy-700">{e.action}</code>,
+      render: (e) => <code className="rounded bg-sand-200 px-1.5 py-0.5 text-[11px] text-ink-600">{e.action}</code>,
     },
     {
       key: "resource", header: "Resource", sortValue: (e) => e.resource,
       render: (e) => (
         <div className="min-w-0">
-          <p className="truncate text-navy-700">{e.resource}</p>
-          <p className="text-[11px] text-navy-400">{e.resourceId}</p>
+          <p className="truncate text-ink-600">{e.resource}</p>
+          <p className="text-[11px] text-ink-300">{e.resourceId}</p>
         </div>
       ),
     },
-    { key: "ip", header: "IP address", render: (e) => <span className="tabular-nums text-navy-500">{e.ipAddress}</span> },
+    { key: "ip", header: "IP address", render: (e) => <span className="tabular-nums text-ink-400">{e.ipAddress}</span> },
     {
       key: "outcome", header: "Outcome", sortValue: (e) => e.outcome,
       render: (e) => {
@@ -104,11 +104,11 @@ export function AuditView() {
       />
 
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
-        <div className="flex items-start gap-3 rounded-xl border border-navy-100 bg-navy-900 p-4 text-navy-100">
-          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-amber-brand-400" aria-hidden />
+        <div className="flex items-start gap-3 rounded-xl border border-sand-300 bg-ink-800 p-4 text-sand-300">
+          <ShieldCheck className="mt-0.5 size-4 shrink-0 text-clay-400" aria-hidden />
           <div>
             <p className="text-sm font-medium text-white">Tamper-evident record</p>
-            <p className="mt-0.5 text-xs text-navy-300">
+            <p className="mt-0.5 text-xs text-sand-500">
               Entries are append-only and cryptographically chained. Any modification breaks the chain
               and is surfaced during statutory audit.
             </p>
@@ -122,9 +122,9 @@ export function AuditView() {
             ["Warnings", entries.filter((e) => e.outcome === "warning").length],
             ["Failures", entries.filter((e) => e.outcome === "failure").length],
           ].map(([label, value]) => (
-            <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-              <p className="text-xs text-navy-500">{label as string}</p>
-              <p className="mt-1 font-serif text-2xl font-semibold text-navy-900">{value as number}</p>
+            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+              <p className="text-xs text-ink-400">{label as string}</p>
+              <p className="mt-1 font-serif text-2xl font-semibold text-ink-800">{value as number}</p>
             </div>
           ))}
         </div>
@@ -136,7 +136,7 @@ export function AuditView() {
             action={
               <div className="flex flex-wrap gap-2">
                 <div className="relative">
-                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-navy-300" aria-hidden />
+                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-sand-500" aria-hidden />
                   <TextInput
                     aria-label="Search audit log"
                     placeholder="Actor or resource ID…"
@@ -200,9 +200,9 @@ export function AuditView() {
               ["Outcome", selected.outcome],
               ["Details", selected.details],
             ].map(([label, value]) => (
-              <div key={label} className="border-b border-navy-50 pb-2.5 last:border-0">
-                <dt className="text-[10px] font-semibold tracking-wider text-navy-400 uppercase">{label}</dt>
-                <dd className="mt-1 text-sm text-navy-800">{value}</dd>
+              <div key={label} className="border-b border-sand-200 pb-2.5 last:border-0">
+                <dt className="text-[10px] font-semibold tracking-wider text-ink-300 uppercase">{label}</dt>
+                <dd className="mt-1 text-sm text-ink-700">{value}</dd>
               </div>
             ))}
           </dl>

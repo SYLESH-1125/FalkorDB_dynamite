@@ -35,7 +35,7 @@ export function Modal({
   return (
     <div className="fixed inset-0 z-90 flex items-end justify-center p-0 sm:items-center sm:p-4">
       <div
-        className="absolute inset-0 bg-navy-950/40 backdrop-blur-[2px]"
+        className="absolute inset-0 bg-ink-900/40 backdrop-blur-[2px]"
         onClick={onClose}
         aria-hidden
       />
@@ -48,23 +48,23 @@ export function Modal({
           widths[size],
         )}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-navy-100 px-5 py-4">
+        <div className="flex items-start justify-between gap-4 border-b border-sand-300 px-5 py-4">
           <div className="min-w-0">
-            <h2 className="text-base font-semibold text-navy-900">{title}</h2>
-            {description ? <p className="mt-0.5 text-xs text-navy-400">{description}</p> : null}
+            <h2 className="text-base font-semibold text-ink-800">{title}</h2>
+            {description ? <p className="mt-0.5 text-xs text-ink-300">{description}</p> : null}
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close dialog"
-            className="rounded-md p-1 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
+            className="rounded-md p-1 text-ink-300 hover:bg-sand-200 hover:text-ink-600"
           >
             <X className="size-4" aria-hidden />
           </button>
         </div>
         <div className="scrollbar-thin flex-1 overflow-y-auto px-5 py-4">{children}</div>
         {footer ? (
-          <div className="flex flex-wrap justify-end gap-2 border-t border-navy-100 px-5 py-3.5">
+          <div className="flex flex-wrap justify-end gap-2 border-t border-sand-300 px-5 py-3.5">
             {footer}
           </div>
         ) : null}

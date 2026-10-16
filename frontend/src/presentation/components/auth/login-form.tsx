@@ -70,7 +70,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1.5 text-navy-400 hover:text-navy-700"
+            className="absolute top-1/2 right-2 -translate-y-1/2 rounded p-1.5 text-ink-300 hover:text-ink-600"
           >
             {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
           </button>
@@ -78,11 +78,11 @@ export function LoginForm() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <label className="flex items-center gap-2 text-xs text-navy-600">
-          <input type="checkbox" className="size-3.5 rounded border-navy-300 accent-amber-brand-500" />
+        <label className="flex items-center gap-2 text-xs text-ink-500">
+          <input type="checkbox" className="size-3.5 rounded border-sand-500 accent-clay-500" />
           Keep me signed in
         </label>
-        <a href="#" className="text-xs font-medium text-amber-brand-600 hover:underline">
+        <a href="#" className="text-xs font-medium text-clay-600 hover:underline">
           Forgot password?
         </a>
       </div>
@@ -99,9 +99,9 @@ export function LoginForm() {
       </Button>
 
       <div className="flex items-center gap-3 pt-1">
-        <span className="h-px flex-1 bg-navy-100" aria-hidden />
-        <span className="text-[10px] tracking-wider text-navy-300 uppercase">or</span>
-        <span className="h-px flex-1 bg-navy-100" aria-hidden />
+        <span className="h-px flex-1 bg-sand-300" aria-hidden />
+        <span className="text-[10px] tracking-wider text-sand-500 uppercase">or</span>
+        <span className="h-px flex-1 bg-sand-300" aria-hidden />
       </div>
 
       <Button
@@ -113,7 +113,7 @@ export function LoginForm() {
         Continue with NIC Single Sign-On
       </Button>
 
-      <p className="pt-2 text-center text-[11px] text-navy-400">
+      <p className="pt-2 text-center text-[11px] text-ink-300">
         Demo build — any credentials will sign you in.
       </p>
     </form>

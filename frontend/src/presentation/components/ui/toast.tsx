@@ -20,8 +20,8 @@ const ToastContext = createContext<{
 const ICONS: Record<ToastTone, ReactNode> = {
   success: <CheckCircle2 className="size-4 text-emerald-600" aria-hidden />,
   error: <XCircle className="size-4 text-red-600" aria-hidden />,
-  warning: <AlertTriangle className="size-4 text-amber-brand-600" aria-hidden />,
-  info: <Info className="size-4 text-navy-500" aria-hidden />,
+  warning: <AlertTriangle className="size-4 text-clay-600" aria-hidden />,
+  info: <Info className="size-4 text-ink-400" aria-hidden />,
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -47,21 +47,21 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             className={cn(
-              "pointer-events-auto flex items-start gap-2.5 rounded-xl border border-navy-100 bg-white p-3 shadow-lg",
+              "pointer-events-auto flex items-start gap-2.5 rounded-xl border border-sand-300 bg-white p-3 shadow-lg",
             )}
           >
             <span className="mt-0.5">{ICONS[toast.tone]}</span>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-navy-900">{toast.title}</p>
+              <p className="text-sm font-medium text-ink-800">{toast.title}</p>
               {toast.description ? (
-                <p className="mt-0.5 text-xs text-navy-500">{toast.description}</p>
+                <p className="mt-0.5 text-xs text-ink-400">{toast.description}</p>
               ) : null}
             </div>
             <button
               type="button"
               aria-label="Dismiss notification"
               onClick={() => setToasts((prev) => prev.filter((t) => t.id !== toast.id))}
-              className="text-navy-300 hover:text-navy-600"
+              className="text-sand-500 hover:text-ink-500"
             >
               <X className="size-3.5" aria-hidden />
             </button>

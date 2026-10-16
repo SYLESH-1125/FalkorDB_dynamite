@@ -88,15 +88,15 @@ export function ParliamentaryView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Open queries", queries.length - answered, AlertOctagon, "text-navy-900"],
+            ["Open queries", queries.length - answered, AlertOctagon, "text-ink-800"],
             ["Critical", critical, AlertOctagon, "text-red-600"],
             ["Overdue", overdue, Clock, "text-red-600"],
             ["Answered", answered, CheckCircle2, "text-emerald-600"],
           ].map(([label, value, Icon, tone]) => {
             const IconComponent = Icon as typeof Clock;
             return (
-              <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-                <div className="flex items-center gap-1.5 text-xs text-navy-500">
+              <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+                <div className="flex items-center gap-1.5 text-xs text-ink-400">
                   <IconComponent className="size-3.5" aria-hidden />
                   {label as string}
                 </div>
@@ -117,8 +117,8 @@ export function ParliamentaryView() {
                 return (
                   <div key={s} className="w-56 shrink-0">
                     <div className="mb-2 flex items-center justify-between">
-                      <p className="text-xs font-semibold text-navy-700">{STAGE_LABELS[s]}</p>
-                      <span className="rounded-full bg-navy-100 px-1.5 py-0.5 text-[10px] font-medium text-navy-600">
+                      <p className="text-xs font-semibold text-ink-600">{STAGE_LABELS[s]}</p>
+                      <span className="rounded-full bg-sand-300 px-1.5 py-0.5 text-[10px] font-medium text-ink-500">
                         {items.length}
                       </span>
                     </div>
@@ -130,17 +130,17 @@ export function ParliamentaryView() {
                             <button
                               type="button"
                               onClick={() => setSelected(query)}
-                              className="w-full rounded-lg border border-navy-100 bg-white p-2.5 text-left transition-colors hover:border-amber-brand-300 hover:bg-amber-brand-50/40"
+                              className="w-full rounded-lg border border-sand-300 bg-white p-2.5 text-left transition-colors hover:border-clay-300 hover:bg-clay-50/40"
                             >
                               <div className="flex items-center justify-between gap-1.5">
-                                <span className="truncate text-[10px] font-medium text-navy-400">{query.referenceNo}</span>
+                                <span className="truncate text-[10px] font-medium text-ink-300">{query.referenceNo}</span>
                                 <Badge tone={PRIORITY_TONES[query.priority]}>{query.priority}</Badge>
                               </div>
-                              <p className="mt-1.5 line-clamp-3 text-[12px] leading-snug text-navy-800">
+                              <p className="mt-1.5 line-clamp-3 text-[12px] leading-snug text-ink-700">
                                 {query.subject}
                               </p>
                               <div className="mt-2 flex items-center justify-between gap-1.5">
-                                <span className="truncate text-[10px] text-navy-400">{query.subsidiary}</span>
+                                <span className="truncate text-[10px] text-ink-300">{query.subsidiary}</span>
                                 <Badge tone={deadline.tone}>{deadline.label}</Badge>
                               </div>
                             </button>
@@ -148,7 +148,7 @@ export function ParliamentaryView() {
                         );
                       })}
                       {items.length === 0 ? (
-                        <li className="rounded-lg border border-dashed border-navy-100 px-2.5 py-6 text-center text-[11px] text-navy-300">
+                        <li className="rounded-lg border border-dashed border-sand-300 px-2.5 py-6 text-center text-[11px] text-sand-500">
                           None
                         </li>
                       ) : null}
@@ -167,7 +167,7 @@ export function ParliamentaryView() {
               {Array.from({ length: 6 }, (_, i) => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
           ) : (
-            <ul className="divide-y divide-navy-50">
+            <ul className="divide-y divide-sand-200">
               {visible.map((query) => {
                 const deadline = deadlineTone(query);
                 return (
@@ -175,19 +175,19 @@ export function ParliamentaryView() {
                     <button
                       type="button"
                       onClick={() => setSelected(query)}
-                      className="flex w-full flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 text-left transition-colors hover:bg-amber-brand-50/30 sm:px-5"
+                      className="flex w-full flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3.5 text-left transition-colors hover:bg-clay-50/30 sm:px-5"
                     >
-                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-500">
+                      <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sand-200 text-ink-400">
                         <Landmark className="size-4" aria-hidden />
                       </span>
                       <span className="min-w-0 flex-1 basis-full sm:basis-auto">
                         <span className="flex flex-wrap items-center gap-2">
-                          <span className="text-[11px] font-medium text-navy-400">{query.referenceNo}</span>
+                          <span className="text-[11px] font-medium text-ink-300">{query.referenceNo}</span>
                           <Badge tone={PRIORITY_TONES[query.priority]}>{query.priority}</Badge>
                           <Badge tone="info">{query.house}</Badge>
                         </span>
-                        <span className="mt-1 block text-[13px] font-medium text-navy-900">{query.subject}</span>
-                        <span className="mt-0.5 block text-[11px] text-navy-400">
+                        <span className="mt-1 block text-[13px] font-medium text-ink-800">{query.subject}</span>
+                        <span className="mt-0.5 block text-[11px] text-ink-300">
                           {query.memberName} · assigned to {query.assignedTo} · {query.subsidiary}
                         </span>
                       </span>
@@ -224,8 +224,8 @@ export function ParliamentaryView() {
         {selected ? (
           <div className="space-y-5">
             <div>
-              <p className="text-[10px] font-semibold tracking-wider text-navy-400 uppercase">Subject</p>
-              <p className="mt-1.5 text-sm leading-relaxed text-navy-800">{selected.subject}</p>
+              <p className="text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Subject</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-ink-700">{selected.subject}</p>
             </div>
 
             <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -235,15 +235,15 @@ export function ParliamentaryView() {
                 ["Received", formatDate(selected.receivedAt)],
                 ["Due", formatDate(selected.dueAt)],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-lg bg-navy-50 px-3 py-2">
-                  <dt className="text-[10px] text-navy-400">{label}</dt>
-                  <dd className="mt-0.5 text-xs font-medium text-navy-800">{value}</dd>
+                <div key={label} className="rounded-lg bg-sand-200 px-3 py-2">
+                  <dt className="text-[10px] text-ink-300">{label}</dt>
+                  <dd className="mt-0.5 text-xs font-medium text-ink-700">{value}</dd>
                 </div>
               ))}
             </dl>
 
             <div>
-              <p className="mb-2.5 text-[10px] font-semibold tracking-wider text-navy-400 uppercase">Progress</p>
+              <p className="mb-2.5 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Progress</p>
               <ol className="flex items-center">
                 {STAGES.map((s, i) => {
                   const reached = STAGES.indexOf(selected.stage) >= i;
@@ -253,18 +253,18 @@ export function ParliamentaryView() {
                         <span
                           className={cn(
                             "grid size-6 place-items-center rounded-full text-[10px] font-semibold",
-                            reached ? "bg-amber-brand-500 text-white" : "bg-navy-100 text-navy-400",
+                            reached ? "bg-clay-500 text-white" : "bg-sand-300 text-ink-300",
                           )}
                         >
                           {reached ? <CheckCircle2 className="size-3.5" aria-hidden /> : i + 1}
                         </span>
-                        <span className={cn("text-center text-[9px] whitespace-nowrap", reached ? "text-navy-700" : "text-navy-300")}>
+                        <span className={cn("text-center text-[9px] whitespace-nowrap", reached ? "text-ink-600" : "text-sand-500")}>
                           {STAGE_LABELS[s]}
                         </span>
                       </div>
                       {i < STAGES.length - 1 ? (
                         <span
-                          className={cn("mx-1 h-px flex-1", STAGES.indexOf(selected.stage) > i ? "bg-amber-brand-400" : "bg-navy-100")}
+                          className={cn("mx-1 h-px flex-1", STAGES.indexOf(selected.stage) > i ? "bg-clay-400" : "bg-sand-300")}
                           aria-hidden
                         />
                       ) : null}
@@ -275,12 +275,12 @@ export function ParliamentaryView() {
             </div>
 
             <div>
-              <p className="mb-2 text-[10px] font-semibold tracking-wider text-navy-400 uppercase">Linked reports</p>
+              <p className="mb-2 text-[10px] font-semibold tracking-wider text-ink-300 uppercase">Linked reports</p>
               <ul className="space-y-1.5">
                 {selected.linkedReportIds.map((id) => (
-                  <li key={id} className="flex items-center gap-2 rounded-lg border border-navy-100 bg-cream/40 px-3 py-2">
-                    <FileText className="size-3.5 shrink-0 text-navy-400" aria-hidden />
-                    <span className="truncate text-xs text-navy-600">Report {id}</span>
+                  <li key={id} className="flex items-center gap-2 rounded-lg border border-sand-300 bg-sand-200/60 px-3 py-2">
+                    <FileText className="size-3.5 shrink-0 text-ink-300" aria-hidden />
+                    <span className="truncate text-xs text-ink-500">Report {id}</span>
                   </li>
                 ))}
               </ul>

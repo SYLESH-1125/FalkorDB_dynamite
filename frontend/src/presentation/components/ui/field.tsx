@@ -2,11 +2,11 @@ import type { InputHTMLAttributes, SelectHTMLAttributes, ReactNode } from "react
 import { cn } from "./cn";
 
 const CONTROL =
-  "w-full rounded-lg border border-navy-200 bg-white px-3 py-2 text-sm text-navy-900 placeholder:text-navy-300 focus:border-amber-brand-400 disabled:bg-navy-50";
+  "w-full rounded-lg border border-sand-400 bg-white px-3 py-2 text-sm text-ink-800 placeholder:text-sand-500 focus:border-clay-400 disabled:bg-sand-200";
 
 export function Label({ htmlFor, children }: { htmlFor?: string; children: ReactNode }) {
   return (
-    <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-medium text-navy-600">
+    <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-medium text-ink-500">
       {children}
     </label>
   );
@@ -42,7 +42,7 @@ export function Toggle({
       onClick={() => onChange(!checked)}
       className={cn(
         "relative h-5 w-9 shrink-0 rounded-full transition-colors",
-        checked ? "bg-amber-brand-500" : "bg-navy-200",
+        checked ? "bg-clay-500" : "bg-sand-400",
       )}
     >
       <span

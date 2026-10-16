@@ -47,8 +47,8 @@ export function ArchiveView() {
       sortValue: (r) => r.title,
       render: (r) => (
         <div className="min-w-0">
-          <p className="truncate font-medium text-navy-900" title={r.title}>{r.title}</p>
-          <p className="mt-0.5 text-[11px] text-navy-400">{r.templateName}</p>
+          <p className="truncate font-medium text-ink-800" title={r.title}>{r.title}</p>
+          <p className="mt-0.5 text-[11px] text-ink-300">{r.templateName}</p>
         </div>
       ),
     },
@@ -67,10 +67,10 @@ export function ArchiveView() {
       ),
     },
     { key: "status", header: "Status", sortValue: (r) => r.status, render: (r) => <ReportStatusBadge status={r.status} /> },
-    { key: "createdBy", header: "Created by", sortValue: (r) => r.createdBy, render: (r) => <span className="text-navy-600">{r.createdBy}</span> },
+    { key: "createdBy", header: "Created by", sortValue: (r) => r.createdBy, render: (r) => <span className="text-ink-500">{r.createdBy}</span> },
     {
       key: "updatedAt", header: "Updated", sortValue: (r) => r.updatedAt,
-      render: (r) => <span className="whitespace-nowrap text-navy-500">{formatDate(r.updatedAt)}</span>,
+      render: (r) => <span className="whitespace-nowrap text-ink-400">{formatDate(r.updatedAt)}</span>,
     },
     {
       key: "actions", header: "", align: "right",
@@ -80,7 +80,7 @@ export function ArchiveView() {
             type="button"
             onClick={(e) => { e.stopPropagation(); void openHistory(r); }}
             aria-label={`Version history for ${r.title}`}
-            className="rounded-md p-1.5 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
+            className="rounded-md p-1.5 text-ink-300 hover:bg-sand-200 hover:text-ink-600"
           >
             <History className="size-3.5" aria-hidden />
           </button>
@@ -91,7 +91,7 @@ export function ArchiveView() {
               notify({ tone: "success", title: "Download started", description: `${r.title}.pdf` });
             }}
             aria-label={`Download ${r.title}`}
-            className="rounded-md p-1.5 text-navy-400 hover:bg-navy-50 hover:text-navy-700"
+            className="rounded-md p-1.5 text-ink-300 hover:bg-sand-200 hover:text-ink-600"
           >
             <Download className="size-3.5" aria-hidden />
           </button>
@@ -125,9 +125,9 @@ export function ArchiveView() {
             ["Archived", reports.filter((r) => r.status === "archived").length],
             ["Retention", "7 years"],
           ].map(([label, value]) => (
-            <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-              <p className="text-xs text-navy-500">{label as string}</p>
-              <p className="mt-1 font-serif text-2xl font-semibold text-navy-900">{value as string | number}</p>
+            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+              <p className="text-xs text-ink-400">{label as string}</p>
+              <p className="mt-1 font-serif text-2xl font-semibold text-ink-800">{value as string | number}</p>
             </div>
           ))}
         </div>
@@ -139,7 +139,7 @@ export function ArchiveView() {
             action={
               <div className="flex flex-wrap gap-2">
                 <div className="relative">
-                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-navy-300" aria-hidden />
+                  <Search className="absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-sand-500" aria-hidden />
                   <TextInput
                     aria-label="Search reports"
                     placeholder="Search reports…"
@@ -212,36 +212,36 @@ export function ArchiveView() {
                 ["Pages", String(selected.pageCount)],
                 ["Created", formatDate(selected.createdAt)],
               ].map(([label, value]) => (
-                <div key={label} className="rounded-lg bg-navy-50 px-3 py-2">
-                  <dt className="text-[10px] text-navy-400">{label}</dt>
-                  <dd className="mt-0.5 truncate text-xs font-medium text-navy-800" title={value}>{value}</dd>
+                <div key={label} className="rounded-lg bg-sand-200 px-3 py-2">
+                  <dt className="text-[10px] text-ink-300">{label}</dt>
+                  <dd className="mt-0.5 truncate text-xs font-medium text-ink-700" title={value}>{value}</dd>
                 </div>
               ))}
             </dl>
 
             <div>
-              <p className="mb-2.5 text-xs font-semibold text-navy-600">
+              <p className="mb-2.5 text-xs font-semibold text-ink-500">
                 Version history · {versions.length} version{versions.length === 1 ? "" : "s"}
               </p>
               <ol className="space-y-0">
                 {versions.map((version, i) => (
                   <li key={version.version} className="flex gap-3">
                     <div className="flex flex-col items-center">
-                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-navy-900 text-[10px] font-semibold text-white">
+                      <span className="grid size-6 shrink-0 place-items-center rounded-full bg-ink-800 text-[10px] font-semibold text-white">
                         {version.version}
                       </span>
                       {i < versions.length - 1 ? (
-                        <span className="my-1 w-px flex-1 bg-navy-100" aria-hidden />
+                        <span className="my-1 w-px flex-1 bg-sand-300" aria-hidden />
                       ) : null}
                     </div>
                     <div className={i < versions.length - 1 ? "pb-4" : ""}>
-                      <p className="text-[13px] font-medium text-navy-900">{version.summary}</p>
-                      <p className="mt-0.5 text-[11px] text-navy-400">
+                      <p className="text-[13px] font-medium text-ink-800">{version.summary}</p>
+                      <p className="mt-0.5 text-[11px] text-ink-300">
                         {version.changedBy} · {formatDateTime(version.changedAt)}
                       </p>
                       <button
                         type="button"
-                        className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-amber-brand-600 hover:underline"
+                        className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-medium text-clay-600 hover:underline"
                       >
                         <FileText className="size-3" aria-hidden />
                         View this version

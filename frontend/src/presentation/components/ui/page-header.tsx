@@ -16,19 +16,19 @@ export function PageHeader({
   action?: ReactNode;
 }) {
   return (
-    <header className="border-b border-navy-100 bg-white/70 px-4 py-5 backdrop-blur sm:px-6 lg:px-8">
+    <header className="border-b border-sand-300 bg-white/70 px-4 py-5 backdrop-blur sm:px-6 lg:px-8">
       <nav aria-label="Breadcrumb" className="mb-2">
-        <ol className="flex flex-wrap items-center gap-1 text-[11px] text-navy-400">
+        <ol className="flex flex-wrap items-center gap-1 text-[11px] text-ink-300">
           <li>
-            <Link href="/dashboard" className="hover:text-navy-700">CMPDI</Link>
+            <Link href="/dashboard" className="hover:text-ink-600">CMPDI</Link>
           </li>
           {breadcrumbs.map((crumb) => (
             <li key={crumb.label} className="flex items-center gap-1">
               <ChevronRight className="size-3" aria-hidden />
               {crumb.href ? (
-                <Link href={crumb.href} className="hover:text-navy-700">{crumb.label}</Link>
+                <Link href={crumb.href} className="hover:text-ink-600">{crumb.label}</Link>
               ) : (
-                <span className="text-navy-600">{crumb.label}</span>
+                <span className="text-ink-500">{crumb.label}</span>
               )}
             </li>
           ))}
@@ -36,11 +36,11 @@ export function PageHeader({
       </nav>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="font-serif text-2xl leading-tight font-semibold tracking-tight text-navy-900 sm:text-[28px]">
+          <h1 className="font-serif text-2xl leading-tight font-semibold tracking-tight text-ink-800 sm:text-[28px]">
             {title}
           </h1>
           {description ? (
-            <p className="mt-1 max-w-2xl text-sm text-navy-500">{description}</p>
+            <p className="mt-1 max-w-2xl text-sm text-ink-400">{description}</p>
           ) : null}
         </div>
         {action ? <div className="flex shrink-0 flex-wrap gap-2">{action}</div> : null}

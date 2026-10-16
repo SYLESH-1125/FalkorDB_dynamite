@@ -141,29 +141,29 @@ export function UploadView() {
           className={cn(
             "rounded-2xl border-2 border-dashed p-8 text-center transition-colors sm:p-12",
             dragging
-              ? "border-amber-brand-400 bg-amber-brand-50/60"
-              : "border-navy-200 bg-white hover:border-amber-brand-300",
+              ? "border-clay-400 bg-clay-50/60"
+              : "border-sand-400 bg-white hover:border-clay-300",
           )}
         >
-          <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-amber-brand-50 text-amber-brand-600">
+          <span className="mx-auto grid size-12 place-items-center rounded-2xl bg-clay-50 text-clay-600">
             <UploadCloud className="size-6" aria-hidden />
           </span>
-          <p className="mt-4 text-base font-medium text-navy-900">
+          <p className="mt-4 text-base font-medium text-ink-800">
             Drag files here, or{" "}
             <button
               type="button"
               onClick={() => inputRef.current?.click()}
-              className="text-amber-brand-600 underline underline-offset-2 hover:text-amber-brand-700"
+              className="text-clay-600 underline underline-offset-2 hover:text-clay-700"
             >
               browse your computer
             </button>
           </p>
-          <p className="mt-1.5 text-sm text-navy-500">
+          <p className="mt-1.5 text-sm text-ink-400">
             PDF, XLSX, DOCX, JPG, PNG and TIFF supported · up to 200 MB per file
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {["Native PDF", "Scanned records", "Spreadsheets", "Photographs", "Hindi + English OCR"].map((tag) => (
-              <span key={tag} className="rounded-full bg-navy-50 px-2.5 py-1 text-[11px] text-navy-600">
+              <span key={tag} className="rounded-full bg-sand-200 px-2.5 py-1 text-[11px] text-ink-500">
                 {tag}
               </span>
             ))}
@@ -172,13 +172,13 @@ export function UploadView() {
 
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Total documents", counts.total, "text-navy-900"],
-            ["In pipeline", counts.processing, "text-amber-brand-600"],
+            ["Total documents", counts.total, "text-ink-800"],
+            ["In pipeline", counts.processing, "text-clay-600"],
             ["Validated", counts.validated, "text-emerald-600"],
             ["Failed", counts.errors, "text-red-600"],
           ].map(([label, value, tone]) => (
-            <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-              <p className="text-xs text-navy-500">{label}</p>
+            <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+              <p className="text-xs text-ink-400">{label}</p>
               <p className={cn("mt-1 font-serif text-2xl font-semibold", tone as string)}>{value}</p>
             </div>
           ))}
@@ -217,25 +217,25 @@ export function UploadView() {
           {loading ? (
             <TableSkeleton rows={8} cols={5} />
           ) : visible.length === 0 ? (
-            <p className="px-5 py-12 text-center text-sm text-navy-400">
+            <p className="px-5 py-12 text-center text-sm text-ink-300">
               No documents match the current filters.
             </p>
           ) : (
-            <ul className="divide-y divide-navy-50">
+            <ul className="divide-y divide-sand-200">
               {visible.map((doc) => {
                 const Icon = KIND_ICONS[doc.kind];
                 const active = doc.status === "uploading" || doc.status === "processing";
                 return (
                   <li key={doc.id} className="flex flex-wrap items-center gap-3 px-4 py-3 sm:flex-nowrap sm:px-5">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-500">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sand-200 text-ink-400">
                       <Icon className="size-4" aria-hidden />
                     </span>
 
                     <div className="min-w-0 flex-1 basis-full sm:basis-auto">
-                      <p className="truncate text-sm font-medium text-navy-900" title={doc.name}>
+                      <p className="truncate text-sm font-medium text-ink-800" title={doc.name}>
                         {doc.name}
                       </p>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-navy-400">
+                      <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-ink-300">
                         <span>{formatBytes(doc.sizeBytes)}</span>
                         <span aria-hidden>·</span>
                         <span>{doc.subsidiary}</span>
@@ -249,9 +249,9 @@ export function UploadView() {
                         ) : null}
                       </p>
                       {active ? (
-                        <div className="mt-2 h-1 w-full max-w-xs overflow-hidden rounded-full bg-navy-100">
+                        <div className="mt-2 h-1 w-full max-w-xs overflow-hidden rounded-full bg-sand-300">
                           <div
-                            className="h-full rounded-full bg-amber-brand-500 transition-[width] duration-500"
+                            className="h-full rounded-full bg-clay-500 transition-[width] duration-500"
                             style={{ width: `${doc.progress}%` }}
                           />
                         </div>
@@ -283,7 +283,7 @@ export function UploadView() {
                         type="button"
                         onClick={() => void onRemove(doc.id)}
                         aria-label={`Remove ${doc.name}`}
-                        className="rounded-md p-1.5 text-navy-300 hover:bg-red-50 hover:text-red-600"
+                        className="rounded-md p-1.5 text-sand-500 hover:bg-red-50 hover:text-red-600"
                       >
                         <Trash2 className="size-3.5" aria-hidden />
                       </button>

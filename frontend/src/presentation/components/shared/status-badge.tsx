@@ -34,13 +34,13 @@ export function FieldStatusBadge({ status }: { status: FieldStatus }) {
 }
 
 export function ConfidenceBar({ value }: { value: number }) {
-  const tone = value >= 88 ? "bg-emerald-500" : value >= 75 ? "bg-amber-brand-500" : "bg-red-500";
+  const tone = value >= 88 ? "bg-emerald-500" : value >= 75 ? "bg-clay-500" : "bg-red-500";
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-navy-100" role="img" aria-label={`Confidence ${value}%`}>
+      <div className="h-1.5 w-16 overflow-hidden rounded-full bg-sand-300" role="img" aria-label={`Confidence ${value}%`}>
         <div className={`h-full rounded-full ${tone}`} style={{ width: `${Math.min(value, 100)}%` }} />
       </div>
-      <span className="text-xs tabular-nums text-navy-500">{value.toFixed(1)}%</span>
+      <span className="text-xs tabular-nums text-ink-400">{value.toFixed(1)}%</span>
     </div>
   );
 }

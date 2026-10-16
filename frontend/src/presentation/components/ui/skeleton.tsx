@@ -20,7 +20,7 @@ export function TableSkeleton({ rows = 6, cols = 5 }: { rows?: number; cols?: nu
 
 export function CardSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn("rounded-xl border border-navy-100 bg-white p-5", className)} aria-busy="true">
+    <div className={cn("rounded-xl border border-sand-300 bg-white p-5", className)} aria-busy="true">
       <Skeleton className="h-3 w-24" />
       <Skeleton className="mt-3 h-8 w-32" />
       <Skeleton className="mt-3 h-3 w-full" />

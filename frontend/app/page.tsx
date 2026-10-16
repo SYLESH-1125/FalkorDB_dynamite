@@ -19,12 +19,12 @@ const STATS = [
 
 export default function LandingPage() {
   return (
-    <div className="gradient-hero min-h-screen bg-cream">
+    <div className="gradient-hero min-h-screen bg-sand-100">
       <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6">
-        <nav className="flex items-center gap-3 rounded-full border border-white/70 bg-cream-dark/70 px-3 py-2 shadow-sm backdrop-blur sm:px-5">
+        <nav className="flex items-center gap-3 rounded-full border border-white/70 bg-sand-300/70 px-3 py-2 shadow-sm backdrop-blur sm:px-5">
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <span className="grid size-8 place-items-center rounded-lg bg-navy-900 font-serif text-sm font-bold text-white">C</span>
-            <span className="font-serif text-lg font-semibold tracking-tight text-navy-900">CMPDI</span>
+            <span className="grid size-8 place-items-center rounded-lg bg-ink-800 font-serif text-sm font-bold text-white">C</span>
+            <span className="font-serif text-lg font-semibold tracking-tight text-ink-800">CMPDI</span>
           </Link>
 
           <ul className="mx-auto hidden items-center gap-6 lg:flex">
@@ -35,7 +35,7 @@ export default function LandingPage() {
               <li key={label}>
                 <Link
                   href={href}
-                  className="text-[11px] font-medium tracking-wider text-navy-500 uppercase transition-colors hover:text-navy-900"
+                  className="text-[11px] font-medium tracking-wider text-ink-400 uppercase transition-colors hover:text-ink-800"
                 >
                   {label}
                 </Link>
@@ -46,13 +46,13 @@ export default function LandingPage() {
           <div className="ml-auto flex shrink-0 items-center gap-2 lg:ml-0">
             <Link
               href="/help"
-              className="hidden h-9 items-center rounded-full border border-navy-200 bg-white px-4 text-sm font-medium text-navy-800 transition-colors hover:bg-navy-50 sm:inline-flex"
+              className="hidden h-9 items-center rounded-full border border-sand-400 bg-white px-4 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200 sm:inline-flex"
             >
               Help
             </Link>
             <Link
               href="/login"
-              className="inline-flex h-9 items-center rounded-full bg-navy-900 px-5 text-sm font-medium text-white transition-colors hover:bg-navy-800"
+              className="inline-flex h-9 items-center rounded-full bg-ink-800 px-5 text-sm font-medium text-white transition-colors hover:bg-ink-700"
             >
               Login
             </Link>
@@ -61,18 +61,18 @@ export default function LandingPage() {
       </div>
 
       <section className="mx-auto max-w-7xl px-4 pt-10 pb-16 text-center sm:px-6 sm:pt-16 lg:pt-24">
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-brand-200 bg-white/70 px-3 py-1 text-[11px] font-medium tracking-wide text-amber-brand-700 uppercase">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-clay-200 bg-white/70 px-3 py-1 text-[11px] font-medium tracking-wide text-clay-700 uppercase">
           <Landmark className="size-3" aria-hidden />
           Central Mine Planning &amp; Design Institute
         </span>
 
-        <h1 className="mx-auto mt-6 max-w-4xl font-serif text-[2.5rem] leading-[1.08] font-semibold tracking-tight text-navy-900 sm:text-6xl lg:text-7xl">
+        <h1 className="mx-auto mt-6 max-w-4xl font-serif text-[2.5rem] leading-[1.08] font-semibold tracking-tight text-ink-800 sm:text-6xl lg:text-7xl">
           Institutional memory,
           <br className="hidden sm:block" />
-          <span className="text-amber-brand-600"> made answerable.</span>
+          <span className="text-clay-600"> made answerable.</span>
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-navy-600 sm:text-lg">
+        <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-500 sm:text-lg">
           An AI-assisted platform that turns Coal India&apos;s scattered archives — scanned surveys,
           production statements, clearance filings — into a corpus officials can question directly
           and report from with confidence.
@@ -81,16 +81,16 @@ export default function LandingPage() {
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/dashboard"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-navy-900 px-7 text-sm font-medium text-white transition-colors hover:bg-navy-800"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-ink-800 px-7 text-sm font-medium text-white transition-colors hover:bg-ink-700"
           >
             Open dashboard
             <ArrowRight className="size-4" aria-hidden />
           </Link>
           <Link
             href="/query"
-            className="inline-flex h-11 items-center gap-2 rounded-full border border-navy-200 bg-white px-7 text-sm font-medium text-navy-800 transition-colors hover:bg-navy-50"
+            className="inline-flex h-11 items-center gap-2 rounded-full border border-sand-400 bg-white px-7 text-sm font-medium text-ink-700 transition-colors hover:bg-sand-200"
           >
-            <Sparkles className="size-4 text-amber-brand-500" aria-hidden />
+            <Sparkles className="size-4 text-clay-500" aria-hidden />
             Try the query system
           </Link>
         </div>
@@ -100,8 +100,8 @@ export default function LandingPage() {
             <div key={label}>
               <dt className="sr-only">{label}</dt>
               <dd>
-                <span className="block font-serif text-3xl font-semibold text-navy-900 sm:text-4xl">{value}</span>
-                <span className="mt-1 block text-xs text-navy-500">{label}</span>
+                <span className="block font-serif text-3xl font-semibold text-ink-800 sm:text-4xl">{value}</span>
+                <span className="mt-1 block text-xs text-ink-400">{label}</span>
               </dd>
             </div>
           ))}
@@ -111,10 +111,10 @@ export default function LandingPage() {
       <section className="bg-white/60 py-16 backdrop-blur-sm sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6">
           <div className="max-w-2xl">
-            <h2 className="font-serif text-3xl font-semibold tracking-tight text-navy-900 sm:text-4xl">
+            <h2 className="font-serif text-3xl font-semibold tracking-tight text-ink-800 sm:text-4xl">
               Built for the way ministries actually work
             </h2>
-            <p className="mt-3 text-navy-600">
+            <p className="mt-3 text-ink-500">
               Every answer carries its provenance. Every report can be traced to the page it came from.
             </p>
           </div>
@@ -125,13 +125,13 @@ export default function LandingPage() {
               return (
                 <div
                   key={feature.title}
-                  className="rounded-2xl border border-navy-100 bg-white p-6 shadow-[0_1px_2px_rgba(11,37,69,0.04),0_12px_32px_-16px_rgba(11,37,69,0.16)]"
+                  className="rounded-2xl border border-sand-300 bg-white p-6 shadow-[0_1px_2px_rgba(11,37,69,0.04),0_12px_32px_-16px_rgba(11,37,69,0.16)]"
                 >
-                  <span className="grid size-10 place-items-center rounded-xl bg-amber-brand-50 text-amber-brand-600">
+                  <span className="grid size-10 place-items-center rounded-xl bg-clay-50 text-clay-600">
                     <Icon className="size-5" aria-hidden />
                   </span>
-                  <h3 className="mt-4 text-base font-semibold text-navy-900">{feature.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-navy-500">{feature.body}</p>
+                  <h3 className="mt-4 text-base font-semibold text-ink-800">{feature.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-400">{feature.body}</p>
                 </div>
               );
             })}
@@ -142,10 +142,10 @@ export default function LandingPage() {
       <section className="py-16 sm:py-20">
         <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16">
           <div>
-            <h2 className="font-serif text-3xl font-semibold tracking-tight text-navy-900 sm:text-4xl">
+            <h2 className="font-serif text-3xl font-semibold tracking-tight text-ink-800 sm:text-4xl">
               From a shelf of scanned files to a parliamentary reply
             </h2>
-            <p className="mt-4 leading-relaxed text-navy-600">
+            <p className="mt-4 leading-relaxed text-ink-500">
               A question tabled in the Lok Sabha arrives with a fortnight&apos;s deadline and touches
               records held across nine subsidiaries. The platform collapses that search into a
               conversation — and hands back a drafted brief with citations intact.
@@ -157,32 +157,32 @@ export default function LandingPage() {
                 "Query the corpus in English or Hindi",
                 "Generate the brief, export to PDF or Word",
               ].map((item) => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-navy-700">
-                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-amber-brand-500" aria-hidden />
+                <li key={item} className="flex items-start gap-2.5 text-sm text-ink-600">
+                  <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-clay-500" aria-hidden />
                   {item}
                 </li>
               ))}
             </ul>
             <Link
               href="/parliamentary"
-              className="mt-8 inline-flex h-10 items-center gap-2 rounded-full bg-amber-brand-500 px-6 text-sm font-medium text-white transition-colors hover:bg-amber-brand-600"
+              className="mt-8 inline-flex h-10 items-center gap-2 rounded-full bg-clay-500 px-6 text-sm font-medium text-white transition-colors hover:bg-clay-600"
             >
               View the tracker
               <ArrowRight className="size-4" aria-hidden />
             </Link>
           </div>
 
-          <div className="rounded-2xl border border-navy-100 bg-white p-6 shadow-[0_1px_2px_rgba(11,37,69,0.04),0_16px_48px_-20px_rgba(11,37,69,0.24)]">
-            <div className="flex items-center gap-2 border-b border-navy-100 pb-3">
-              <Cloud className="size-4 text-amber-brand-500" aria-hidden />
-              <p className="text-xs font-medium tracking-wide text-navy-500 uppercase">Sample query</p>
+          <div className="rounded-2xl border border-sand-300 bg-white p-6 shadow-[0_1px_2px_rgba(11,37,69,0.04),0_16px_48px_-20px_rgba(11,37,69,0.24)]">
+            <div className="flex items-center gap-2 border-b border-sand-300 pb-3">
+              <Cloud className="size-4 text-clay-500" aria-hidden />
+              <p className="text-xs font-medium tracking-wide text-ink-400 uppercase">Sample query</p>
             </div>
-            <p className="mt-4 rounded-xl bg-navy-50 px-4 py-3 text-sm text-navy-800">
+            <p className="mt-4 rounded-xl bg-sand-200 px-4 py-3 text-sm text-ink-700">
               What progress has been made on Jharia Master Plan rehabilitation?
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-navy-700">
+            <p className="mt-4 text-sm leading-relaxed text-ink-600">
               12,840 families have been identified for resettlement, of whom{" "}
-              <strong className="font-semibold text-navy-900">7,412 (57.7%)</strong> have been
+              <strong className="font-semibold text-ink-800">7,412 (57.7%)</strong> have been
               rehabilitated. Compensation of ₹2,184 crore has been disbursed. Title verification
               remains the principal constraint, with 1,986 unresolved cases.
             </p>
@@ -191,10 +191,10 @@ export default function LandingPage() {
                 ["Land-Acquisition-Records-1987-Vol3.pdf", "p. 42"],
                 ["Rehabilitation-Colony-Layout-Plan.pdf", "p. 2"],
               ].map(([doc, page]) => (
-                <div key={doc} className="flex items-center gap-2 rounded-lg border border-navy-100 bg-cream/50 px-3 py-2">
-                  <FileText className="size-3.5 shrink-0 text-navy-400" aria-hidden />
-                  <span className="truncate text-xs text-navy-600">{doc}</span>
-                  <span className="ml-auto shrink-0 text-[10px] text-navy-400">{page}</span>
+                <div key={doc} className="flex items-center gap-2 rounded-lg border border-sand-300 bg-sand-200/60 px-3 py-2">
+                  <FileText className="size-3.5 shrink-0 text-ink-300" aria-hidden />
+                  <span className="truncate text-xs text-ink-500">{doc}</span>
+                  <span className="ml-auto shrink-0 text-[10px] text-ink-300">{page}</span>
                 </div>
               ))}
             </div>
@@ -202,12 +202,12 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-navy-100 bg-white/70 py-8">
+      <footer className="border-t border-sand-300 bg-white/70 py-8">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-4 text-center sm:flex-row sm:px-6 sm:text-left">
-          <p className="text-xs text-navy-500">
+          <p className="text-xs text-ink-400">
             Central Mine Planning &amp; Design Institute Limited · A subsidiary of Coal India Limited
           </p>
-          <p className="text-xs text-navy-400">Smart India Hackathon 2026 · Problem Statement 23</p>
+          <p className="text-xs text-ink-300">Smart India Hackathon 2026 · Problem Statement 23</p>
         </div>
       </footer>
     </div>

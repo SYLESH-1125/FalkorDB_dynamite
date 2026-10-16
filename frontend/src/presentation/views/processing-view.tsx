@@ -17,8 +17,8 @@ const STAGE_ICONS: Record<PipelineStageStatus, typeof Circle> = {
 };
 
 const STAGE_COLORS: Record<PipelineStageStatus, string> = {
-  complete: "text-emerald-500", running: "text-amber-brand-500 animate-spin",
-  failed: "text-red-500", pending: "text-navy-200",
+  complete: "text-emerald-500", running: "text-clay-500 animate-spin",
+  failed: "text-red-500", pending: "text-sand-400",
 };
 
 function formatDuration(ms: number): string {
@@ -46,15 +46,15 @@ export function ProcessingView() {
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            ["Active jobs", running, Cpu, "text-amber-brand-600"],
+            ["Active jobs", running, Cpu, "text-clay-600"],
             ["Failed stages", failed, XCircle, "text-red-600"],
-            ["OCR engine", "Tesseract 5.3", ScanText, "text-navy-900"],
-            ["Languages", "Hindi + English", Languages, "text-navy-900"],
+            ["OCR engine", "Tesseract 5.3", ScanText, "text-ink-800"],
+            ["Languages", "Hindi + English", Languages, "text-ink-800"],
           ].map(([label, value, Icon, tone]) => {
             const IconComponent = Icon as typeof Cpu;
             return (
-              <div key={label as string} className="rounded-xl border border-navy-100 bg-white p-4">
-                <div className="flex items-center gap-1.5 text-xs text-navy-500">
+              <div key={label as string} className="rounded-xl border border-sand-300 bg-white p-4">
+                <div className="flex items-center gap-1.5 text-xs text-ink-400">
                   <IconComponent className="size-3.5" aria-hidden />
                   {label as string}
                 </div>
@@ -108,7 +108,7 @@ export function ProcessingView() {
                                 <span
                                   className={cn(
                                     "my-1 w-px flex-1",
-                                    stage.status === "complete" ? "bg-emerald-200" : "bg-navy-100",
+                                    stage.status === "complete" ? "bg-emerald-200" : "bg-sand-300",
                                   )}
                                   aria-hidden
                                 />
@@ -120,27 +120,27 @@ export function ProcessingView() {
                                 <p
                                   className={cn(
                                     "text-sm font-medium",
-                                    stage.status === "pending" ? "text-navy-400" : "text-navy-900",
+                                    stage.status === "pending" ? "text-ink-300" : "text-ink-800",
                                   )}
                                 >
                                   {stage.name}
                                 </p>
-                                <span className="text-[11px] tabular-nums text-navy-400">
+                                <span className="text-[11px] tabular-nums text-ink-300">
                                   {formatDuration(stage.durationMs)}
                                 </span>
                               </div>
                               <p
                                 className={cn(
                                   "mt-0.5 text-xs",
-                                  stage.status === "failed" ? "text-red-600" : "text-navy-500",
+                                  stage.status === "failed" ? "text-red-600" : "text-ink-400",
                                 )}
                               >
                                 {stage.message}
                               </p>
                               {stage.status === "running" ? (
-                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden rounded-full bg-navy-100">
+                                <div className="mt-2 h-1 w-full max-w-sm overflow-hidden rounded-full bg-sand-300">
                                   <div
-                                    className="h-full rounded-full bg-amber-brand-500"
+                                    className="h-full rounded-full bg-clay-500"
                                     style={{ width: `${stage.progress}%` }}
                                   />
                                 </div>

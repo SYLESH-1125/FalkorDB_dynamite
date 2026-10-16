@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { CHART_COLORS, AXIS_STYLE, TOOLTIP_STYLE } from "./palette";
 
-const GRID = { stroke: "#e2ebf5", strokeDasharray: "3 3" };
+const GRID = { stroke: "#e9e1d3", strokeDasharray: "2 4" };
 
 export function TrendLineChart({
   data, series, height = 260,
@@ -20,7 +20,7 @@ export function TrendLineChart({
     <ResponsiveContainer width="100%" height={height}>
       <LineChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <CartesianGrid {...GRID} vertical={false} />
-        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
+        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
         <YAxis yAxisId="left" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         {usesRight ? (
           <YAxis yAxisId="right" orientation="right" tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
@@ -58,19 +58,19 @@ export function TrendAreaChart({
       <AreaChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e06f22" stopOpacity={0.28} />
-            <stop offset="100%" stopColor="#e06f22" stopOpacity={0.02} />
+            <stop offset="0%" stopColor="#cc5d28" stopOpacity={0.28} />
+            <stop offset="100%" stopColor="#cc5d28" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid {...GRID} vertical={false} />
-        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
+        <XAxis dataKey="period" tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
         <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
         <Tooltip contentStyle={TOOLTIP_STYLE} />
         <Area
           type="monotone"
           dataKey={dataKey}
           name={label}
-          stroke="#e06f22"
+          stroke="#cc5d28"
           strokeWidth={2}
           fill={`url(#grad-${dataKey})`}
         />
@@ -105,11 +105,11 @@ export function CategoryBarChart({
           </>
         ) : (
           <>
-            <XAxis dataKey={xKey} tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e2ebf5" }} />
+            <XAxis dataKey={xKey} tick={AXIS_STYLE} tickLine={false} axisLine={{ stroke: "#e9e1d3" }} />
             <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
           </>
         )}
-        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(224,111,34,0.06)" }} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(204,93,40,0.06)" }} />
         {series.length > 1 ? <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} iconType="circle" iconSize={7} /> : null}
         {series.map((s, i) => (
           <Bar

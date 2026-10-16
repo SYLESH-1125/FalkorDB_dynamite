@@ -76,8 +76,8 @@ export function TemplatesView() {
               className={cn(
                 "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium whitespace-nowrap transition-colors",
                 filter === category
-                  ? "bg-navy-900 text-white"
-                  : "border border-navy-200 bg-white text-navy-600 hover:bg-navy-50",
+                  ? "bg-ink-800 text-white"
+                  : "border border-sand-400 bg-white text-ink-500 hover:bg-sand-200",
               )}
             >
               {category === "all" ? "All templates" : category}
@@ -95,7 +95,7 @@ export function TemplatesView() {
               <Card key={template.id} className="flex flex-col">
                 <CardBody className="flex-1">
                   <div className="flex items-start justify-between gap-2">
-                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-navy-50 text-navy-500">
+                    <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-sand-200 text-ink-400">
                       <LayoutTemplate className="size-4" aria-hidden />
                     </span>
                     {template.isDefault ? (
@@ -106,27 +106,27 @@ export function TemplatesView() {
                     ) : null}
                   </div>
 
-                  <h3 className="mt-3 text-sm font-semibold text-navy-900">{template.name}</h3>
+                  <h3 className="mt-3 text-sm font-semibold text-ink-800">{template.name}</h3>
                   <Badge tone={CATEGORY_TONES[template.category]} className="mt-1.5">
                     {template.category}
                   </Badge>
-                  <p className="mt-2.5 text-xs leading-relaxed text-navy-500">{template.description}</p>
+                  <p className="mt-2.5 text-xs leading-relaxed text-ink-400">{template.description}</p>
 
-                  <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-navy-100 pt-3 text-center">
+                  <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-sand-300 pt-3 text-center">
                     {[
                       ["Sections", template.sections.filter((s) => s.enabled).length],
                       ["Used", template.usageCount],
                       ["Updated", formatDate(template.updatedAt).split(" ").slice(0, 2).join(" ")],
                     ].map(([label, value]) => (
                       <div key={label as string}>
-                        <dt className="text-[10px] text-navy-400">{label as string}</dt>
-                        <dd className="mt-0.5 text-xs font-medium text-navy-800">{value as string | number}</dd>
+                        <dt className="text-[10px] text-ink-300">{label as string}</dt>
+                        <dd className="mt-0.5 text-xs font-medium text-ink-700">{value as string | number}</dd>
                       </div>
                     ))}
                   </dl>
                 </CardBody>
 
-                <div className="flex gap-2 border-t border-navy-100 px-4 py-3">
+                <div className="flex gap-2 border-t border-sand-300 px-4 py-3">
                   <Button variant="secondary" size="sm" className="flex-1" onClick={() => setEditing(template)}>
                     <Settings2 className="size-3.5" aria-hidden />
                     Configure
@@ -170,7 +170,7 @@ export function TemplatesView() {
             </div>
 
             <div>
-              <p className="mb-2 text-xs font-medium text-navy-600">
+              <p className="mb-2 text-xs font-medium text-ink-500">
                 Sections · {editing.sections.filter((s) => s.enabled).length} of {editing.sections.length} enabled
               </p>
               <ul className="space-y-2">
@@ -179,15 +179,15 @@ export function TemplatesView() {
                     key={section.id}
                     className={cn(
                       "flex items-start gap-3 rounded-lg border p-3 transition-colors",
-                      section.enabled ? "border-navy-100 bg-white" : "border-navy-100 bg-navy-50/50",
+                      section.enabled ? "border-sand-300 bg-white" : "border-sand-300 bg-sand-200/50",
                     )}
                   >
-                    <GripVertical className="mt-0.5 size-4 shrink-0 cursor-grab text-navy-200" aria-hidden />
+                    <GripVertical className="mt-0.5 size-4 shrink-0 cursor-grab text-sand-400" aria-hidden />
                     <div className="min-w-0 flex-1">
-                      <p className={cn("text-[13px] font-medium", section.enabled ? "text-navy-900" : "text-navy-400")}>
+                      <p className={cn("text-[13px] font-medium", section.enabled ? "text-ink-800" : "text-ink-300")}>
                         {section.title}
                       </p>
-                      <p className="mt-0.5 text-xs text-navy-500">{section.description}</p>
+                      <p className="mt-0.5 text-xs text-ink-400">{section.description}</p>
                     </div>
                     <Toggle
                       label={`Toggle ${section.title}`}
