@@ -7,6 +7,8 @@ import type { TopicTerm, TopicCluster } from "@/src/domain/entities/topic";
 import type { ParliamentaryQuery } from "@/src/domain/entities/parliamentary";
 import type {
   KpiMetric, TimeSeriesPoint, CategoryDatum, SubsidiaryPerformance, ActivityEvent,
+  PipelineStageSummary, IngestionHeatCell, AccuracyTrendPoint, StorageBreakdown,
+  QueryHighlight, DeadlineItem, SystemHealth,
 } from "@/src/domain/entities/analytics";
 import type { AuditEntry } from "@/src/domain/entities/audit";
 import type { Integration } from "@/src/domain/entities/integration";
@@ -593,4 +595,91 @@ export const FAQS: FaqItem[] = [
   question: question as string,
   answer: answer as string,
   category: category as string,
+}));
+
+
+export const PIPELINE_SUMMARY: PipelineStageSummary[] = [
+  ["Ingested", 18942], ["OCR complete", 18488], ["Tables extracted", 17904],
+  ["Entities tagged", 17322], ["Indexed", 16994],
+].map(([stage, count]) => ({
+  stage: stage as string,
+  count: count as number,
+  share: Math.round(((count as number) / 18942) * 1000) / 10,
+}));
+
+const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export const INGESTION_HEATMAP: IngestionHeatCell[] = DAYS.flatMap((day, d) =>
+  Array.from({ length: 12 }, (_, h) => {
+    const rand = seeded(d * 131 + h * 17 + 3);
+    const hour = 8 + h;
+    const weekend = d >= 5;
+    // office hours carry the load; weekends are batch-upload only
+    const peak = hour >= 10 && hour <= 16 ? 1 : 0.35;
+    const base = weekend ? 0.18 : 1;
+    return { day, hour, value: Math.round(rand() * 46 * peak * base) };
+  }),
+);
+
+export const ACCURACY_TREND: AccuracyTrendPoint[] = [
+  ["Mar", 88.2, 412], ["Apr", 89.1, 388], ["May", 90.4, 351],
+  ["Jun", 91.2, 334], ["Jul", 91.9, 318], ["Aug", 92.6, 296],
+  ["Sep", 93.1, 281], ["Oct", 93.4, 268], ["Nov", 93.9, 244],
+  ["Dec", 94.2, 231], ["Jan", 94.5, 218], ["Feb", 94.7, 204],
+].map(([period, accuracy, humanCorrections]) => ({
+  period: period as string,
+  accuracy: accuracy as number,
+  humanCorrections: humanCorrections as number,
+}));
+
+export const STORAGE_BREAKDOWN: StorageBreakdown[] = [
+  ["Scanned PDF", 8420, 412.6], ["Native PDF", 5218, 96.4],
+  ["Spreadsheet", 3106, 28.2], ["Images", 1642, 184.8], ["Word", 556, 7.1],
+].map(([kind, documents, sizeGb]) => ({
+  kind: kind as string,
+  documents: documents as number,
+  sizeGb: sizeGb as number,
+}));
+
+export const TOP_QUERIES: QueryHighlight[] = [
+  ["Summarise coal production trends across subsidiaries for FY 2025-26", 3, 1240],
+  ["Which mines exceeded their sanctioned stripping ratio?", 2, 980],
+  ["Status of environmental clearances pending with MoEFCC", 4, 1510],
+  ["Jharia Master Plan rehabilitation progress and compensation", 2, 1120],
+  ["Compare washery throughput between SECL and MCL", 3, 890],
+].map(([question, citationCount, responseMs], i) => ({
+  id: `qh-${i + 1}`,
+  question: question as string,
+  askedBy: NAMES[(i + 1) % NAMES.length],
+  askedAt: isoDaysAgo(Math.floor(i / 2), 15 - i),
+  citationCount: citationCount as number,
+  responseMs: responseMs as number,
+}));
+
+export const DEADLINES: DeadlineItem[] = PARLIAMENTARY_QUERIES
+  .filter((q) => q.stage !== "answered")
+  .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime())
+  .slice(0, 5)
+  .map((q) => ({
+    id: q.id,
+    referenceNo: q.referenceNo,
+    subject: q.subject,
+    dueAt: q.dueAt,
+    priority: q.priority,
+    assignedTo: q.assignedTo,
+  }));
+
+export const SYSTEM_HEALTH: SystemHealth = {
+  ocrQueueDepth: 14,
+  avgLatencyMs: 248,
+  uptimePercent: 99.94,
+  indexFreshnessMin: 6,
+  activeUsers: 87,
+  storageUsedGb: 729.1,
+  storageTotalGb: 2048,
+};
+
+export const DASHBOARD_TERMS = TOPIC_TERMS.slice(0, 14).map((t) => ({
+  text: t.text,
+  weight: t.weight,
 }));

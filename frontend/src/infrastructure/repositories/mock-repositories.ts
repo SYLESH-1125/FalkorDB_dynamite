@@ -289,6 +289,23 @@ export const analyticsRepository: AnalyticsRepository = {
   async activity() {
     return delay(fixtures.ACTIVITY);
   },
+  async dashboard() {
+    return delay({
+      kpis: fixtures.KPIS,
+      timeSeries: fixtures.TIME_SERIES,
+      categories: fixtures.CATEGORY_BREAKDOWN,
+      performance: fixtures.SUBSIDIARY_PERFORMANCE,
+      activity: fixtures.ACTIVITY,
+      pipeline: fixtures.PIPELINE_SUMMARY,
+      heatmap: fixtures.INGESTION_HEATMAP,
+      accuracyTrend: fixtures.ACCURACY_TREND,
+      storage: fixtures.STORAGE_BREAKDOWN,
+      topQueries: fixtures.TOP_QUERIES,
+      deadlines: fixtures.DEADLINES,
+      health: fixtures.SYSTEM_HEALTH,
+      topTerms: fixtures.DASHBOARD_TERMS,
+    }, 420);
+  },
 };
 
 export const userRepository: UserRepository = {

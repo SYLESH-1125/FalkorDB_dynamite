@@ -7,6 +7,7 @@ import type { TopicTerm, TopicCluster } from "../entities/topic";
 import type { ParliamentaryQuery } from "../entities/parliamentary";
 import type {
   KpiMetric, TimeSeriesPoint, CategoryDatum, SubsidiaryPerformance, ActivityEvent,
+  DashboardSnapshot,
 } from "../entities/analytics";
 import type { AuditEntry } from "../entities/audit";
 import type { Integration } from "../entities/integration";
@@ -64,6 +65,7 @@ export interface AnalyticsRepository {
   categoryBreakdown(): Promise<CategoryDatum[]>;
   subsidiaryPerformance(): Promise<SubsidiaryPerformance[]>;
   activity(): Promise<ActivityEvent[]>;
+  dashboard(): Promise<DashboardSnapshot>;
 }
 
 export interface UserRepository {

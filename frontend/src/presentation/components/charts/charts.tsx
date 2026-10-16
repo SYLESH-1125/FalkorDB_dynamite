@@ -13,7 +13,7 @@ export function TrendLineChart({
 }: {
   data: readonly object[];
   series: { key: string; label: string; axis?: "left" | "right" }[];
-  height?: number;
+  height?: number | `${number}%`;
 }) {
   const usesRight = series.some((s) => s.axis === "right");
   return (
@@ -51,7 +51,7 @@ export function TrendAreaChart({
   data: readonly object[];
   dataKey: string;
   label: string;
-  height?: number;
+  height?: number | `${number}%`;
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -85,7 +85,7 @@ export function CategoryBarChart({
   data: readonly object[];
   xKey: string;
   series: { key: string; label: string }[];
-  height?: number;
+  height?: number | `${number}%`;
   layout?: "horizontal" | "vertical";
 }) {
   const vertical = layout === "vertical";
@@ -130,7 +130,7 @@ export function DonutChart({
   data, height = 260,
 }: {
   data: { name: string; value: number }[];
-  height?: number;
+  height?: number | `${number}%`;
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>

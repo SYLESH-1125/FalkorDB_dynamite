@@ -58,6 +58,12 @@ body {
     radial-gradient(44rem 28rem at 72% 12%, rgba(196, 213, 233, 0.28), transparent 65%);
 }
 
+@utility bento-glow {
+  background-image:
+    radial-gradient(38rem 20rem at 8% 0%, rgba(224, 111, 34, 0.13), transparent 60%),
+    radial-gradient(34rem 18rem at 96% 4%, rgba(147, 176, 211, 0.20), transparent 62%);
+}
+
 @utility scrollbar-thin {
   scrollbar-width: thin;
   scrollbar-color: var(--color-navy-200) transparent;
