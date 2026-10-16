@@ -23,6 +23,8 @@ class Subsidiary(Base):
 
     code: Mapped[str] = mapped_column(primary_key=True)
     name: Mapped[str]
+    production_mt: Mapped[float] = mapped_column(Numeric(6, 1), default=0)
+    target_mt: Mapped[float] = mapped_column(Numeric(6, 1), default=0)
 
 
 class User(Base):

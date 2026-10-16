@@ -6,7 +6,7 @@ from app.api.deps import get_db, require_admin
 from app.domain.models import ExtractedFieldIn, ExtractedFieldOut, ValidationRecordOut
 from app.infrastructure.db.models import Document, ExtractedField, User, ValidationRecord
 from app.infrastructure.graph.publisher import publish_document_to_graph
-from app.services.embeddings import embed
+from app.services.embeddings import embed_async
 
 router = APIRouter(prefix="/api/validations", tags=["validations"])
 
@@ -79,7 +79,7 @@ async def save_field(
 
     value = field.corrected_value or field.extracted_value
     if value:
-        field.embedding = embed(f"{field.label}: {value}")
+        field.embedding = await embed_async(f"{field.label}: {value}")
 
     await db.commit()
     return await _to_out(db, record)

@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -13,6 +14,7 @@ from app.infrastructure.db.seed import seed
 from app.infrastructure.graph.neo4j_client import close_driver, get_driver
 from app.infrastructure.graph.publisher import seed_subsidiaries
 from app.infrastructure.db.seed import SUBSIDIARIES
+from app.services.embeddings import embed
 
 
 @asynccontextmanager
@@ -23,6 +25,10 @@ async def lifespan(app: FastAPI):
         await seed_subsidiaries(SUBSIDIARIES)
     except Exception:
         pass  # Neo4j may not be reachable in a partial dev environment; API still boots
+
+    # warm the embedding model in the background so the first real upload isn't slow
+    asyncio.get_event_loop().run_in_executor(None, lambda: embed("warmup"))
+
     yield
     await close_driver()
 

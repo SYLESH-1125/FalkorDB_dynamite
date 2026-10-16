@@ -9,7 +9,7 @@ from app.infrastructure.db.models import (
     Document, DocumentChunk, ExtractedField, PipelineStage, ProcessingJob, ValidationRecord,
 )
 from app.infrastructure.storage.s3_client import get_object_bytes, put_json
-from app.services.embeddings import chunk_text, embed_batch
+from app.services.embeddings import chunk_text, embed_batch_async
 from app.services.extraction import extract_fields
 from app.services.parsers.docx_parser import parse_docx
 from app.services.parsers.image_parser import parse_image
@@ -191,7 +191,7 @@ async def _embed_document(db, document: Document, fields: list[ExtractedField], 
     """Embeds parsed text chunks and non-empty extracted field values for semantic search."""
     chunks = chunk_text(parsed.get("text", ""))
     if chunks:
-        chunk_vectors = embed_batch(chunks)
+        chunk_vectors = await embed_batch_async(chunks)
         for i, (text, vector) in enumerate(zip(chunks, chunk_vectors)):
             db.add(DocumentChunk(
                 document_id=document.id, chunk_index=i, page_ref=1, text=text, embedding=vector,
@@ -200,7 +200,7 @@ async def _embed_document(db, document: Document, fields: list[ExtractedField], 
     labeled = [f for f in fields if f.extracted_value]
     if labeled:
         field_texts = [f"{f.label}: {f.corrected_value or f.extracted_value}" for f in labeled]
-        field_vectors = embed_batch(field_texts)
+        field_vectors = await embed_batch_async(field_texts)
         for field, vector in zip(labeled, field_vectors):
             field.embedding = vector
 

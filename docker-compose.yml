@@ -91,6 +91,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
+      - hf_cache:/root/.cache/huggingface
     command: >
       sh -c "alembic upgrade head &&
              uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
@@ -99,3 +100,4 @@ volumes:
   pgdata:
   minio_data:
   neo4j_data:
+  hf_cache:

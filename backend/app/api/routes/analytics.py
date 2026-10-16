@@ -226,9 +226,12 @@ async def _performance(db: AsyncSession) -> list[SubsidiaryPerformanceOut]:
             )
         ).scalar() or 0
         avg_conf = sum(float(d.confidence) for d in docs) / len(docs) if docs else 0.0
+        production = float(s.production_mt)
+        target = float(s.target_mt)
+        variance = round((production - target) / target * 100, 1) if target else 0.0
         out.append(SubsidiaryPerformanceOut(
-            subsidiary=s.code, production=len(docs), target=max(len(docs), 1),
-            accuracy=round(avg_conf, 1), reports=reports, pending_queries=pending, variance=0.0,
+            subsidiary=s.code, production=production, target=target,
+            accuracy=round(avg_conf, 1), reports=reports, pending_queries=pending, variance=variance,
         ))
     return out
 

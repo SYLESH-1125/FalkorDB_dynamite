@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.models import Document, DocumentChunk, ExtractedField, ValidationRecord
-from app.services.embeddings import embed
+from app.services.embeddings import embed_async
 from app.services.llm import LlmNotConfigured, generate_answer
 
 TOP_K = 6
@@ -33,7 +33,7 @@ async def _search_fields(db: AsyncSession, query_vector: list[float]) -> list[tu
 async def answer_question(db: AsyncSession, question: str) -> tuple[str, list[dict]]:
     """Semantic retrieval over embedded document chunks + extracted fields (pgvector cosine
     similarity), then a grounded answer synthesized by an LLM over the retrieved evidence."""
-    query_vector = embed(question)
+    query_vector = await embed_async(question)
 
     chunks = await _search_chunks(db, query_vector)
     fields = await _search_fields(db, query_vector)
