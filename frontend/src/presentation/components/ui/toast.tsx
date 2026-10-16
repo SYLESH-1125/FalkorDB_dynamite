@@ -47,7 +47,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             className={cn(
-              "card-float pointer-events-auto flex items-start gap-2.5 rounded-xl border border-hairline bg-surface-card p-3.5",
+              "card-float pointer-events-auto flex items-start gap-2.5 rounded-lg border border-hairline bg-surface-card p-3.5",
             )}
           >
             <span className="mt-0.5">{ICONS[toast.tone]}</span>

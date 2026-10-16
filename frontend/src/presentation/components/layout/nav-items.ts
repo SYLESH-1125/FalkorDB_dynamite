@@ -26,8 +26,11 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/users", label: "User Management", icon: Users, group: "Administration" },
   { href: "/audit", label: "Audit Log", icon: ScrollText, group: "Administration" },
   { href: "/settings", label: "Integrations & Settings", icon: Settings, group: "Administration" },
-  { href: "/notifications", label: "Notifications", icon: Bell, group: "Administration" },
-  { href: "/help", label: "Help & Training", icon: LifeBuoy, group: "Administration" },
+  { href: "/notifications", label: "Notifications", icon: Bell, group: "General" },
+  { href: "/help", label: "Help & Training", icon: LifeBuoy, group: "General" },
 ];
 
-export const NAV_GROUPS = ["Overview", "Data Pipeline", "Intelligence", "Reporting", "Administration"];
+export const NAV_GROUPS = ["Overview", "Data Pipeline", "Intelligence", "Reporting", "Administration", "General"];
+
+// visible only to Administrator accounts — kept out of the sidebar for every other role
+export const ADMIN_ONLY_GROUPS = new Set(["Data Pipeline", "Administration"]);

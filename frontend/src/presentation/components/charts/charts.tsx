@@ -59,8 +59,8 @@ export function TrendAreaChart({
       <AreaChart data={data} margin={{ top: 6, right: 8, left: 0, bottom: 0 }}>
         <defs>
           <linearGradient id={`grad-${dataKey}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1a3f70" stopOpacity={0.26} />
-            <stop offset="100%" stopColor="#1a3f70" stopOpacity={0.02} />
+            <stop offset="0%" stopColor="#1c4693" stopOpacity={0.26} />
+            <stop offset="100%" stopColor="#1c4693" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid {...GRID} vertical={false} />
@@ -71,7 +71,7 @@ export function TrendAreaChart({
           type="monotone"
           dataKey={dataKey}
           name={label}
-          stroke="#1a3f70"
+          stroke="#1c4693"
           strokeWidth={2}
           fill={`url(#grad-${dataKey})`}
         />
@@ -110,7 +110,7 @@ export function CategoryBarChart({
             <YAxis tick={AXIS_STYLE} tickLine={false} axisLine={false} width={44} />
           </>
         )}
-        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(26,63,112,0.06)" }} />
+        <Tooltip contentStyle={TOOLTIP_STYLE} cursor={{ fill: "rgba(28,70,147,0.06)" }} />
         {series.length > 1 ? <Legend wrapperStyle={LEGEND_STYLE} iconType="circle" iconSize={7} /> : null}
         {series.map((s, i) => (
           <Bar

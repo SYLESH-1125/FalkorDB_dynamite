@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { CheckCircle2, Loader2, Circle, XCircle, Cpu, Languages, ScanText } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
@@ -29,11 +30,21 @@ function formatDuration(ms: number): string {
 }
 
 export function ProcessingView() {
-  const { data, loading } = useAsync(() => repositories.documents.jobs(), []);
+  const { data, loading, setData } = useAsync(() => repositories.documents.jobs(), []);
   const jobs = data ?? [];
 
   const running = jobs.filter((j) => j.stages.some((s) => s.status === "running")).length;
   const failed = jobs.filter((j) => j.stages.some((s) => s.status === "failed")).length;
+
+  // poll while any job still has an in-flight stage
+  useEffect(() => {
+    const active = jobs.some((j) => j.stages.some((s) => s.status === "running" || s.status === "pending"));
+    if (!active) return;
+    const timer = setInterval(() => {
+      void repositories.documents.jobs().then(setData);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, [jobs, setData]);
 
   return (
     <>

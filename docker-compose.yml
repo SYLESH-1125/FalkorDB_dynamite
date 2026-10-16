@@ -1,0 +1,101 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: bhumi-postgres
+    environment:
+      POSTGRES_USER: bhumi
+      POSTGRES_PASSWORD: bhumi_dev_pw
+      POSTGRES_DB: bhumi
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bhumi -d bhumi"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: bhumi-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: bhumi_minio
+      MINIO_ROOT_PASSWORD: bhumi_minio_pw
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    image: minio/mc:latest
+    container_name: bhumi-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 bhumi_minio bhumi_minio_pw &&
+      mc mb -p local/bhumi-documents &&
+      exit 0"
+    restart: "no"
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: bhumi-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/bhumi_dev_pw
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: bhumi-backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://bhumi:bhumi_dev_pw@postgres:5432/bhumi
+      S3_ENDPOINT_URL: http://minio:9000
+      S3_ACCESS_KEY: bhumi_minio
+      S3_SECRET_KEY: bhumi_minio_pw
+      S3_BUCKET: bhumi-documents
+      NEO4J_URI: bolt://neo4j:7687
+      NEO4J_USER: neo4j
+      NEO4J_PASSWORD: bhumi_dev_pw
+      CORS_ORIGINS: http://localhost:3000
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-sonnet-4.5}
+      EMBEDDING_MODEL: sentence-transformers/all-MiniLM-L6-v2
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+volumes:
+  pgdata:
+  minio_data:
+  neo4j_data:

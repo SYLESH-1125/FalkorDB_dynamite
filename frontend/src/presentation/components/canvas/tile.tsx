@@ -19,8 +19,8 @@ export type TileTone = "paper" | "sand" | "ink" | "clay" | "outline";
 const TONES: Record<TileTone, string> = {
   paper: "bg-surface-card border-hairline",
   sand: "bg-surface-soft border-hairline",
-  ink: "gradient-navy border-primary-700 text-white",
-  clay: "bg-secondary-400 border-secondary-500 text-primary-700",
+  ink: "gradient-navy border-primary-800 text-white",
+  clay: "bg-secondary-400 border-secondary-500 text-ink-0",
   outline: "border-hairline-strong border-dashed bg-transparent",
 };
 
@@ -39,7 +39,7 @@ export function Tile({
   return (
     <section
       className={cn(
-        "relative flex min-w-0 flex-col overflow-hidden rounded-xl border",
+        "relative flex min-w-0 flex-col overflow-hidden rounded-lg border",
         tone !== "outline" && "card-raise",
         TONES[tone],
         className,

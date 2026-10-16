@@ -7,8 +7,8 @@ import {
 } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
+import { useSession } from "@/src/application/hooks/use-session";
 import { relativeTime, formatNumber, daysUntil } from "@/src/application/services/formatting";
-import { CURRENT_USER } from "@/src/infrastructure/mock/data";
 import type { ActivityEvent } from "@/src/domain/entities/analytics";
 import { Skeleton } from "../components/ui/skeleton";
 import { TileGrid, Tile, Metric } from "../components/canvas/tile";
@@ -23,6 +23,8 @@ const ACTIVITY_ICONS: Record<ActivityEvent["kind"], typeof Upload> = {
 
 export function DashboardView() {
   const { data, loading } = useAsync(() => repositories.analytics.dashboard(), []);
+  const { session } = useSession();
+  const firstName = session?.user.name.split(" ")[0] ?? "there";
 
   if (loading || !data) {
     return (
@@ -42,10 +44,10 @@ export function DashboardView() {
     heatmap, accuracyTrend, storage, topQueries, deadlines, health, topTerms,
   } = data;
 
-  const latestAccuracy = accuracyTrend[accuracyTrend.length - 1];
-  const accuracyGain = latestAccuracy.accuracy - accuracyTrend[0].accuracy;
+  const latestAccuracy = accuracyTrend[accuracyTrend.length - 1] ?? { period: "—", accuracy: 0, humanCorrections: 0 };
+  const accuracyGain = latestAccuracy.accuracy - (accuracyTrend[0]?.accuracy ?? 0);
   const leader = [...performance].filter((p) => p.production >= 20).sort((a, b) => b.variance - a.variance)[0];
-  const storagePct = (health.storageUsedGb / health.storageTotalGb) * 100;
+  const storagePct = health.storageTotalGb > 0 ? (health.storageUsedGb / health.storageTotalGb) * 100 : 0;
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -56,7 +58,7 @@ export function DashboardView() {
               {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" })}
             </p>
             <h1 className="display-md mt-3 text-[30px] leading-[1.1] tracking-[2px] text-ink-0 sm:text-[38px]">
-              Good morning, {CURRENT_USER.name.split(" ")[0]}
+              Good morning, {firstName}
             </h1>
             <p className="mt-2 max-w-xl text-[13px] leading-relaxed text-muted">
               {formatNumber(126)} fields need review and {deadlines.length} parliamentary replies
@@ -66,14 +68,14 @@ export function DashboardView() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/upload"
-              className="inline-flex h-9.5 items-center gap-2 rounded-full border border-hairline-strong bg-surface-card px-4.5 text-[13.5px] font-medium text-body-strong transition-colors hover:bg-surface-soft"
+              className="inline-flex h-9.5 items-center gap-2 rounded-md border border-hairline-strong bg-surface-card px-4.5 text-[13.5px] font-medium text-body-strong transition-colors hover:bg-surface-soft"
             >
               <Upload className="size-3.5" aria-hidden />
               Upload
             </Link>
             <Link
               href="/reports"
-              className="inline-flex h-9.5 items-center gap-2 rounded-full bg-primary-600 px-4.5 text-[13.5px] font-medium text-white transition-colors hover:bg-primary-700"
+              className="inline-flex h-9.5 items-center gap-2 rounded-md bg-secondary-400 px-4.5 text-[13.5px] font-semibold text-ink-0 transition-colors hover:bg-secondary-300"
             >
               <FileBarChart className="size-3.5" aria-hidden />
               Generate report
@@ -98,11 +100,11 @@ export function DashboardView() {
                   Every answer cites the source document and the page it came from.
                 </p>
               </div>
-              <span className="mt-5 flex items-center gap-2 rounded-xl border border-white/15 bg-white/8 px-4 py-2.5">
+              <span className="mt-5 flex items-center gap-2 rounded-md border border-white/15 bg-white/8 px-4 py-2.5">
                 <span className="flex-1 truncate text-[12.5px] text-white/55">
                   Which mines exceeded their stripping ratio?
                 </span>
-                <ArrowRight className="size-4 shrink-0 text-white/70 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                <ArrowRight className="size-4 shrink-0 text-secondary-400 transition-transform group-hover:translate-x-0.5" aria-hidden />
               </span>
             </Link>
           </Tile>
@@ -232,9 +234,11 @@ export function DashboardView() {
             label="Production against target"
             hint="Million tonnes by subsidiary"
             action={
-              <span className="type-caption px-2 py-0.5 text-success ring-1 ring-inset ring-success/40">
-                {leader.subsidiary} +{leader.variance.toFixed(1)}%
-              </span>
+              leader ? (
+                <span className="type-caption px-2 py-0.5 text-success ring-1 ring-inset ring-success/40">
+                  {leader.subsidiary} +{leader.variance.toFixed(1)}%
+                </span>
+              ) : null
             }
           >
             <CategoryBarChart
@@ -331,7 +335,7 @@ export function DashboardView() {
               </div>
               <Spark values={accuracyTrend.map((a) => a.accuracy)} className="h-12" />
               <p className="type-caption text-muted-soft">
-                {latestAccuracy.humanCorrections} corrections last month, from {accuracyTrend[0].humanCorrections}
+                {latestAccuracy.humanCorrections} corrections last month, from {accuracyTrend[0]?.humanCorrections ?? 0}
               </p>
             </div>
           </Tile>
@@ -379,8 +383,8 @@ export function DashboardView() {
                     {health.storageUsedGb} / {formatNumber(health.storageTotalGb)} GB
                   </span>
                 </div>
-                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-surface-soft">
-                  <div className="h-full rounded-full bg-surface-elevated" style={{ width: `${storagePct}%` }} />
+                <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-hairline">
+                  <div className="h-full rounded-full bg-primary-500" style={{ width: `${storagePct}%` }} />
                 </div>
               </div>
             </div>

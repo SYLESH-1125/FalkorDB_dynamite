@@ -4,7 +4,7 @@ import type { IngestionHeatCell } from "@/src/domain/entities/analytics";
 import { cn } from "../ui/cn";
 
 export function Spark({
-  values, className, stroke = "#1a3f70", area = true,
+  values, className, stroke = "#1c4693", area = true,
 }: {
   values: number[];
   className?: string;
@@ -52,17 +52,17 @@ export function Dial({ value, display, caption }: { value: number; display: stri
     <div className="flex h-full flex-col items-center justify-center">
       <div className="relative w-[7.5rem] max-w-full">
         <svg viewBox="0 0 128 128" className="w-full -rotate-90">
-          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(15,42,78,0.18)" strokeWidth={10} />
+          <circle cx="64" cy="64" r={r} fill="none" stroke="rgba(11,15,20,0.14)" strokeWidth={10} />
           <circle
-            cx="64" cy="64" r={r} fill="none" stroke="#0f2a4e" strokeWidth={10}
+            cx="64" cy="64" r={r} fill="none" stroke="#0b0f14" strokeWidth={10}
             strokeLinecap="round" strokeDasharray={`${dash} ${c}`}
           />
         </svg>
         <div className="absolute inset-0 grid place-items-center">
-          <span className="numeral text-[26px] leading-none text-primary-700">{display}</span>
+          <span className="numeral text-[26px] leading-none text-ink-0">{display}</span>
         </div>
       </div>
-      <p className="mt-2.5 text-center text-[11.5px] text-primary-700/75">{caption}</p>
+      <p className="mt-2.5 text-center text-[11.5px] text-ink-0/70">{caption}</p>
     </div>
   );
 }

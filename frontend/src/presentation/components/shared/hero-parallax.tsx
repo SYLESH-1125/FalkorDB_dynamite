@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { HeroVideoBackground } from "@/src/presentation/components/shared/hero-video-background";
+import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
 const NAV = [
   ["Dashboard", "/dashboard"], ["Reports", "/reports"], ["Query System", "/query"],
@@ -55,10 +57,7 @@ export function HeroParallax() {
         <div className="absolute inset-x-0 top-2.5 z-10 flex justify-center px-4 sm:px-6">
           <nav className="nav-glass flex w-full max-w-5xl items-center gap-3 py-2 pr-2 pl-5">
             <Link href="/" className="flex shrink-0 items-center gap-2.5">
-              <span className="grid size-7 place-items-center rounded-full bg-white/85 text-[12px] font-bold text-primary-700">
-                B
-              </span>
-              <span className="type-wordmark text-white drop-shadow-sm">BHUMI</span>
+              <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto drop-shadow-sm" priority />
             </Link>
 
             <ul className="ml-2 hidden items-center gap-1 lg:flex">
@@ -79,7 +78,7 @@ export function HeroParallax() {
                 Help
               </Link>
               <Link
-                href="/login"
+                href="/select-role"
                 className="inline-flex h-9 items-center rounded-full bg-white/90 px-5 text-[13.5px] font-semibold text-primary-700 shadow-sm transition-all duration-300 hover:scale-[1.03] hover:bg-white"
               >
                 Get Started
@@ -108,7 +107,7 @@ export function HeroParallax() {
 
           <div className="mt-9 flex flex-wrap items-center justify-center gap-2.5">
             <Link
-              href="/login"
+              href="/select-role"
               className="inline-flex h-12 items-center gap-2 rounded-full bg-secondary-400 px-8 text-[15px] font-semibold text-primary-700 shadow-lg transition-colors hover:bg-secondary-300"
             >
               Get Started

@@ -4,10 +4,11 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
+import type { AppRole } from "@/src/domain/entities/user";
 import { Button } from "../ui/button";
 import { Label, TextInput } from "../ui/field";
 
-export function LoginForm() {
+export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole }) {
   const router = useRouter();
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
@@ -24,10 +25,10 @@ export function LoginForm() {
     setSubmitting(true);
     setError(null);
     try {
-      await repositories.auth.signIn({ employeeId: employeeId.trim(), password });
+      await repositories.auth.signIn({ employeeId: employeeId.trim(), password, appRole });
       router.push("/dashboard");
-    } catch {
-      setError("Sign-in failed. Check your credentials and try again.");
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : "Sign-in failed. Check your credentials and try again.");
       setSubmitting(false);
     }
   }
@@ -108,13 +109,24 @@ export function LoginForm() {
         type="button"
         variant="secondary"
         className="w-full"
-        onClick={() => router.push("/dashboard")}
+        disabled={submitting}
+        onClick={async () => {
+          setSubmitting(true);
+          setError(null);
+          try {
+            await repositories.auth.signIn({ employeeId: "nic-sso", password: "sso", appRole });
+            router.push("/dashboard");
+          } catch (err) {
+            setError(err instanceof Error && err.message ? err.message : "Sign-in failed. Check your credentials and try again.");
+            setSubmitting(false);
+          }
+        }}
       >
         Continue with NIC Single Sign-On
       </Button>
 
       <p className="pt-1 text-center text-[11.5px] text-muted">
-        Demo build — any credentials will sign you in.
+        No self-registration — all accounts are provisioned by an Administrator.
       </p>
     </form>
   );

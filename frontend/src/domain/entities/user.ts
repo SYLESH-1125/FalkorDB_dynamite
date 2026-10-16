@@ -1,5 +1,7 @@
 export type UserRole = "Administrator" | "Analyst" | "Reviewer" | "Viewer";
 
+export type AppRole = "parliamentary" | "ministry" | "domain-officer" | "admin";
+
 export type UserStatus = "active" | "suspended" | "invited";
 
 export interface User {
@@ -17,6 +19,7 @@ export interface User {
 export interface Credentials {
   employeeId: string;
   password: string;
+  appRole: AppRole;
 }
 
 export interface Session {

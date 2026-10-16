@@ -8,7 +8,7 @@ import {
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
 import { formatBytes, relativeTime } from "@/src/application/services/formatting";
-import type { IngestedDocument, DocumentKind } from "@/src/domain/entities/document";
+import type { DocumentKind } from "@/src/domain/entities/document";
 import { PageHeader } from "../components/ui/page-header";
 import { Card, CardHeader } from "../components/ui/card";
 import { Button } from "../components/ui/button";
@@ -38,8 +38,7 @@ export function UploadView() {
   const handleFiles = useCallback(
     async (files: FileList | null) => {
       if (!files?.length) return;
-      const payload = Array.from(files).map((file) => ({ name: file.name, sizeBytes: file.size }));
-      const created = await repositories.documents.upload(payload);
+      const created = await repositories.documents.upload(Array.from(files));
       setData([...created, ...documents]);
       notify({
         tone: "success",
@@ -50,29 +49,13 @@ export function UploadView() {
     [documents, notify, setData],
   );
 
-  // simulate pipeline advancement for freshly uploaded files
+  // poll for real pipeline progress while any document is still in flight
   useEffect(() => {
-    const active = documents.some((d) => d.status === "uploading" || d.status === "processing");
+    const active = documents.some((d) => ["uploading", "processing", "queued"].includes(d.status));
     if (!active) return;
     const timer = setInterval(() => {
-      setData(
-        documents.map((doc): IngestedDocument => {
-          if (doc.status === "uploading") {
-            const progress = Math.min(doc.progress + 18, 100);
-            return progress >= 100
-              ? { ...doc, status: "processing", progress: 8 }
-              : { ...doc, progress };
-          }
-          if (doc.status === "processing") {
-            const progress = Math.min(doc.progress + 12, 100);
-            return progress >= 100
-              ? { ...doc, status: "extracted", progress: 100, confidence: 91.4, pageCount: 24 }
-              : { ...doc, progress };
-          }
-          return doc;
-        }),
-      );
-    }, 900);
+      void repositories.documents.list().then(setData);
+    }, 2000);
     return () => clearInterval(timer);
   }, [documents, setData]);
 

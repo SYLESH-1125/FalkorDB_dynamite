@@ -1,58 +1,69 @@
 @import "tailwindcss";
 
 @theme {
-  /* cool off-white ground so navy and gold both sit clean on it */
-  --color-canvas: #f7f8fa;
-  --color-surface-soft: #eef1f5;
+  /* neutral white/graphite ground for the main content area */
+  --color-canvas: #f5f6f8;
+  --color-surface-soft: #eceef2;
   --color-surface-card: #ffffff;
-  --color-surface-elevated: #eef1f5;
+  --color-surface-elevated: #ffffff;
 
-  --color-hairline: #e3e7ee;
-  --color-hairline-strong: #cfd6e1;
+  --color-hairline: #e2e5ea;
+  --color-hairline-strong: #cbd0d9;
 
-  /* text ramp — navy-tinted neutrals, never warm brown */
-  --color-ink-0: #101a2c;
-  --color-body-strong: #33415a;
-  --color-body: #5b6880;
-  --color-muted: #8593a8;
-  --color-muted-soft: #a6b1c2;
+  /* text ramp — near-black ink, never washed out */
+  --color-ink-0: #0b0f14;
+  --color-body-strong: #333a44;
+  --color-body: #5a6373;
+  --color-muted: #838c9b;
+  --color-muted-soft: #a7aeb9;
 
-  /* PRIMARY — deep institutional navy */
-  --color-primary-50: #eef2f9;
-  --color-primary-100: #d8e2f1;
-  --color-primary-200: #adc0dd;
-  --color-primary-300: #7794bd;
-  --color-primary-400: #3d6296;
-  --color-primary-500: #1a3f70;
-  --color-primary-600: #0f2a4e;
-  --color-primary-700: #0a1e3a;
+  /* PRIMARY — dark blue, the institutional anchor */
+  --color-primary-50: #eaf0fb;
+  --color-primary-100: #cfdcf4;
+  --color-primary-200: #9fb9e8;
+  --color-primary-300: #6790d6;
+  --color-primary-400: #3766bb;
+  --color-primary-500: #1c4693;
+  --color-primary-600: #123170;
+  --color-primary-700: #0a2050;
+  --color-primary-800: #05122f;
 
-  /* SECONDARY — golden amber */
-  --color-secondary-50: #fdf8e6;
-  --color-secondary-100: #fbeec2;
-  --color-secondary-200: #f6dc86;
-  --color-secondary-300: #f0ca4c;
-  --color-secondary-400: #e5b017;
-  --color-secondary-500: #cf9c0d;
-  --color-secondary-600: #a87c0b;
+  /* SIDEBAR — a distinct dark-navy surface, deliberately darker than primary-700 */
+  --color-sidebar: #071226;
+  --color-sidebar-raised: #0d1c38;
+  --color-sidebar-border: #1a2c4d;
+  --color-sidebar-text: #c7d2e6;
+  --color-sidebar-text-muted: #7f8cab;
+  --color-sidebar-active-bg: #f2b705;
+  --color-sidebar-active-text: #0b0f14;
 
-  /* leaf green — used sparingly for healthy / complete states */
-  --color-leaf-50: #eaf5ea;
-  --color-leaf-100: #cfe8cf;
-  --color-leaf-500: #3f8f4a;
-  --color-leaf-600: #33753c;
+  /* SECONDARY — production yellow, used for primary actions and accents */
+  --color-secondary-50: #fef8e2;
+  --color-secondary-100: #fcecb3;
+  --color-secondary-200: #fadd7a;
+  --color-secondary-300: #f7cc45;
+  --color-secondary-400: #f2b705;
+  --color-secondary-500: #d59f00;
+  --color-secondary-600: #a67d00;
 
-  --color-link: #1a3f70;
+  /* leaf green — healthy / complete / positive states */
+  --color-leaf-50: #e8f5ea;
+  --color-leaf-100: #c8e8cc;
+  --color-leaf-400: #4caf58;
+  --color-leaf-500: #2f8f3c;
+  --color-leaf-600: #24702f;
 
-  /* pastel tints for icon tiles */
-  --color-tint-navy: #dfe7f4;
-  --color-tint-gold: #fbeec2;
-  --color-tint-leaf: #d9ecd9;
-  --color-tint-red: #fbe0dd;
+  --color-link: #1c4693;
 
-  --color-warning: #a87c0b;
-  --color-success: #3f8f4a;
-  --color-danger: #d92d20;
+  /* flat tints for icon tiles — no pastel gradients */
+  --color-tint-navy: #dfe7f7;
+  --color-tint-gold: #fcecb3;
+  --color-tint-leaf: #d6efd9;
+  --color-tint-red: #fbdedb;
+
+  --color-warning: #a67d00;
+  --color-success: #2f8f3c;
+  --color-danger: #c22a1f;
 
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -60,21 +71,21 @@
   --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", "Cascadia Mono", monospace;
   --font-impact: var(--font-bowlby), Impact, Haettenschweiler, var(--font-anton), "Arial Narrow Bold", sans-serif;
 
-  /* generously rounded — the Sarvam softness */
-  --radius: 8px;
-  --radius-xs: 4px;
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 10px;
-  --radius-xl: 12px;
-  --radius-2xl: 16px;
-  --radius-3xl: 20px;
-  --radius-4xl: 24px;
+  /* tight, enterprise radii — not the oversized "Sarvam softness" */
+  --radius: 6px;
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --radius-2xl: 12px;
+  --radius-3xl: 16px;
+  --radius-4xl: 20px;
 }
 
 :root {
-  --background: #faf9f7;
-  --foreground: #1c1a17;
+  --background: #f5f6f8;
+  --foreground: #0b0f14;
 }
 
 body {
@@ -272,11 +283,11 @@ body {
 }
 
 @utility gradient-upsell {
-  background-image: linear-gradient(135deg, #dce6f5 0%, #eef0f3 38%, #fbeec2 100%);
+  background-image: linear-gradient(135deg, #dfe7f7 0%, #eef0f3 38%, #fcecb3 100%);
 }
 
 @utility gradient-navy {
-  background-image: linear-gradient(135deg, #0f2a4e 0%, #1a3f70 58%, #24548f 100%);
+  background-image: linear-gradient(135deg, #05122f 0%, #0a2050 55%, #123170 100%);
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {

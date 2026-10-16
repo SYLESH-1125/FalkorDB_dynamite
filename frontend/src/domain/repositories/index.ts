@@ -22,7 +22,7 @@ export interface AuthRepository {
 
 export interface DocumentRepository {
   list(): Promise<IngestedDocument[]>;
-  upload(files: { name: string; sizeBytes: number }[]): Promise<IngestedDocument[]>;
+  upload(files: File[]): Promise<IngestedDocument[]>;
   retry(id: string): Promise<IngestedDocument>;
   remove(id: string): Promise<void>;
   jobs(): Promise<ProcessingJob[]>;
