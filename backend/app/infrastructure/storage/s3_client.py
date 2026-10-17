@@ -16,6 +16,14 @@ def get_s3_client():
     )
 
 
+def ensure_bucket() -> None:
+    client = get_s3_client()
+    try:
+        client.head_bucket(Bucket=settings.s3_bucket)
+    except Exception:
+        client.create_bucket(Bucket=settings.s3_bucket)
+
+
 def put_object(key: str, body: bytes, content_type: str) -> None:
     get_s3_client().put_object(
         Bucket=settings.s3_bucket, Key=key, Body=body, ContentType=content_type,

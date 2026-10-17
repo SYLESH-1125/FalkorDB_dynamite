@@ -14,6 +14,7 @@ from app.infrastructure.db.seed import seed
 from app.infrastructure.graph.neo4j_client import close_driver, get_driver
 from app.infrastructure.graph.publisher import seed_subsidiaries
 from app.infrastructure.db.seed import SUBSIDIARIES
+from app.infrastructure.storage.s3_client import ensure_bucket
 from app.services.embeddings import embed
 
 
@@ -25,6 +26,11 @@ async def lifespan(app: FastAPI):
         await seed_subsidiaries(SUBSIDIARIES)
     except Exception:
         pass  # Neo4j may not be reachable in a partial dev environment; API still boots
+
+    try:
+        ensure_bucket()
+    except Exception:
+        pass  # object store may not be reachable yet; uploads will surface the error later
 
     # warm the embedding model in the background so the first real upload isn't slow
     asyncio.get_event_loop().run_in_executor(None, lambda: embed("warmup"))

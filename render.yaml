@@ -1,0 +1,127 @@
+# Render Blueprint for the BHUMI backend stack (API + Postgres + Neo4j + MinIO).
+# The frontend is NOT here — it deploys to Vercel.
+#
+# Deploy: Render Dashboard → New → Blueprint → pick this repo. Render reads this file,
+# creates the four resources, and prompts you for every `sync: false` secret.
+# Keep all services in the SAME region so they can talk over the private network.
+#
+# NOTE ON PLANS: the API loads a PyTorch embedding model, so it needs ~2 GB RAM
+# (plan: standard). Neo4j and MinIO need a persistent disk (plan: starter+).
+
+databases:
+  - name: bhumi-postgres
+    databaseName: bhumi
+    user: bhumi
+    region: singapore
+    plan: free # 30-day trial DB; switch to basic-256mb (or higher) to keep it beyond that
+    postgresMajorVersion: "16"
+
+services:
+  # ── Neo4j (internal only) ────────────────────────────────────────────────
+  - type: pserv
+    name: bhumi-neo4j
+    runtime: image
+    region: singapore
+    plan: starter
+    image:
+      url: docker.io/library/neo4j:5-community
+    disk:
+      name: neo4j-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: NEO4J_AUTH # format: neo4j/<password> — must match NEO4J_PASSWORD on the API
+        sync: false
+      - key: NEO4J_PLUGINS
+        value: '["apoc"]'
+      - key: NEO4J_server_default__listen__address
+        value: 0.0.0.0
+
+  # ── MinIO object storage (internal only) ──────────────────────────────────
+  - type: pserv
+    name: bhumi-minio
+    runtime: image
+    region: singapore
+    plan: starter
+    image:
+      url: docker.io/minio/minio:latest
+    dockerCommand: server /data --console-address ":9001"
+    disk:
+      name: minio-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: MINIO_ROOT_USER # must match S3_ACCESS_KEY on the API
+        sync: false
+      - key: MINIO_ROOT_PASSWORD # must match S3_SECRET_KEY on the API
+        sync: false
+
+  # ── FastAPI backend (public) ──────────────────────────────────────────────
+  - type: web
+    name: bhumi-backend
+    runtime: docker
+    region: singapore
+    plan: standard # ~2 GB RAM; the 512 MB free/starter plans OOM loading PyTorch
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    disk:
+      name: hf-cache # cache the embedding model so redeploys don't re-download it
+      mountPath: /home/appuser/.cache/huggingface
+      sizeGB: 2
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: bhumi-postgres
+          property: connectionString
+      - key: NEO4J_URI
+        value: bolt://bhumi-neo4j:7687
+      - key: NEO4J_USER
+        value: neo4j
+      - key: NEO4J_PASSWORD # the <password> half of NEO4J_AUTH above
+        sync: false
+      - key: S3_ENDPOINT_URL
+        value: http://bhumi-minio:9000
+      - key: S3_ACCESS_KEY # = MINIO_ROOT_USER
+        sync: false
+      - key: S3_SECRET_KEY # = MINIO_ROOT_PASSWORD
+        sync: false
+      - key: S3_BUCKET
+        value: bhumi-documents
+      - key: CORS_ORIGINS
+        value: https://bhumi.live,https://www.bhumi.live
+      - key: JWT_SECRET
+        generateValue: true # Render generates a strong secret; no need to reuse the leaked one
+      - key: JWT_EXPIRES_MINUTES
+        value: "480"
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: anthropic/claude-sonnet-4.5
+      - key: SARVAM_API_KEY
+        sync: false
+      - key: EMBEDDING_MODEL
+        value: sentence-transformers/all-MiniLM-L6-v2
+      - key: BOOTSTRAP_ADMIN_EMPLOYEE_ID
+        sync: false
+      - key: BOOTSTRAP_ADMIN_PASSWORD
+        sync: false
+      - key: DEMO_PARLIAMENTARY_EMPLOYEE_ID
+        sync: false
+      - key: DEMO_PARLIAMENTARY_PASSWORD
+        sync: false
+      - key: DEMO_MINISTRY_EMPLOYEE_ID
+        sync: false
+      - key: DEMO_MINISTRY_PASSWORD
+        sync: false
+      - key: DEMO_DOMAIN_OFFICER_EMPLOYEE_ID
+        sync: false
+      - key: DEMO_DOMAIN_OFFICER_PASSWORD
+        sync: false
+      - key: DEMO_ADMIN_EMPLOYEE_ID
+        sync: false
+      - key: DEMO_ADMIN_PASSWORD
+        sync: false

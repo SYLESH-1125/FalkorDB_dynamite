@@ -1,3 +1,6 @@
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
+
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -28,6 +31,21 @@ class Settings(BaseSettings):
     demo_domain_officer_password: str = ""
     demo_admin_employee_id: str = ""
     demo_admin_password: str = ""
+
+    @field_validator("database_url")
+    @classmethod
+    def _use_asyncpg_driver(cls, v: str) -> str:
+        # managed hosts (Render, Heroku, …) hand out postgres:// URLs; the async engine needs
+        # the asyncpg driver and rejects libpq's sslmode query param
+        for prefix in ("postgresql://", "postgres://"):
+            if v.startswith(prefix):
+                v = "postgresql+asyncpg://" + v[len(prefix):]
+                break
+        parts = urlsplit(v)
+        if "sslmode" in parts.query:
+            kept = [(k, val) for k, val in parse_qsl(parts.query) if k != "sslmode"]
+            v = urlunsplit(parts._replace(query=urlencode(kept)))
+        return v
 
     @property
     def cors_origin_list(self) -> list[str]:
