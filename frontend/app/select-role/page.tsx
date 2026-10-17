@@ -6,6 +6,8 @@ import { USER_ROLES, ADMIN_ROLE } from "@/src/application/services/role-catalog"
 import { RoleCard } from "@/src/presentation/components/shared/role-card";
 import { RoleOrbit } from "@/src/presentation/components/shared/role-orbit";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
+import { GraphAmbient } from "@/src/presentation/components/shared/graph-ambient";
+import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
 
 export const metadata: Metadata = { title: "Continue as" };
 
@@ -13,12 +15,14 @@ const TINTS = ["navy", "gold", "leaf"] as const;
 
 export default function SelectRolePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-canvas">
-      <header className="relative border-b border-hairline bg-surface-card">
+    <div className="relative flex min-h-screen flex-col bg-canvas">
+      <GraphAmbient variant="subtle" className="opacity-50" />
+      <header className="relative border-b border-hairline bg-surface-card/90 backdrop-blur-sm">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto" priority />
           </Link>
+          <PublicAccessNav />
         </div>
       </header>
 
