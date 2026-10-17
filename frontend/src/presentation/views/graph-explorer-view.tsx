@@ -13,10 +13,10 @@ import { Skeleton } from "../components/ui/skeleton";
 import { cn } from "../components/ui/cn";
 
 const KIND_META: Record<GraphNodeKind, { icon: typeof FileText; color: string; dot: string }> = {
-  Document: { icon: FileText, color: "text-primary-500", dot: "bg-[#1a3f70]" },
-  Subsidiary: { icon: Landmark, color: "text-secondary-600", dot: "bg-[#e5b017]" },
-  Mine: { icon: Pickaxe, color: "text-success", dot: "bg-[#3f8f4a]" },
-  Unknown: { icon: HelpCircle, color: "text-muted", dot: "bg-[#7794bd]" },
+  Document: { icon: FileText, color: "text-primary-500", dot: "bg-[#12304a]" },
+  Subsidiary: { icon: Landmark, color: "text-secondary-600", dot: "bg-[#f2b705]" },
+  Mine: { icon: Pickaxe, color: "text-success", dot: "bg-[#278a57]" },
+  Unknown: { icon: HelpCircle, color: "text-muted", dot: "bg-[#6b7280]" },
 };
 
 const REL_LABEL: Record<string, string> = {
@@ -150,6 +150,7 @@ export function GraphExplorerView() {
                   <input
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    autoComplete="off"
                     placeholder="Search nodes…"
                     className="h-8 w-44 rounded-md border border-hairline-strong bg-surface-card pr-2.5 pl-7 text-[12.5px] text-ink-0 placeholder:text-muted-soft focus:border-primary-400 focus:outline-none"
                   />

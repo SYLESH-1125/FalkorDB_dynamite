@@ -189,6 +189,7 @@ export function AnalyticsView() {
                   id="qa-bar"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
+                  autoComplete="off"
                   placeholder="Ask a question about this data — e.g. which subsidiary had the highest production?"
                   className="min-w-0 flex-1 border-0 bg-transparent text-sm text-ink-0 placeholder:text-muted-soft focus:outline-none"
                 />

@@ -1,59 +1,79 @@
 import Link from "next/link";
-import type { LucideIcon } from "lucide-react";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { RoleOption } from "@/src/application/services/role-catalog";
+import { ROLE_ILLUSTRATIONS } from "./role-illustrations";
 import { cn } from "../ui/cn";
 
-const TINTS = {
-  navy: { chip: "bg-tint-navy text-primary-600", ring: "group-hover:ring-primary-300", glow: "bg-primary-400/25" },
-  gold: { chip: "bg-tint-gold text-secondary-600", ring: "group-hover:ring-secondary-300", glow: "bg-secondary-400/25" },
-  leaf: { chip: "bg-tint-leaf text-success", ring: "group-hover:ring-success/40", glow: "bg-success/20" },
-  red: { chip: "bg-tint-red text-danger", ring: "group-hover:ring-danger/40", glow: "bg-danger/20" },
+const ACCENTS = {
+  navy: { number: "text-primary-300", statValue: "text-primary-600", rule: "bg-primary-500", ring: "hover:ring-primary-300/60" },
+  gold: { number: "text-secondary-300", statValue: "text-secondary-600", rule: "bg-secondary-500", ring: "hover:ring-secondary-300/70" },
+  leaf: { number: "text-leaf-100", statValue: "text-leaf-600", rule: "bg-leaf-500", ring: "hover:ring-leaf-400/60" },
+  red: { number: "text-accent-200", statValue: "text-danger", rule: "bg-danger", ring: "hover:ring-danger/40" },
 } as const;
 
 export function RoleCard({
-  role, icon: Icon, tint, accent = false,
+  role, tint, index, accent = false,
 }: {
   role: RoleOption;
-  icon: LucideIcon;
-  tint: keyof typeof TINTS;
+  tint: keyof typeof ACCENTS;
+  index: string;
   accent?: boolean;
 }) {
-  const style = TINTS[tint];
+  const style = ACCENTS[tint];
+  const Illustration = ROLE_ILLUSTRATIONS[role.id];
+
   return (
     <Link
       href={`/login?role=${role.id}`}
       className={cn(
-        "card-raise group relative flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface-card p-6 ring-1 ring-transparent transition-all duration-300 hover:-translate-y-1 hover:card-float",
+        "card-raise group relative flex h-full flex-col overflow-hidden rounded-2xl border border-hairline bg-surface-card ring-1 ring-transparent transition-all duration-500 hover:-translate-y-1.5 hover:card-float",
         style.ring,
-        accent && "ring-secondary-300",
+        accent && "sm:flex-row sm:items-stretch",
       )}
     >
       <div
-        className={cn("pointer-events-none absolute -top-10 -right-10 size-40 rounded-full blur-3xl transition-opacity duration-300 opacity-60 group-hover:opacity-100", style.glow)}
-        aria-hidden
-      />
-
-      <div className="relative">
-        <span className={cn("grid size-12 place-items-center rounded-xl transition-transform duration-300 group-hover:scale-105", style.chip)}>
-          <Icon className="size-6" aria-hidden />
-        </span>
-        <h3 className="title-md mt-5 text-ink-0">{role.label}</h3>
-        <p className="mt-2 text-[13px] leading-relaxed text-body">{role.tagline}</p>
-
-        <div className="mt-5 flex flex-wrap gap-1.5 border-t border-hairline pt-4">
-          {role.showcase.stats.map(([value, label]) => (
-            <span key={label} className="rounded-full bg-surface-soft px-2.5 py-1 text-[11px] font-medium text-body-strong">
-              <span className="font-semibold text-ink-0">{value}</span> {label}
-            </span>
-          ))}
-        </div>
-
-        <span className="mt-5 inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-primary-600 group-hover:gap-2.5">
-          Continue
-          <ArrowRight className="size-4 transition-all" aria-hidden />
+        className={cn(
+          "relative overflow-hidden",
+          accent ? "h-44 sm:h-auto sm:w-72 sm:shrink-0" : "h-44",
+        )}
+      >
+        <Illustration />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink-0/25 via-transparent to-transparent" />
+        <span
+          className={cn(
+            "type-caption absolute top-4 left-4 font-mono text-[26px] leading-none font-semibold tracking-tight opacity-80 transition-opacity duration-500 group-hover:opacity-100",
+            style.number,
+          )}
+        >
+          {index}
         </span>
       </div>
+
+      <div className="relative flex flex-1 flex-col p-6">
+        <h3 className="title-md text-ink-0">{role.label}</h3>
+        <p className="type-caption mt-1.5 font-semibold tracking-wide text-muted uppercase">{role.tagline}</p>
+
+        <p className="mt-4 flex-1 text-[13.5px] leading-relaxed text-body">
+          {role.showcase.body}
+        </p>
+
+        <div className="mt-5 flex items-end justify-between gap-3 border-t border-hairline pt-4">
+          <div className="flex gap-5">
+            {role.showcase.stats.map(([value, label]) => (
+              <div key={label}>
+                <p className={cn("numeral text-[19px] leading-none", style.statValue)}>{value}</p>
+                <p className="mt-1 max-w-[9rem] text-[10.5px] leading-tight text-muted-soft">{label}</p>
+              </div>
+            ))}
+          </div>
+
+          <span className="grid size-9 shrink-0 place-items-center rounded-full border border-hairline-strong text-ink-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-transparent group-hover:bg-ink-0 group-hover:text-white">
+            <ArrowUpRight className="size-4" aria-hidden />
+          </span>
+        </div>
+      </div>
+
+      <div className={cn("absolute inset-x-0 bottom-0 h-[3px] origin-left scale-x-0 transition-transform duration-500 group-hover:scale-x-100", style.rule)} aria-hidden />
     </Link>
   );
 }

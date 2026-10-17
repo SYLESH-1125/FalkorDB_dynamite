@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 import { HeroVideoBackground } from "@/src/presentation/components/shared/hero-video-background";
+import { useWelcomeTransition } from "@/src/presentation/components/shared/welcome-transition";
 import bhumiMainLogo from "@/app/assets/bhumi-main-logo.png";
 
 const NAV = [
@@ -15,6 +16,7 @@ const NAV = [
 export function HeroParallax() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const { trigger, overlay } = useWelcomeTransition("/select-role");
 
   useEffect(() => {
     function handleScroll() {
@@ -45,7 +47,7 @@ export function HeroParallax() {
 
   return (
     <div ref={wrapperRef} className="relative" style={{ height: "260vh" }}>
-      <section className="sticky top-0 z-0 isolate mx-auto flex h-screen flex-col justify-center overflow-hidden px-4 pt-32 pb-20 text-center sm:px-6 sm:pt-24">
+      <section className="sticky top-0 z-0 isolate mx-auto flex h-screen flex-col overflow-hidden px-4 pb-20 text-center sm:px-6">
         <div
           className="absolute inset-0 -z-10"
           style={{ transform: `scale(${videoScale})`, willChange: "transform" }}
@@ -68,7 +70,7 @@ export function HeroParallax() {
           aria-hidden
         />
 
-        <div className="absolute inset-x-0 top-2.5 z-10 flex justify-center px-4 sm:px-6">
+        <div className="relative z-20 flex justify-center pt-4">
           <nav className="nav-glass flex w-full max-w-5xl items-center gap-3 py-2 pr-2 pl-5">
             <Link href="/" className="flex shrink-0 items-center gap-2.5">
               <Image src={bhumiMainLogo} alt="BHUMI" className="h-7 w-auto drop-shadow-sm" priority />
@@ -93,6 +95,7 @@ export function HeroParallax() {
               </Link>
               <Link
                 href="/select-role"
+                onClick={trigger}
                 className="inline-flex h-9 items-center rounded-full bg-white/90 px-5 text-[13.5px] font-semibold text-primary-700 shadow-sm transition-all duration-300 hover:scale-[1.03] hover:bg-white"
               >
                 Get Started
@@ -102,14 +105,15 @@ export function HeroParallax() {
         </div>
 
         <div
+          className="flex flex-1 flex-col justify-center"
           style={{
-            transform: `translateY(calc(-${textTranslate}px - 2.5rem)) scale(${textScale})`,
+            transform: `translateY(-${textTranslate}px) scale(${textScale})`,
             opacity: Math.max(textOpacity, 0),
             willChange: "transform, opacity",
           }}
         >
           <div
-            className="mb-6 flex justify-center"
+            className="mt-6 mb-6 flex justify-center"
             style={{
               transform: `translateY(${badgeTranslate}px)`,
               opacity: Math.max(badgeOpacity, 0),
@@ -129,17 +133,18 @@ export function HeroParallax() {
             className="mx-auto h-auto w-full max-w-3xl px-4 drop-shadow-lg sm:max-w-4xl lg:max-w-5xl"
           />
 
-          <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-white/80 sm:text-base">
+          <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-white/80 sm:text-base">
             Bharat Hub for Unified Mining Intelligence
           </p>
-          <p className="mx-auto mt-2 max-w-xl text-[13.5px] leading-relaxed text-white/60">
+          <p className="mx-auto max-w-xl text-[13.5px] leading-relaxed text-white/60">
             One indexed record of every scan, ledger and clearance across nine coal subsidiaries —
             queryable in plain language, traceable to the page.
           </p>
 
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-2.5">
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
             <Link
               href="/select-role"
+              onClick={trigger}
               className="inline-flex h-12 items-center gap-2 rounded-full bg-secondary-400 px-8 text-[15px] font-semibold text-primary-700 shadow-lg transition-all duration-300 hover:scale-[1.03] hover:bg-secondary-300"
             >
               Get Started
@@ -163,6 +168,7 @@ export function HeroParallax() {
           <ChevronDown className="size-4 animate-bounce" />
         </div>
       </section>
+      {overlay}
     </div>
   );
 }

@@ -4,7 +4,7 @@ import type { IngestionHeatCell } from "@/src/domain/entities/analytics";
 import { cn } from "../ui/cn";
 
 export function Spark({
-  values, className, stroke = "#1c4693", area = true,
+  values, className, stroke = "#12304a", area = true,
 }: {
   values: number[];
   className?: string;

@@ -62,6 +62,7 @@ export function Topbar({ onOpenMenu }: { onOpenMenu: () => void }) {
             <input
               id="global-search"
               type="search"
+              autoComplete="off"
               placeholder="Search documents, reports, queries…"
               className="h-9 w-full rounded-md border border-hairline bg-surface-soft pr-3 pl-9 text-[13.5px] text-ink-0 placeholder:text-muted-soft focus:border-primary-400 focus:bg-surface-card focus:outline-none"
             />

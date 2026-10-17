@@ -12,15 +12,15 @@ export function Label({ htmlFor, children }: { htmlFor?: string; children: React
   );
 }
 
-export function TextInput({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
-  return <input className={cn(CONTROL, className)} {...props} />;
+export function TextInput({ className, autoComplete = "off", ...props }: InputHTMLAttributes<HTMLInputElement>) {
+  return <input className={cn(CONTROL, className)} autoComplete={autoComplete} {...props} />;
 }
 
 export function Select({
-  className, children, ...props
+  className, children, autoComplete = "off", ...props
 }: SelectHTMLAttributes<HTMLSelectElement> & { children: ReactNode }) {
   return (
-    <select className={cn(CONTROL, "cursor-pointer", className)} {...props}>
+    <select className={cn(CONTROL, "cursor-pointer", className)} autoComplete={autoComplete} {...props}>
       {children}
     </select>
   );

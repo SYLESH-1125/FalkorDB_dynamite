@@ -1,43 +1,44 @@
 @import "tailwindcss";
 
 @theme {
-  /* neutral white/graphite ground for the main content area */
-  --color-canvas: #f5f6f8;
-  --color-surface-soft: #eceef2;
+  /* neutral off-white/ash ground for the main content area — Off White / Ash Grey */
+  --color-canvas: #f7f8fa;
+  --color-surface-soft: #f2f3f5;
   --color-surface-card: #ffffff;
   --color-surface-elevated: #ffffff;
 
-  --color-hairline: #d7dbe2;
-  --color-hairline-strong: #b7bec9;
+  /* Border Grey */
+  --color-hairline: #e2e5e8;
+  --color-hairline-strong: #c7cbd1;
 
-  /* text ramp — pure black ink, never washed out */
-  --color-ink-0: #000000;
-  --color-body-strong: #101214;
-  --color-body: #2b2e33;
-  --color-muted: #45484d;
-  --color-muted-soft: #64676c;
+  /* text ramp — Coal Black ink, Graphite body, Medium Grey muted */
+  --color-ink-0: #171717;
+  --color-body-strong: #171717;
+  --color-body: #343a40;
+  --color-muted: #4b5158;
+  --color-muted-soft: #6b7280;
 
-  /* PRIMARY — dark blue, the institutional anchor */
-  --color-primary-50: #eaf0fb;
-  --color-primary-100: #cfdcf4;
-  --color-primary-200: #9fb9e8;
-  --color-primary-300: #6790d6;
-  --color-primary-400: #3766bb;
-  --color-primary-500: #1c4693;
-  --color-primary-600: #123170;
-  --color-primary-700: #0a2050;
-  --color-primary-800: #05122f;
+  /* PRIMARY — Institutional Navy, the institutional anchor */
+  --color-primary-50: #e8edf3;
+  --color-primary-100: #c3d0e0;
+  --color-primary-200: #91a9c5;
+  --color-primary-300: #5a7ca3;
+  --color-primary-400: #2e5680;
+  --color-primary-500: #1a3f66;
+  --color-primary-600: #12304a;
+  --color-primary-700: #0c2338;
+  --color-primary-800: #071626;
 
-  /* SIDEBAR — a distinct dark-navy surface, deliberately darker than primary-700 */
-  --color-sidebar: #071226;
-  --color-sidebar-raised: #0d1c38;
-  --color-sidebar-border: #1a2c4d;
-  --color-sidebar-text: #c7d2e6;
-  --color-sidebar-text-muted: #7f8cab;
+  /* SIDEBAR — Coal Black surface, deliberately darker than primary-700 */
+  --color-sidebar: #171717;
+  --color-sidebar-raised: #232323;
+  --color-sidebar-border: #343434;
+  --color-sidebar-text: #d4d4d4;
+  --color-sidebar-text-muted: #8a8a8a;
   --color-sidebar-active-bg: #f2b705;
-  --color-sidebar-active-text: #0b0f14;
+  --color-sidebar-active-text: #171717;
 
-  /* SECONDARY — production yellow, used for primary actions and accents */
+  /* SECONDARY — Coal Gold, used for primary actions and accents */
   --color-secondary-50: #fef8e2;
   --color-secondary-100: #fcecb3;
   --color-secondary-200: #fadd7a;
@@ -46,24 +47,32 @@
   --color-secondary-500: #d59f00;
   --color-secondary-600: #a67d00;
 
-  /* leaf green — healthy / complete / positive states */
-  --color-leaf-50: #e8f5ea;
-  --color-leaf-100: #c8e8cc;
-  --color-leaf-400: #4caf58;
-  --color-leaf-500: #2f8f3c;
-  --color-leaf-600: #24702f;
+  /* ACCENT — Indian Saffron, warnings and secondary highlights */
+  --color-accent-50: #fdece0;
+  --color-accent-100: #fad0ae;
+  --color-accent-200: #f5ab74;
+  --color-accent-400: #e8750c;
+  --color-accent-500: #c66109;
+  --color-accent-600: #9c4c07;
 
-  --color-link: #1c4693;
+  /* leaf green — Validation Green, healthy / complete / positive states */
+  --color-leaf-50: #e6f4ec;
+  --color-leaf-100: #c1e5cf;
+  --color-leaf-400: #3ba066;
+  --color-leaf-500: #278a57;
+  --color-leaf-600: #1e6c43;
+
+  --color-link: #12304a;
 
   /* flat tints for icon tiles — no pastel gradients */
-  --color-tint-navy: #dfe7f7;
+  --color-tint-navy: #e2e9f1;
   --color-tint-gold: #fcecb3;
-  --color-tint-leaf: #d6efd9;
-  --color-tint-red: #fbdedb;
+  --color-tint-leaf: #d9efe2;
+  --color-tint-red: #f8dcdc;
 
-  --color-warning: #a67d00;
-  --color-success: #2f8f3c;
-  --color-danger: #c22a1f;
+  --color-warning: #e8750c;
+  --color-success: #278a57;
+  --color-danger: #c62828;
 
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -84,8 +93,8 @@
 }
 
 :root {
-  --background: #f5f6f8;
-  --foreground: #000000;
+  --background: #f7f8fa;
+  --foreground: #171717;
 }
 
 body {
@@ -283,11 +292,70 @@ body {
 }
 
 @utility gradient-upsell {
-  background-image: linear-gradient(135deg, #dfe7f7 0%, #eef0f3 38%, #fcecb3 100%);
+  background-image: linear-gradient(135deg, #e2e9f1 0%, #f2f3f5 38%, #fcecb3 100%);
 }
 
 @utility gradient-navy {
-  background-image: linear-gradient(135deg, #05122f 0%, #0a2050 55%, #123170 100%);
+  background-image: linear-gradient(135deg, #071626 0%, #0c2338 55%, #12304a 100%);
+}
+
+/* Stripe-style soft mesh: layered radial glows on a near-white ground */
+@utility gradient-mesh-light {
+  background-color: #f7f8fa;
+  background-image:
+    radial-gradient(ellipse 620px 420px at 12% -8%, rgba(242, 183, 5, 0.16), transparent 60%),
+    radial-gradient(ellipse 680px 480px at 88% 8%, rgba(18, 48, 74, 0.10), transparent 62%),
+    radial-gradient(ellipse 520px 420px at 50% 105%, rgba(232, 117, 12, 0.08), transparent 60%);
+}
+
+/* dark mesh for deep navy sections */
+@utility gradient-mesh-dark {
+  background-color: #0c2338;
+  background-image:
+    radial-gradient(ellipse 640px 460px at 8% 0%, rgba(242, 183, 5, 0.14), transparent 58%),
+    radial-gradient(ellipse 680px 520px at 100% 15%, rgba(90, 124, 163, 0.22), transparent 60%),
+    radial-gradient(ellipse 520px 420px at 45% 110%, rgba(232, 117, 12, 0.10), transparent 55%);
+}
+
+@utility grid-overlay {
+  background-image:
+    linear-gradient(to right, rgba(23, 23, 23, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(23, 23, 23, 0.05) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@utility grid-overlay-dark {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+@utility text-gradient-gold {
+  background-image: linear-gradient(90deg, #a67d00 0%, #f2b705 55%, #e8750c 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+@utility glass-card {
+  position: relative;
+  border: 1px solid rgba(23, 23, 23, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@utility glass-card-dark {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+@utility ring-glow {
+  box-shadow: 0 0 0 1px rgba(242, 183, 5, 0.35), 0 8px 30px -10px rgba(242, 183, 5, 0.35);
 }
 
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
@@ -308,6 +376,11 @@ body {
 
 @keyframes shimmer {
   100% { transform: translateX(100%); }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes voice-bar {

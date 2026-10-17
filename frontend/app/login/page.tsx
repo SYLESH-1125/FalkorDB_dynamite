@@ -5,6 +5,7 @@ import { ShieldCheck, Sparkles, ArrowLeft } from "lucide-react";
 import { LoginForm } from "@/src/presentation/components/auth/login-form";
 import { RoleShowcase } from "@/src/presentation/components/shared/role-showcase";
 import { USER_ROLES, ADMIN_ROLE } from "@/src/application/services/role-catalog";
+import type { AppRole } from "@/src/domain/entities/user";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -13,6 +14,13 @@ const PROOF = [
   ["18,942", "documents indexed and query-ready"],
   ["94.7%", "extraction accuracy on validated fields"],
 ];
+
+const ACCENT_RULE: Record<AppRole, string> = {
+  parliamentary: "bg-primary-500",
+  ministry: "bg-secondary-500",
+  "domain-officer": "bg-leaf-500",
+  admin: "bg-danger",
+};
 
 export default async function LoginPage({
   searchParams,
@@ -23,15 +31,18 @@ export default async function LoginPage({
   const role = [...USER_ROLES, ADMIN_ROLE].find((r) => r.id === roleId);
 
   return (
-    <div className="flex min-h-screen flex-col bg-canvas">
-      <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6">
-        <Link href="/" className="inline-flex items-center gap-2">
-          <Image src={bhumiLogo} alt="BHUMI" className="h-8 w-auto" priority />
-        </Link>
-      </div>
+    <div className="relative flex min-h-screen flex-col bg-canvas">
+      <header className="relative border-b border-hairline bg-surface-card">
+        <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6">
+          <Link href="/" className="inline-flex items-center gap-2">
+            <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto" priority />
+          </Link>
+        </div>
+      </header>
 
-      <div className="flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-        <div className="card-float w-full max-w-5xl overflow-hidden rounded-2xl border border-hairline bg-surface-card lg:grid lg:grid-cols-2">
+      <div className="grid-overlay relative flex flex-1 flex-col">
+      <div className="relative flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
+        <div className="card-float relative w-full max-w-5xl overflow-hidden rounded-3xl border border-hairline bg-surface-card lg:grid lg:grid-cols-[1.05fr_1fr]">
           {role ? (
             <RoleShowcase role={role} />
           ) : (
@@ -67,18 +78,22 @@ export default async function LoginPage({
             </div>
           )}
 
-          <div className="p-6 sm:p-10">
+          <div className="relative flex flex-col justify-center p-7 sm:p-10">
+            {role ? (
+              <div className={`absolute top-0 left-0 h-[3px] w-16 ${ACCENT_RULE[role.id]}`} aria-hidden />
+            ) : null}
+
             <Link
               href="/select-role"
-              className="inline-flex items-center gap-1.5 text-[12.5px] font-medium text-muted hover:text-ink-0"
+              className="inline-flex w-fit items-center gap-1.5 text-[12.5px] font-medium text-muted transition-colors hover:text-ink-0"
             >
               <ArrowLeft className="size-3.5" aria-hidden />
               Change role
             </Link>
-            <h1 className="display-sm mt-3 text-ink-0">Sign in</h1>
+            <h1 className="display-sm mt-4 text-ink-0">Sign in</h1>
             <p className="mt-1.5 text-[14px] text-body">
               {role
-                ? <>Signing in as <span className="font-medium text-body-strong">{role.label}</span>.</>
+                ? <>Signing in as <span className="font-semibold text-body-strong">{role.label}</span>.</>
                 : "Use your employee credentials to access the platform."}
             </p>
             <LoginForm appRole={role?.id} />
@@ -86,11 +101,12 @@ export default async function LoginPage({
         </div>
       </div>
 
-      <footer className="px-4 py-6 text-center">
+      <footer className="relative px-4 py-6 text-center">
         <p className="text-[12px] text-muted">
           BHUMI · Smart India Hackathon 2026
         </p>
       </footer>
+      </div>
     </div>
   );
 }

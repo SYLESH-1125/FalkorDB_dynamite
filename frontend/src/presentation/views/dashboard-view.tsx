@@ -112,7 +112,7 @@ export function DashboardView() {
                 </div>
                 <p className="numeral mt-3 text-[26px] leading-none text-ink-0">{kpi.value}</p>
                 <p className="mt-1.5 text-[12px] text-body">{kpi.label}</p>
-                {spark.length > 1 ? <Spark values={spark} className="mt-3 h-8" stroke="#1c4693" /> : null}
+                {spark.length > 1 ? <Spark values={spark} className="mt-3 h-8" stroke="#12304a" /> : null}
               </div>
             );
           })}

@@ -12,10 +12,10 @@ interface SimNode extends GraphNode {
 }
 
 const NODE_COLOR: Record<GraphNodeKind, { fill: string; ring: string }> = {
-  Document: { fill: "#1a3f70", ring: "#0f2a4e" },
-  Subsidiary: { fill: "#e5b017", ring: "#a87c0b" },
-  Mine: { fill: "#3f8f4a", ring: "#33753c" },
-  Unknown: { fill: "#7794bd", ring: "#3d6296" },
+  Document: { fill: "#12304a", ring: "#0c2338" },
+  Subsidiary: { fill: "#f2b705", ring: "#a67d00" },
+  Mine: { fill: "#278a57", ring: "#1e6c43" },
+  Unknown: { fill: "#6b7280", ring: "#4b5158" },
 };
 
 const NODE_RADIUS: Record<GraphNodeKind, number> = {
@@ -190,7 +190,7 @@ export function GraphCanvas({
   return (
     <div
       ref={containerRef}
-      className={cn("relative h-full w-full touch-none overflow-hidden bg-[#0f172a]", className)}
+      className={cn("relative h-full w-full touch-none overflow-hidden bg-[#171717]", className)}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerLeave={onPointerUp}
@@ -227,15 +227,15 @@ export function GraphCanvas({
               <g key={e.id} opacity={dimmed ? 0.12 : 0.8}>
                 <line
                   x1={s.x} y1={s.y} x2={t.x} y2={t.y}
-                  stroke="#94a3b8" strokeWidth={1.2}
+                  stroke="#8a8a8a" strokeWidth={1.2}
                 />
                 <text
                   x={midX} y={midY}
-                  fill="#cbd5e1"
+                  fill="#d4d4d4"
                   fontSize={9}
                   textAnchor="middle"
                   className="select-none"
-                  style={{ paintOrder: "stroke", stroke: "#0f172a", strokeWidth: 3 }}
+                  style={{ paintOrder: "stroke", stroke: "#171717", strokeWidth: 3 }}
                 >
                   {e.type}
                 </text>
@@ -257,16 +257,16 @@ export function GraphCanvas({
                 className="cursor-pointer"
               >
                 {isSelected ? (
-                  <circle r={r + 6} fill="none" stroke="#f0ca4c" strokeWidth={2} opacity={0.9} />
+                  <circle r={r + 6} fill="none" stroke="#f2b705" strokeWidth={2} opacity={0.9} />
                 ) : null}
                 <circle r={r} fill={color.fill} stroke={color.ring} strokeWidth={2} />
                 <text
                   y={r + 13}
                   textAnchor="middle"
                   fontSize={10.5}
-                  fill="#e2e8f0"
+                  fill="#f2f3f5"
                   className="pointer-events-none select-none"
-                  style={{ paintOrder: "stroke", stroke: "#0f172a", strokeWidth: 3 }}
+                  style={{ paintOrder: "stroke", stroke: "#171717", strokeWidth: 3 }}
                 >
                   {n.label.length > 22 ? `${n.label.slice(0, 20)}…` : n.label}
                 </text>
