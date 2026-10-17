@@ -42,7 +42,7 @@ fi
 echo "FalkorDB ready at 127.0.0.1:6379"
 
 if ! alembic upgrade head; then
-  echo "Database migration failed. If you see 'Network is unreachable', use Supabase Session pooler URL." >&2
+  echo "Database migration failed. Check pooler URL, DATABASE_SSL=true, and logs above." >&2
   exit 1
 fi
 exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers 1

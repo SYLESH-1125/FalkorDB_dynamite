@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.config import settings
 from app.infrastructure.db.base import Base
 from app.infrastructure.db import models  # noqa: F401 — registers all tables on Base.metadata
+from app.infrastructure.db.connect_args import asyncpg_connect_args
 
 config = context.config
 
@@ -15,12 +16,6 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 target_metadata = Base.metadata
-
-_connect_args: dict = {}
-if settings.database_ssl:
-    _connect_args["ssl"] = True
-if settings.database_pgbouncer:
-    _connect_args["statement_cache_size"] = 0
 
 
 def run_migrations_offline() -> None:
@@ -44,7 +39,7 @@ async def run_migrations_online() -> None:
     connectable = create_async_engine(
         settings.database_url,
         poolclass=pool.NullPool,
-        connect_args=_connect_args,
+        connect_args=asyncpg_connect_args(),
     )
     async with connectable.connect() as connection:
         await connection.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
