@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     embeddings_enabled: bool = True
     database_ssl: bool = False
     database_ssl_insecure: bool = False
+    database_pgbouncer: bool = False
     cors_origins: str = "http://localhost:3000"
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"
