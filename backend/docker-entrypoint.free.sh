@@ -1,6 +1,17 @@
 #!/bin/sh
 set -e
 
+# Render has no IPv6 egress to Supabase "direct" db.*.supabase.co — Session pooler is required.
+case "${DATABASE_URL:-}" in
+  *@db.*.supabase.co*)
+    echo "ERROR: DATABASE_URL uses Supabase DIRECT host (db.*.supabase.co)." >&2
+    echo "Render cannot reach it (Network is unreachable / Errno 101)." >&2
+    echo "Supabase → Connect → Connection pooling → Session mode → copy URI." >&2
+    echo "Host must be *.pooler.supabase.com and user postgres.<project-ref>." >&2
+    exit 1
+    ;;
+esac
+
 FALKORDB_BIN="${FALKORDB_BIN_PATH:-/var/lib/falkordb/bin}"
 MODULE="${FALKORDB_BIN}/falkordb.so"
 
@@ -30,5 +41,8 @@ if [ "$ready" -ne 1 ]; then
 fi
 echo "FalkorDB ready at 127.0.0.1:6379"
 
-alembic upgrade head
+if ! alembic upgrade head; then
+  echo "Database migration failed. If you see 'Network is unreachable', use Supabase Session pooler URL." >&2
+  exit 1
+fi
 exec uvicorn app.main:app --host 0.0.0.0 --port "${PORT:-8000}" --workers 1
