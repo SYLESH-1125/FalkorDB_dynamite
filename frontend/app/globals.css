@@ -441,6 +441,73 @@ body {
   overflow-x: auto;
 }
 
+/* Google-Docs-style editable canvas for the Tiptap report editor */
+.report-editor-body {
+  min-height: 60vh;
+  color: var(--color-body-strong);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.report-editor-body h1 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--color-ink-0);
+  margin: 0 0 18px;
+}
+.report-editor-body h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary-600);
+  margin: 28px 0 10px;
+}
+.report-editor-body h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-ink-0);
+  margin: 20px 0 8px;
+}
+.report-editor-body p {
+  margin: 0 0 12px;
+}
+.report-editor-body ul,
+.report-editor-body ol {
+  margin: 0 0 12px;
+  padding-left: 22px;
+}
+.report-editor-body li {
+  margin: 4px 0;
+}
+.report-editor-body img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin: 12px 0;
+  border: 1px solid var(--color-hairline);
+}
+.report-editor-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0 20px;
+  font-size: 13px;
+}
+.report-editor-body th,
+.report-editor-body td {
+  border: 1px solid var(--color-hairline);
+  padding: 8px 10px;
+  text-align: left;
+}
+.report-editor-body th {
+  background: var(--color-surface-soft);
+  font-weight: 600;
+}
+.report-editor-body p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--color-muted-soft);
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

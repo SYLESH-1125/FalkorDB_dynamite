@@ -1,223 +1,356 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Cloud, TrendingUp, TrendingDown, Minus, FileSearch } from "lucide-react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import {
+  Send, FileText, ChevronDown, Plus, Loader2, Quote, Copy, Check,
+  ThumbsUp, ThumbsDown, Info, Cloud,
+} from "lucide-react";
+import bhumiLogo from "@/app/assets/bhumi-logo.png";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
-import type { TopicTerm } from "@/src/domain/entities/topic";
-import { PageHeader } from "../components/ui/page-header";
-import { Card, CardHeader, CardBody } from "../components/ui/card";
-import { Badge } from "../components/ui/badge";
-import { Select } from "../components/ui/field";
-import { Skeleton } from "../components/ui/skeleton";
-import { CategoryBarChart } from "../components/charts/charts";
-import { formatLabel } from "@/src/application/services/formatting";
+import type { ChatMessage, Citation } from "@/src/domain/entities/query";
+import { extractAnalysisChart } from "@/src/domain/entities/analysis-chart";
+import { MarkdownMessage } from "../components/shared/markdown-message";
+import { AnalysisChartCard } from "../components/shared/analysis-chart-card";
 import { cn } from "../components/ui/cn";
 
-// map term weight onto a discrete type scale so the cloud stays legible
-function sizeFor(weight: number): string {
-  if (weight >= 80) return "text-4xl sm:text-5xl";
-  if (weight >= 60) return "text-3xl sm:text-4xl";
-  if (weight >= 45) return "text-2xl sm:text-3xl";
-  if (weight >= 30) return "text-xl sm:text-2xl";
-  if (weight >= 20) return "text-lg";
-  return "text-sm";
+const SUGGESTED_QUESTIONS = [
+  "What are the trends in FY 2024-2025, and what does that suggest for next year?",
+  "Which words or events appear most important or prioritised across the corpus?",
+  "Which topic cluster has the most documents, and how has it grown over time?",
+];
+
+function CitationCard({ citation }: { citation: Citation }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="overflow-hidden rounded-xl border border-hairline bg-surface-soft transition-colors hover:border-hairline-strong">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label="Sources"
+        className="flex w-full items-center gap-2 px-3 py-2 text-left hover:bg-surface-soft/80"
+      >
+        <FileText className="size-3.5 shrink-0 text-muted-soft" aria-hidden />
+        <span className="min-w-0 flex-1 truncate text-xs text-body">{citation.documentName}</span>
+        <span className="shrink-0 text-[10px] text-muted-soft">p. {citation.page}</span>
+        <span className="shrink-0 rounded-full bg-tint-leaf px-1.5 py-0.5 text-[9px] font-semibold text-success">
+          {Math.round(citation.relevance * 100)}%
+        </span>
+        <ChevronDown
+          className={cn("size-3.5 shrink-0 text-muted-soft transition-transform", open && "rotate-180")}
+          aria-hidden
+        />
+      </button>
+      {open ? (
+        <blockquote className="border-t border-hairline px-3 py-2.5">
+          <p className="flex gap-1.5 text-xs leading-relaxed text-body italic">
+            <Quote className="mt-0.5 size-3 shrink-0 text-muted-soft" aria-hidden />
+            {citation.snippet}
+          </p>
+        </blockquote>
+      ) : null}
+    </div>
+  );
 }
 
-function toneFor(weight: number): string {
-  if (weight >= 70) return "text-link";
-  if (weight >= 45) return "text-ink-0";
-  if (weight >= 25) return "text-body";
-  return "text-muted-soft";
+function GeneralKnowledgeNotice({ text }: { text: string }) {
+  return (
+    <div className="flex items-start gap-2 rounded-xl border border-secondary-300 bg-secondary-50 px-3 py-2.5">
+      <Info className="mt-0.5 size-3.5 shrink-0 text-secondary-600" aria-hidden />
+      <p className="text-xs leading-relaxed text-secondary-600">{text}</p>
+    </div>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        void navigator.clipboard.writeText(text);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1500);
+      }}
+      aria-label="Copy answer"
+      title="Copy answer"
+      className="grid size-7 place-items-center rounded-lg text-muted-soft transition-colors hover:bg-surface-soft hover:text-ink-0"
+    >
+      {copied ? <Check className="size-3.5 text-success" aria-hidden /> : <Copy className="size-3.5" aria-hidden />}
+    </button>
+  );
 }
 
 export function TopicsView() {
-  const terms = useAsync(() => repositories.topics.terms(), []);
-  const clusters = useAsync(() => repositories.topics.clusters(), []);
-  const documents = useAsync(() => repositories.documents.list(), []);
-  const [category, setCategory] = useState("all");
-  const [selected, setSelected] = useState<TopicTerm | null>(null);
+  const searchParams = useSearchParams();
+  const { data: threadData, loading, setData: setThreads } = useAsync(() => repositories.topics.threads(), []);
+  const [chosenId, setChosenId] = useState<string | null>(null);
+  const [pendingUserMessage, setPendingUserMessage] = useState<{ threadId: string; message: ChatMessage } | null>(null);
+  const [input, setInput] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const allTerms = useMemo(() => terms.data ?? [], [terms.data]);
-  const dominantTheme = clusters.data?.[0]?.label ?? "—";
-  const categories = useMemo(
-    () => ["all", ...new Set(allTerms.map((t) => t.category))],
-    [allTerms],
-  );
+  const threads = threadData ?? [];
+  const threadParam = searchParams.get("thread");
+  const activeId = chosenId ?? threadParam ?? threads[0]?.id ?? null;
+  const activeThread = threads.find((t) => t.id === activeId) ?? null;
+  const messages = [
+    ...(activeThread?.messages ?? []),
+    ...(pendingUserMessage && pendingUserMessage.threadId === activeId ? [pendingUserMessage.message] : []),
+  ];
 
-  const visible = category === "all" ? allTerms : allTerms.filter((t) => t.category === category);
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages.length, thinking]);
 
-  // shuffle deterministically so the cloud does not read as a sorted list
-  const scattered = useMemo(() => {
-    return [...visible].sort((a, b) => (a.text.length % 7) - (b.text.length % 7) || b.weight - a.weight);
-  }, [visible]);
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
+  }, [input]);
+
+  async function submit(question: string): Promise<ChatMessage | null> {
+    const trimmed = question.trim();
+    if (!trimmed || thinking) return null;
+
+    let threadId = activeId;
+    if (!threadId) {
+      const thread = await repositories.topics.createThread();
+      setThreads([thread, ...threads]);
+      setChosenId(thread.id);
+      threadId = thread.id;
+    }
+
+    const now = new Date();
+    setPendingUserMessage({
+      threadId,
+      message: {
+        id: `pending-${now.getTime()}`,
+        role: "user",
+        content: trimmed,
+        createdAt: now.toISOString(),
+        citations: [],
+      },
+    });
+    setInput("");
+    setThinking(true);
+
+    const answer = await repositories.topics.ask(threadId, trimmed);
+    const freshThreads = await repositories.topics.threads();
+    setThreads(freshThreads);
+    setPendingUserMessage(null);
+    setThinking(false);
+    return answer;
+  }
+
+  function onSubmit(event: FormEvent) {
+    event.preventDefault();
+    void submit(input);
+  }
 
   return (
-    <>
-      <PageHeader
-        title="Word Cloud & Topic Identification"
-        description="Dominant terms and thematic clusters extracted across the indexed corpus."
-        breadcrumbs={[{ label: "Intelligence" }, { label: "Word Cloud & Topics" }]}
-        action={
-          <Select
-            aria-label="Filter by category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="h-9 w-auto"
+    <div className="flex h-full min-h-0 flex-col overflow-hidden bg-canvas">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="flex h-14 shrink-0 items-center gap-2 border-b border-hairline bg-surface-card/80 px-3 backdrop-blur-sm sm:px-5">
+          <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-primary-600 text-white">
+            <Cloud className="size-3.5" aria-hidden />
+          </span>
+          <span className="text-[15px] font-semibold text-ink-0">Topic and Word Intelligence</span>
+          <span className="ml-1 hidden items-center gap-1 rounded-full bg-tint-leaf px-2 py-0.5 text-[10.5px] font-semibold text-success sm:inline-flex">
+            <span className="size-1.5 rounded-full bg-success" aria-hidden />
+            Online
+          </span>
+
+          <button
+            type="button"
+            onClick={async () => {
+              const thread = await repositories.topics.createThread();
+              setThreads([thread, ...threads]);
+              setChosenId(thread.id);
+            }}
+            className="ml-auto flex h-8 items-center gap-1.5 rounded-full bg-primary-600 px-3 text-[12px] font-semibold text-white transition-colors hover:bg-primary-700"
           >
-            {categories.map((c) => (
-              <option key={c} value={c}>{c === "all" ? "All categories" : c}</option>
-            ))}
-          </Select>
-        }
-      />
+            <Plus className="size-3.5" aria-hidden />
+            New conversation
+          </button>
+        </header>
 
-      <div className="space-y-5 p-4 sm:p-6 lg:p-8">
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {[
-            ["Unique terms", allTerms.length],
-            ["Topic clusters", clusters.data?.length ?? 0],
-            ["Documents analysed", documents.data?.length ?? 0],
-            ["Dominant theme", dominantTheme],
-          ].map(([label, value]) => (
-            <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
-              <p className="type-caption text-muted">{label as string}</p>
-              <p className="title-md mt-1 truncate text-ink-0">
-                {value as string | number}
-              </p>
+        <div ref={scrollRef} className="scrollbar-thin flex-1 overflow-y-auto">
+          {loading ? (
+            <div className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center gap-2 px-4 text-center">
+              <Loader2 className="size-5 animate-spin text-primary-600" aria-hidden />
+              <p className="text-sm text-muted-soft">Loading conversation…</p>
             </div>
-          ))}
-        </div>
-
-        <div className="grid gap-5 xl:grid-cols-5">
-          <Card className="xl:col-span-3">
-            <CardHeader
-              title="Term cloud"
-              description="Size and colour reflect frequency across the corpus — select a term to inspect it"
-              action={<Cloud className="size-4 text-ink-0" aria-hidden />}
-            />
-            <CardBody>
-              {terms.loading ? (
-                <Skeleton className="h-80 w-full" />
-              ) : (
-                <div className="flex min-h-80 flex-wrap items-center justify-center gap-x-4 gap-y-2 p-2">
-                  {scattered.map((term) => (
-                    <button
-                      key={term.text}
-                      type="button"
-                      onClick={() => setSelected(term)}
-                      title={`${term.text} — ${term.documentCount} documents`}
-                      className={cn(
-                        "px-1 leading-tight font-normal uppercase tracking-wide transition-colors",
-                        sizeFor(term.weight),
-                        toneFor(term.weight),
-                        selected?.text === term.text && "rounded bg-primary-600 text-white",
-                      )}
-                    >
-                      {term.text}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </CardBody>
-          </Card>
-
-          <div className="space-y-5 xl:col-span-2">
-            <Card>
-              <CardHeader title="Term frequency" description="Top 12 terms by weighted occurrence" />
-              <CardBody>
-                {terms.loading ? (
-                  <Skeleton className="h-[320px] w-full" />
-                ) : (
-                  <CategoryBarChart
-                    data={visible.slice(0, 12)}
-                    xKey="text"
-                    layout="vertical"
-                    height={320}
-                    series={[{ key: "weight", label: "Weight" }]}
-                  />
-                )}
-              </CardBody>
-            </Card>
-
-            {selected ? (
-              <Card>
-                <CardHeader title="Selected term" action={<Badge tone="accent">{formatLabel(selected.category)}</Badge>} />
-                <CardBody>
-                  <p className="display-sm text-ink-0">{selected.text}</p>
-                  <dl className="mt-4 grid grid-cols-2 gap-3">
-                    {[
-                      ["Weight", selected.weight],
-                      ["Documents", selected.documentCount],
-                    ].map(([label, value]) => (
-                      <div key={label as string} className=" bg-surface-soft px-3 py-2">
-                        <dt className="type-caption text-muted-soft">{label as string}</dt>
-                        <dd className="mt-0.5 text-sm font-normal text-ink-0">{value as number}</dd>
-                      </div>
-                    ))}
-                  </dl>
+          ) : messages.length === 0 && !thinking ? (
+            <div className="mx-auto flex h-full max-w-3xl flex-col items-center justify-center px-4 text-center">
+              <span className="relative grid size-16 place-items-center rounded-2xl bg-primary-600 text-white shadow-[0_16px_32px_-12px_rgba(18,48,74,0.5)]">
+                <Cloud className="size-8" aria-hidden />
+                <span
+                  className="pointer-events-none absolute -inset-4 -z-10 rounded-full opacity-70 blur-2xl"
+                  style={{ background: "radial-gradient(ellipse, rgba(242,183,5,0.25), transparent 70%)" }}
+                  aria-hidden
+                />
+              </span>
+              <h2 className="display-sm mt-6 text-ink-0">Analyse terms, trends and priorities in your corpus</h2>
+              <p className="mt-2 max-w-md text-[14.5px] leading-relaxed text-body">
+                Grounded in extracted, validated fields and document timelines — with trend
+                analysis, prioritisation and forward-looking outlook where the data supports it.
+              </p>
+              <div className="mt-8 grid w-full max-w-2xl gap-2.5 sm:grid-cols-1">
+                {SUGGESTED_QUESTIONS.map((question) => (
                   <button
+                    key={question}
                     type="button"
-                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-normal text-link hover:underline"
+                    onClick={() => void submit(question)}
+                    className="rounded-2xl border border-hairline bg-surface-card px-4 py-3 text-left text-[13px] text-body shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md"
                   >
-                    <FileSearch className="size-3.5" aria-hidden />
-                    View source documents
+                    {question}
                   </button>
-                </CardBody>
-              </Card>
-            ) : null}
-          </div>
-        </div>
-
-        <Card>
-          <CardHeader
-            title="Topic clusters"
-            description="Thematic groupings with document frequency and sentiment orientation"
-          />
-          {clusters.loading ? (
-            <div className="space-y-2 p-4">
-              {Array.from({ length: 5 }, (_, i) => <Skeleton key={i} className="h-16 w-full" />)}
+                ))}
+              </div>
             </div>
           ) : (
-            <ul className="divide-y divide-hairline">
-              {clusters.data?.map((cluster) => {
-                const Icon = cluster.sentiment > 0.2 ? TrendingUp : cluster.sentiment < -0.1 ? TrendingDown : Minus;
-                const tone = cluster.sentiment > 0.2 ? "text-success" : cluster.sentiment < -0.1 ? "text-danger" : "text-muted-soft";
-                const max = clusters.data?.[0]?.frequency ?? 1;
-                return (
-                  <li key={cluster.id} className="px-4 py-3.5 sm:px-5">
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <p className="text-sm font-normal text-ink-0">{cluster.label}</p>
-                      <span className={cn("inline-flex items-center gap-1 text-xs", tone)}>
-                        <Icon className="size-3.5" aria-hidden />
-                        {cluster.sentiment > 0 ? "+" : ""}{cluster.sentiment.toFixed(2)}
-                      </span>
-                      <span className="ml-auto text-xs tabular-nums text-muted">
-                        {cluster.frequency} mentions
-                      </span>
-                    </div>
+            <ul className="mx-auto max-w-3xl space-y-7 px-4 py-6 sm:px-6">
+              {messages.map((message) => (
+                <li key={message.id} className="flex gap-3">
+                  <span
+                    className={cn(
+                      "grid size-8 shrink-0 place-items-center rounded-full text-[12px] font-semibold shadow-sm",
+                      message.role === "assistant" ? "bg-primary-600 text-white" : "bg-secondary-400 text-primary-700",
+                    )}
+                  >
+                    {message.role === "assistant" ? <Cloud className="size-4" aria-hidden /> : "DO"}
+                  </span>
+                  <div className="min-w-0 flex-1 pt-1">
+                    <p className="text-[13px] font-semibold text-ink-0">
+                      {message.role === "assistant" ? "Topic Intelligence" : "You"}
+                    </p>
 
-                    <div className="mt-2 h-1.5 w-full overflow-hidden bg-hairline">
-                      <div
-                        className="h-full rounded-full bg-primary-500"
-                        style={{ width: `${(cluster.frequency / max) * 100}%` }}
-                      />
-                    </div>
+                    {message.role === "assistant" ? (
+                      (() => {
+                        const { text, chart } = extractAnalysisChart(message.content);
+                        return (
+                          <div className="mt-1.5 space-y-3">
+                            <div className="rounded-2xl border border-hairline bg-surface-card px-4 py-3.5 text-[14.5px] text-body-strong shadow-sm">
+                              <MarkdownMessage content={text} />
+                            </div>
+                            {chart ? <AnalysisChartCard chart={chart} /> : null}
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      <div className="mt-1.5 rounded-2xl bg-primary-50 px-4 py-3 text-[15px] leading-relaxed whitespace-pre-line text-body-strong">
+                        {message.content}
+                      </div>
+                    )}
 
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      {cluster.terms.map((term) => (
-                        <span key={term} className=" bg-surface-soft px-2 py-0.5 text-[11px] text-body">
-                          {term}
-                        </span>
+                    {message.citations.length > 0 ? (
+                      message.citations[0].page === 0 ? (
+                        <div className="mt-3">
+                          <GeneralKnowledgeNotice text={message.citations[0].snippet} />
+                        </div>
+                      ) : (
+                        <div className="mt-3">
+                          <p className="mb-1.5 text-[10px] font-semibold tracking-wider text-muted-soft uppercase">
+                            Sources · {message.citations.length}
+                          </p>
+                          <div className="space-y-1.5">
+                            {message.citations.map((citation) => (
+                              <CitationCard key={citation.id} citation={citation} />
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    ) : null}
+
+                    {message.role === "assistant" ? (
+                      <div className="mt-2 flex items-center gap-0.5">
+                        <CopyButton text={message.content} />
+                        <button
+                          type="button"
+                          aria-label="Good response"
+                          className="grid size-7 place-items-center rounded-lg text-muted-soft transition-colors hover:bg-surface-soft hover:text-success"
+                        >
+                          <ThumbsUp className="size-3.5" aria-hidden />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Poor response"
+                          className="grid size-7 place-items-center rounded-lg text-muted-soft transition-colors hover:bg-surface-soft hover:text-danger"
+                        >
+                          <ThumbsDown className="size-3.5" aria-hidden />
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+
+              {thinking ? (
+                <li className="flex gap-3">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary-600 text-white shadow-sm">
+                    <Cloud className="size-4" aria-hidden />
+                  </span>
+                  <div className="mt-1.5 flex items-center gap-2.5 rounded-2xl border border-hairline bg-surface-card px-4 py-3 shadow-sm">
+                    <span className="flex items-center gap-1" aria-hidden>
+                      {[0, 1, 2].map((i) => (
+                        <span
+                          key={i}
+                          className="size-1.5 rounded-full bg-primary-500 animate-voice-bar"
+                          style={{ animationDelay: `${i * 0.15}s` }}
+                        />
                       ))}
-                    </div>
-                  </li>
-                );
-              })}
+                    </span>
+                    <span className="text-sm text-muted">Analysing terms and topics…</span>
+                  </div>
+                </li>
+              ) : null}
             </ul>
           )}
-        </Card>
+        </div>
+
+        <div className="shrink-0 bg-canvas px-4 pb-4 sm:px-6 sm:pb-6">
+          <form
+            onSubmit={onSubmit}
+            className="mx-auto flex max-w-3xl items-end gap-1.5 rounded-3xl border border-hairline-strong bg-surface-card p-2 shadow-[0_8px_24px_-12px_rgba(18,48,74,0.18)] transition-colors focus-within:border-primary-400 focus-within:shadow-[0_12px_28px_-10px_rgba(18,48,74,0.28)]"
+          >
+            <label htmlFor="topic-input" className="sr-only">Ask a question about terms and topics</label>
+            <textarea
+              ref={textareaRef}
+              id="topic-input"
+              rows={1}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  void submit(input);
+                }
+              }}
+              placeholder="Ask about trends, priorities, terms or topic clusters…"
+              className="max-h-40 min-h-10 flex-1 resize-none bg-transparent px-2.5 py-2 text-[15px] text-ink-0 placeholder:text-muted-soft focus:outline-none focus-visible:outline-none"
+              style={{ outline: "none" }}
+            />
+
+            <button
+              type="submit"
+              disabled={!input.trim() || thinking}
+              aria-label="Send question"
+              className="grid size-9 shrink-0 place-items-center rounded-full bg-primary-600 text-white transition-all duration-200 enabled:hover:scale-105 enabled:hover:bg-primary-700 disabled:bg-hairline-strong disabled:text-muted-soft"
+            >
+              <Send className="size-4" aria-hidden />
+            </button>
+          </form>
+          <p className="mx-auto mt-2 max-w-3xl text-center text-[10px] text-muted-soft">
+            Analysis and predictions are AI-generated interpretation, not verified fact. Verify figures against the cited source before publication.
+          </p>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

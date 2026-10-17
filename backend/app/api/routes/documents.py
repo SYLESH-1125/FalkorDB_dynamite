@@ -5,7 +5,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, UploadFi
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_db, require_admin
+from app.api.deps import get_current_user, get_db, require_admin
 from app.domain.models import IngestedDocumentOut, PipelineStageOut, ProcessingJobOut
 from app.infrastructure.db.base import SessionLocal
 from app.infrastructure.db.models import (
@@ -36,7 +36,7 @@ def _to_out(doc: Document, uploaded_by_name: str, subsidiary_code: str) -> Inges
 
 @router.get("", response_model=list[IngestedDocumentOut])
 async def list_documents(
-    db: AsyncSession = Depends(get_db), _user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db), _user: User = Depends(get_current_user),
 ):
     result = await db.execute(
         select(Document).order_by(Document.uploaded_at.desc()),

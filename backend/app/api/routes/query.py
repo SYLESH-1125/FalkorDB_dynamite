@@ -5,49 +5,33 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, get_db
-from app.domain.models import AskRequest, ChatMessageOut, ChatThreadOut, CitationOut
+from app.domain.models import AskRequest, ChatMessageOut, ChatThreadOut
 from app.infrastructure.db.models import ChatMessage, ChatThread, Citation, User
+from app.services.chat_serializers import message_out, thread_out
 from app.services.query_engine import answer_question
 
 router = APIRouter(prefix="/api/query", tags=["query"])
 
 
-def _message_out(m: ChatMessage, citations: list[Citation]) -> ChatMessageOut:
-    return ChatMessageOut(
-        id=m.id, role=m.role, content=m.content, created_at=m.created_at,
-        citations=[CitationOut(
-            id=c.id, document_name=c.document_name, page=c.page,
-            snippet=c.snippet, relevance=float(c.relevance),
-        ) for c in citations],
-    )
-
-
-async def _thread_out(db: AsyncSession, thread: ChatThread) -> ChatThreadOut:
-    messages = (
-        await db.execute(select(ChatMessage).where(ChatMessage.thread_id == thread.id).order_by(ChatMessage.created_at))
-    ).scalars().all()
-    out_messages = []
-    for m in messages:
-        citations = (await db.execute(select(Citation).where(Citation.message_id == m.id))).scalars().all()
-        out_messages.append(_message_out(m, citations))
-    return ChatThreadOut(id=thread.id, title=thread.title, updated_at=thread.updated_at, messages=out_messages)
-
-
 @router.get("/threads", response_model=list[ChatThreadOut])
 async def list_threads(db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)):
     threads = (
-        await db.execute(select(ChatThread).where(ChatThread.user_id == user.id).order_by(ChatThread.updated_at.desc()))
+        await db.execute(
+            select(ChatThread)
+            .where(ChatThread.user_id == user.id, ChatThread.kind == "query")
+            .order_by(ChatThread.updated_at.desc()),
+        )
     ).scalars().all()
-    return [await _thread_out(db, t) for t in threads]
+    return [await thread_out(db, t) for t in threads]
 
 
 @router.post("/threads", response_model=ChatThreadOut, status_code=201)
 async def create_thread(db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user)):
-    thread = ChatThread(user_id=user.id, title="New conversation", updated_at=datetime.now(timezone.utc))
+    thread = ChatThread(user_id=user.id, title="New conversation", kind="query", updated_at=datetime.now(timezone.utc))
     db.add(thread)
     await db.commit()
     await db.refresh(thread)
-    return await _thread_out(db, thread)
+    return await thread_out(db, thread)
 
 
 @router.post("/threads/{thread_id}/ask", response_model=ChatMessageOut)
@@ -56,7 +40,11 @@ async def ask(
     db: AsyncSession = Depends(get_db), user: User = Depends(get_current_user),
 ):
     thread = (
-        await db.execute(select(ChatThread).where(ChatThread.id == thread_id, ChatThread.user_id == user.id))
+        await db.execute(
+            select(ChatThread).where(
+                ChatThread.id == thread_id, ChatThread.user_id == user.id, ChatThread.kind == "query",
+            ),
+        )
     ).scalar_one_or_none()
     if thread is None:
         raise HTTPException(status_code=404, detail="Thread not found")
@@ -86,4 +74,4 @@ async def ask(
 
     await db.commit()
 
-    return _message_out(answer, citation_rows)
+    return message_out(answer, citation_rows)

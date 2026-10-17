@@ -149,6 +149,9 @@ class ReportTemplateOut(CamelModel):
     updated_at: datetime
     usage_count: int
     is_default: bool
+    file_key: str | None = None
+    file_size_bytes: int = 0
+    has_file: bool = False
 
 
 class ReportOut(CamelModel):
@@ -164,6 +167,8 @@ class ReportOut(CamelModel):
     updated_at: datetime
     page_count: int
     formats: list[str]
+    share_url: str | None = None
+    share_expires_at: datetime | None = None
 
 
 class ReportVersionOut(CamelModel):
@@ -182,6 +187,43 @@ class ReportWizardConfigIn(CamelModel):
     include_charts: bool
     include_citations: bool
     format: str
+
+
+class ReportDraftRequestIn(CamelModel):
+    prompt: str
+    template_id: str
+    data_source_ids: list[str]
+    subsidiary: str = "All subsidiaries"
+    period: str = ""
+
+
+class ReportDocumentOut(CamelModel):
+    report_id: str
+    prompt: str
+    content: dict
+    updated_at: datetime
+
+
+class ReportDocumentSaveIn(CamelModel):
+    content: dict
+
+
+class CreateShareLinkIn(CamelModel):
+    expires_in_days: int = 7
+
+
+class ShareLinkOut(CamelModel):
+    share_url: str
+    expires_at: datetime
+
+
+class SharedReportOut(CamelModel):
+    title: str
+    template_name: str
+    subsidiary: str
+    created_by: str
+    updated_at: datetime
+    content: dict
 
 
 class TopicTermOut(CamelModel):

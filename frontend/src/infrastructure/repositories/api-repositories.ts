@@ -4,7 +4,7 @@ import type {
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
   HelpRepository, GraphRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
-import { apiClient } from "../http/api-client";
+import { apiClient, LLM_TIMEOUT_MS } from "../http/api-client";
 import type { Session } from "@/src/domain/entities/user";
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type { DashboardSnapshot } from "@/src/domain/entities/analytics";
@@ -54,20 +54,33 @@ export const queryRepository: QueryRepository = {
   threads: () => apiClient.get<ChatThread[]>("/api/query/threads"),
   createThread: () => apiClient.post<ChatThread>("/api/query/threads"),
   ask: (threadId, question) =>
-    apiClient.post<ChatMessage>(`/api/query/threads/${threadId}/ask`, { question }),
+    apiClient.post<ChatMessage>(`/api/query/threads/${threadId}/ask`, { question }, LLM_TIMEOUT_MS),
 };
 
 export const reportRepository: ReportRepository = {
   list: () => apiClient.get("/api/reports"),
   templates: () => apiClient.get("/api/reports/templates"),
   saveTemplate: (template) => apiClient.put(`/api/reports/templates/${template.id}`, template),
+  templateFileBlob: (templateId) => apiClient.getBlob(`/api/reports/templates/${templateId}/file`),
   versions: (reportId) => apiClient.get(`/api/reports/${reportId}/versions`),
   generate: (config) => apiClient.post("/api/reports/generate", config),
+  draft: (request) => apiClient.post("/api/reports/draft", request, LLM_TIMEOUT_MS),
+  getDocument: (reportId) => apiClient.get(`/api/reports/${reportId}/document`),
+  saveDocument: (reportId, content) => apiClient.put(`/api/reports/${reportId}/document`, { content }),
+  exportBlob: (reportId, format) => apiClient.getBlob(`/api/reports/${reportId}/export.${format}`),
+  createShareLink: (reportId, expiresInDays) =>
+    apiClient.post(`/api/reports/${reportId}/share`, { expiresInDays }),
+  revokeShareLink: (reportId) => apiClient.delete(`/api/reports/${reportId}/share`),
+  getSharedReport: (token) => apiClient.get(`/api/reports/shared/${token}`),
 };
 
 export const topicRepository: TopicRepository = {
   terms: () => apiClient.get("/api/topics/terms"),
   clusters: () => apiClient.get("/api/topics/clusters"),
+  threads: () => apiClient.get<ChatThread[]>("/api/topics/threads"),
+  createThread: () => apiClient.post<ChatThread>("/api/topics/threads"),
+  ask: (threadId, question) =>
+    apiClient.post<ChatMessage>(`/api/topics/threads/${threadId}/ask`, { question }, LLM_TIMEOUT_MS),
 };
 
 export const parliamentaryRepository: ParliamentaryRepository = {

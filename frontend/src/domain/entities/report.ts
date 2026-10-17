@@ -15,6 +15,8 @@ export interface Report {
   updatedAt: string;
   pageCount: number;
   formats: ExportFormat[];
+  shareUrl: string | null;
+  shareExpiresAt: string | null;
 }
 
 export interface ReportVersion {
@@ -43,6 +45,9 @@ export interface ReportTemplate {
   updatedAt: string;
   usageCount: number;
   isDefault: boolean;
+  fileKey: string | null;
+  fileSizeBytes: number;
+  hasFile: boolean;
 }
 
 export interface ReportWizardConfig {
@@ -54,4 +59,37 @@ export interface ReportWizardConfig {
   includeCharts: boolean;
   includeCitations: boolean;
   format: ExportFormat;
+}
+
+export interface ReportDraftRequest {
+  prompt: string;
+  templateId: string;
+  dataSourceIds: string[];
+  subsidiary: string;
+  period: string;
+}
+
+// Tiptap/ProseMirror document JSON — opaque to the domain layer, structurally typed
+// only as far as the editor and renderers need to walk it.
+export type TiptapContent = { type: "doc"; content: unknown[] };
+
+export interface ReportDocument {
+  reportId: string;
+  prompt: string;
+  content: TiptapContent;
+  updatedAt: string;
+}
+
+export interface ShareLink {
+  shareUrl: string;
+  expiresAt: string;
+}
+
+export interface SharedReport {
+  title: string;
+  templateName: string;
+  subsidiary: string;
+  createdBy: string;
+  updatedAt: string;
+  content: TiptapContent;
 }

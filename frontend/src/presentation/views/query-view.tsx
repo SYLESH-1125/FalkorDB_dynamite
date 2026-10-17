@@ -130,7 +130,7 @@ export function QueryView() {
   const searchParams = useSearchParams();
   const { data: threadData, loading, setData: setThreads } = useAsync(() => repositories.query.threads(), []);
   const [chosenId, setChosenId] = useState<string | null>(null);
-  const [appended, setAppended] = useState<Record<string, ChatMessage[]>>({});
+  const [pendingUserMessage, setPendingUserMessage] = useState<{ threadId: string; message: ChatMessage } | null>(null);
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
@@ -151,7 +151,10 @@ export function QueryView() {
   const threadParam = searchParams.get("thread");
   const activeId = chosenId ?? threadParam ?? threads[0]?.id ?? null;
   const activeThread = threads.find((t) => t.id === activeId) ?? null;
-  const messages = [...(activeThread?.messages ?? []), ...(activeId ? (appended[activeId] ?? []) : [])];
+  const messages = [
+    ...(activeThread?.messages ?? []),
+    ...(pendingUserMessage && pendingUserMessage.threadId === activeId ? [pendingUserMessage.message] : []),
+  ];
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -163,10 +166,6 @@ export function QueryView() {
     el.style.height = "auto";
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   }, [input]);
-
-  function append(threadId: string, message: ChatMessage) {
-    setAppended((prev) => ({ ...prev, [threadId]: [...(prev[threadId] ?? []), message] }));
-  }
 
   async function submit(question: string): Promise<ChatMessage | null> {
     const trimmed = question.trim();
@@ -181,18 +180,23 @@ export function QueryView() {
     }
 
     const now = new Date();
-    append(threadId, {
-      id: `msg-${now.getTime()}`,
-      role: "user",
-      content: trimmed,
-      createdAt: now.toISOString(),
-      citations: [],
+    setPendingUserMessage({
+      threadId,
+      message: {
+        id: `pending-${now.getTime()}`,
+        role: "user",
+        content: trimmed,
+        createdAt: now.toISOString(),
+        citations: [],
+      },
     });
     setInput("");
     setThinking(true);
 
     const answer = await repositories.query.ask(threadId, trimmed);
-    append(threadId, answer);
+    const freshThreads = await repositories.query.threads();
+    setThreads(freshThreads);
+    setPendingUserMessage(null);
     setThinking(false);
     return answer;
   }

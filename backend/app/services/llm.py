@@ -24,7 +24,7 @@ class LlmNotConfigured(Exception):
     pass
 
 
-async def _call_openrouter(system_prompt: str, user_prompt: str) -> str:
+async def call_openrouter(system_prompt: str, user_prompt: str) -> str:
     if not settings.openrouter_api_key:
         raise LlmNotConfigured("OPENROUTER_API_KEY is not set")
 
@@ -52,8 +52,8 @@ async def _call_openrouter(system_prompt: str, user_prompt: str) -> str:
 async def generate_answer(question: str, context_blocks: list[str]) -> str:
     context = "\n\n".join(context_blocks) if context_blocks else "No relevant evidence found."
     user_prompt = f"Evidence:\n{context}\n\nQuestion: {question}"
-    return await _call_openrouter(SYSTEM_PROMPT, user_prompt)
+    return await call_openrouter(SYSTEM_PROMPT, user_prompt)
 
 
 async def generate_general_knowledge_answer(question: str) -> str:
-    return await _call_openrouter(GENERAL_KNOWLEDGE_SYSTEM_PROMPT, question)
+    return await call_openrouter(GENERAL_KNOWLEDGE_SYSTEM_PROMPT, question)

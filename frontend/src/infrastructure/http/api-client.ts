@@ -1,6 +1,9 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const SESSION_KEY = "bhumi.session";
 const REQUEST_TIMEOUT_MS = 15_000;
+// LLM-backed analysis calls (trend/prediction reasoning over the full corpus) run meaningfully
+// longer than a lookup — give them room instead of aborting a request the backend would've finished
+const LLM_REQUEST_TIMEOUT_MS = 60_000;
 
 function authHeader(): Record<string, string> {
   if (typeof window === "undefined") return {};
@@ -30,15 +33,15 @@ async function handle<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-function withTimeout(init: RequestInit): RequestInit {
+function withTimeout(init: RequestInit, timeoutMs: number): RequestInit {
   const controller = new AbortController();
-  setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  setTimeout(() => controller.abort(), timeoutMs);
   return { ...init, signal: controller.signal };
 }
 
-async function request<T>(path: string, init: RequestInit): Promise<T> {
+async function request<T>(path: string, init: RequestInit, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
   try {
-    const res = await fetch(`${BASE_URL}${path}`, withTimeout(init));
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout(init, timeoutMs));
     return await handle<T>(res);
   } catch (err) {
     if (err instanceof DOMException && err.name === "AbortError") {
@@ -51,16 +54,18 @@ async function request<T>(path: string, init: RequestInit): Promise<T> {
   }
 }
 
+export const LLM_TIMEOUT_MS = LLM_REQUEST_TIMEOUT_MS;
+
 export const apiClient = {
   get<T>(path: string): Promise<T> {
     return request<T>(path, { headers: { ...authHeader() } });
   },
-  post<T>(path: string, body?: unknown): Promise<T> {
+  post<T>(path: string, body?: unknown, timeoutMs?: number): Promise<T> {
     return request<T>(path, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...authHeader() },
       body: body !== undefined ? JSON.stringify(body) : undefined,
-    });
+    }, timeoutMs);
   },
   put<T>(path: string, body: unknown): Promise<T> {
     return request<T>(path, {
@@ -96,7 +101,12 @@ export const apiClient = {
       method: "POST",
       headers: { "Content-Type": "application/json", ...authHeader() },
       body: JSON.stringify(body),
-    }));
+    }, REQUEST_TIMEOUT_MS));
+    if (!res.ok) throw new Error(`${res.status} ${await res.text().catch(() => "")}`);
+    return res.blob();
+  },
+  async getBlob(path: string): Promise<Blob> {
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout({ headers: { ...authHeader() } }, REQUEST_TIMEOUT_MS));
     if (!res.ok) throw new Error(`${res.status} ${await res.text().catch(() => "")}`);
     return res.blob();
   },

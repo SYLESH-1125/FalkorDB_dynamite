@@ -2,7 +2,10 @@ import type { Session, Credentials, User } from "../entities/user";
 import type { IngestedDocument, ProcessingJob } from "../entities/document";
 import type { ValidationRecord, ExtractedField } from "../entities/validation";
 import type { ChatThread, ChatMessage } from "../entities/query";
-import type { Report, ReportTemplate, ReportVersion, ReportWizardConfig } from "../entities/report";
+import type {
+  Report, ReportTemplate, ReportVersion, ReportWizardConfig, ReportDraftRequest,
+  ReportDocument, TiptapContent, ShareLink, SharedReport,
+} from "../entities/report";
 import type { TopicTerm, TopicCluster } from "../entities/topic";
 import type { ParliamentaryQuery } from "../entities/parliamentary";
 import type {
@@ -46,13 +49,24 @@ export interface ReportRepository {
   list(): Promise<Report[]>;
   templates(): Promise<ReportTemplate[]>;
   saveTemplate(template: ReportTemplate): Promise<ReportTemplate>;
+  templateFileBlob(templateId: string): Promise<Blob>;
   versions(reportId: string): Promise<ReportVersion[]>;
   generate(config: ReportWizardConfig): Promise<Report>;
+  draft(request: ReportDraftRequest): Promise<Report>;
+  getDocument(reportId: string): Promise<ReportDocument>;
+  saveDocument(reportId: string, content: TiptapContent): Promise<ReportDocument>;
+  exportBlob(reportId: string, format: "pdf" | "docx"): Promise<Blob>;
+  createShareLink(reportId: string, expiresInDays: number): Promise<ShareLink>;
+  revokeShareLink(reportId: string): Promise<void>;
+  getSharedReport(token: string): Promise<SharedReport>;
 }
 
 export interface TopicRepository {
   terms(): Promise<TopicTerm[]>;
   clusters(): Promise<TopicCluster[]>;
+  threads(): Promise<ChatThread[]>;
+  ask(threadId: string, question: string): Promise<ChatMessage>;
+  createThread(): Promise<ChatThread>;
 }
 
 export interface ParliamentaryRepository {

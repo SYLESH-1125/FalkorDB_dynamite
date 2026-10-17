@@ -20,6 +20,7 @@ export const NAV_ITEMS: NavItem[] = [
   { href: "/query", label: "AI Query System", icon: MessageSquareText, group: "Intelligence" },
   { href: "/query/conversations", label: "Conversations", icon: MessagesSquare, group: "Intelligence" },
   { href: "/topics", label: "Word Cloud & Topics", icon: Cloud, group: "Intelligence" },
+  { href: "/topics/conversations", label: "Conversations", icon: MessagesSquare, group: "Intelligence" },
   { href: "/analytics", label: "Analytics & Insights", icon: TrendingUp, group: "Intelligence" },
   { href: "/graph", label: "Knowledge Graph", icon: Share2, group: "Intelligence" },
   { href: "/reports", label: "Report Generation", icon: FileBarChart, group: "Reporting" },
@@ -45,4 +46,10 @@ export const PARLIAMENTARY_ALLOWED_PATHS = new Set(["/query", "/query/conversati
 export const PARLIAMENTARY_ONLY_PATHS = new Set(["/problem"]);
 
 // CMPDI / CIL Domain Officers only need the Word Cloud & Topics intelligence feature
-export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/topics"]);
+export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/topics", "/topics/conversations"]);
+
+// visible only to CMPDI / CIL Domain Officers — hidden from every other role's sidebar
+export const DOMAIN_OFFICER_ONLY_PATHS = new Set(["/topics/conversations"]);
+
+// Ministry Policy & Monitoring Officers only need Report Generation and its template library
+export const MINISTRY_ALLOWED_PATHS = new Set(["/reports", "/templates"]);

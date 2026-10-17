@@ -7,17 +7,20 @@ import { PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import {
   NAV_ITEMS, NAV_GROUPS, ADMIN_ONLY_GROUPS,
   PARLIAMENTARY_ALLOWED_PATHS, PARLIAMENTARY_ONLY_PATHS, DOMAIN_OFFICER_ALLOWED_PATHS,
+  DOMAIN_OFFICER_ONLY_PATHS, MINISTRY_ALLOWED_PATHS,
 } from "./nav-items";
 import { cn } from "../ui/cn";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
 export function SidebarContent({
-  collapsed, isAdministrator = false, isParliamentary = false, isDomainOfficer = false, onNavigate, onToggleCollapse,
+  collapsed, isAdministrator = false, isParliamentary = false, isDomainOfficer = false, isMinistry = false,
+  onNavigate, onToggleCollapse,
 }: {
   collapsed: boolean;
   isAdministrator?: boolean;
   isParliamentary?: boolean;
   isDomainOfficer?: boolean;
+  isMinistry?: boolean;
   onNavigate?: () => void;
   onToggleCollapse?: () => void;
 }) {
@@ -27,7 +30,9 @@ export function SidebarContent({
     ? NAV_ITEMS.filter((item) => PARLIAMENTARY_ALLOWED_PATHS.has(item.href))
     : isDomainOfficer
       ? NAV_ITEMS.filter((item) => DOMAIN_OFFICER_ALLOWED_PATHS.has(item.href))
-      : NAV_ITEMS.filter((item) => !PARLIAMENTARY_ONLY_PATHS.has(item.href));
+      : isMinistry
+        ? NAV_ITEMS.filter((item) => MINISTRY_ALLOWED_PATHS.has(item.href))
+        : NAV_ITEMS.filter((item) => !PARLIAMENTARY_ONLY_PATHS.has(item.href) && !DOMAIN_OFFICER_ONLY_PATHS.has(item.href));
 
   return (
     <div className="flex h-full flex-col bg-sidebar">
@@ -107,12 +112,13 @@ export function SidebarContent({
 }
 
 export function MobileSidebar({
-  open, isAdministrator, isParliamentary, isDomainOfficer, onClose,
+  open, isAdministrator, isParliamentary, isDomainOfficer, isMinistry, onClose,
 }: {
   open: boolean;
   isAdministrator?: boolean;
   isParliamentary?: boolean;
   isDomainOfficer?: boolean;
+  isMinistry?: boolean;
   onClose: () => void;
 }) {
   if (!open) return null;
@@ -133,6 +139,7 @@ export function MobileSidebar({
           isAdministrator={isAdministrator}
           isParliamentary={isParliamentary}
           isDomainOfficer={isDomainOfficer}
+          isMinistry={isMinistry}
           onNavigate={onClose}
         />
       </div>

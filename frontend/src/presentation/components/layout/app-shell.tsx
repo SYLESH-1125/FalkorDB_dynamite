@@ -3,7 +3,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/src/application/hooks/use-session";
-import { NAV_ITEMS, ADMIN_ONLY_GROUPS, PARLIAMENTARY_ALLOWED_PATHS, DOMAIN_OFFICER_ALLOWED_PATHS } from "./nav-items";
+import {
+  NAV_ITEMS, ADMIN_ONLY_GROUPS, PARLIAMENTARY_ALLOWED_PATHS, DOMAIN_OFFICER_ALLOWED_PATHS,
+  MINISTRY_ALLOWED_PATHS,
+} from "./nav-items";
 import { SidebarContent, MobileSidebar } from "./sidebar";
 import { Topbar } from "./topbar";
 import { cn } from "../ui/cn";
@@ -11,6 +14,16 @@ import { cn } from "../ui/cn";
 const ADMIN_ONLY_PATHS = new Set(
   NAV_ITEMS.filter((item) => ADMIN_ONLY_GROUPS.has(item.group)).map((item) => item.href),
 );
+
+// allows both exact matches and nested routes under an allowed path (e.g. /reports
+// covers /reports/abc123/edit — a dynamic report id, not a literal listable path)
+function isAllowedPath(pathname: string, allowed: Set<string>): boolean {
+  if (allowed.has(pathname)) return true;
+  for (const path of allowed) {
+    if (pathname.startsWith(`${path}/`)) return true;
+  }
+  return false;
+}
 
 export function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -21,6 +34,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const isAdministrator = session?.user.role === "Administrator";
   const isParliamentary = session?.user.appRole === "parliamentary";
   const isDomainOfficer = session?.user.appRole === "domain-officer";
+  const isMinistry = session?.user.appRole === "ministry";
 
   useEffect(() => {
     if (loading) return;
@@ -28,18 +42,22 @@ export function AppShell({ children }: { children: ReactNode }) {
       router.replace("/select-role");
       return;
     }
-    if (isParliamentary && !PARLIAMENTARY_ALLOWED_PATHS.has(pathname)) {
+    if (isParliamentary && !isAllowedPath(pathname, PARLIAMENTARY_ALLOWED_PATHS)) {
       router.replace("/query");
       return;
     }
-    if (isDomainOfficer && !DOMAIN_OFFICER_ALLOWED_PATHS.has(pathname)) {
+    if (isDomainOfficer && !isAllowedPath(pathname, DOMAIN_OFFICER_ALLOWED_PATHS)) {
       router.replace("/topics");
+      return;
+    }
+    if (isMinistry && !isAllowedPath(pathname, MINISTRY_ALLOWED_PATHS)) {
+      router.replace("/reports");
       return;
     }
     if (!isAdministrator && ADMIN_ONLY_PATHS.has(pathname)) {
       router.replace("/dashboard");
     }
-  }, [loading, session, isAdministrator, isParliamentary, isDomainOfficer, pathname, router]);
+  }, [loading, session, isAdministrator, isParliamentary, isDomainOfficer, isMinistry, pathname, router]);
 
   return (
     <div className="flex h-screen overflow-hidden bg-canvas">
@@ -54,6 +72,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           isAdministrator={isAdministrator}
           isParliamentary={isParliamentary}
           isDomainOfficer={isDomainOfficer}
+          isMinistry={isMinistry}
           onToggleCollapse={() => setCollapsed((v) => !v)}
         />
       </aside>
@@ -63,6 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         isAdministrator={isAdministrator}
         isParliamentary={isParliamentary}
         isDomainOfficer={isDomainOfficer}
+        isMinistry={isMinistry}
         onClose={() => setMobileOpen(false)}
       />
 

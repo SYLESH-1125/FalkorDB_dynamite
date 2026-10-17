@@ -151,6 +151,7 @@ class ChatThread(Base):
 
     id: Mapped[str] = mapped_column(primary_key=True, default=_uuid)
     title: Mapped[str] = mapped_column(default="New conversation")
+    kind: Mapped[str] = mapped_column(default="query")
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id"))
     updated_at: Mapped[datetime] = mapped_column(default=_now)
 
@@ -196,6 +197,9 @@ class ReportTemplate(Base):
     updated_at: Mapped[datetime] = mapped_column(default=_now)
     usage_count: Mapped[int] = mapped_column(default=0)
     is_default: Mapped[bool] = mapped_column(default=False)
+    # S3 key of the reference PDF for this template; null until a real file is uploaded
+    file_key: Mapped[str | None] = mapped_column(default=None)
+    file_size_bytes: Mapped[int] = mapped_column(default=0)
 
 
 class Report(Base):
@@ -212,10 +216,30 @@ class Report(Base):
     updated_at: Mapped[datetime] = mapped_column(default=_now)
     page_count: Mapped[int] = mapped_column(default=0)
     formats: Mapped[list[str]] = mapped_column(JSON, default=list)
+    share_token: Mapped[str | None] = mapped_column(unique=True, default=None)
+    share_expires_at: Mapped[datetime | None] = mapped_column(default=None)
 
     versions: Mapped[list["ReportVersionRow"]] = relationship(
         back_populates="report", order_by="ReportVersionRow.version.desc()", cascade="all, delete-orphan",
     )
+    document: Mapped["ReportDocument | None"] = relationship(
+        back_populates="report", uselist=False, cascade="all, delete-orphan",
+    )
+
+
+class ReportDocument(Base):
+    """The editable Tiptap-format body of a report — separate from Report's
+    metadata row so autosave writes don't touch the report's own audit fields."""
+
+    __tablename__ = "report_documents"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=_uuid)
+    report_id: Mapped[str] = mapped_column(ForeignKey("reports.id"), unique=True)
+    prompt: Mapped[str] = mapped_column(default="")
+    content: Mapped[dict] = mapped_column(JSON, default=dict)
+    updated_at: Mapped[datetime] = mapped_column(default=_now)
+
+    report: Mapped["Report"] = relationship(back_populates="document")
 
 
 class ReportVersionRow(Base):

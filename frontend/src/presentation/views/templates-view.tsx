@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutTemplate, Star, Copy, Settings2, Plus, GripVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { LayoutTemplate, Star, Settings2, Plus, GripVertical, FileDown, Wand2 } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
 import { formatDate } from "@/src/application/services/formatting";
@@ -22,10 +23,33 @@ const CATEGORY_TONES = {
 } as const;
 
 export function TemplatesView() {
+  const router = useRouter();
   const { notify } = useToast();
   const { data, loading, setData } = useAsync(() => repositories.reports.templates(), []);
   const [editing, setEditing] = useState<ReportTemplate | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [openingFile, setOpeningFile] = useState<string | null>(null);
+
+  async function viewFile(template: ReportTemplate) {
+    if (!template.hasFile) {
+      notify({
+        tone: "info",
+        title: "No reference file yet",
+        description: "A Ministry of Coal PDF hasn't been uploaded for this template yet.",
+      });
+      return;
+    }
+    setOpeningFile(template.id);
+    try {
+      const blob = await repositories.reports.templateFileBlob(template.id);
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (err) {
+      notify({ tone: "error", title: "Could not open file", description: err instanceof Error ? err.message : undefined });
+    } finally {
+      setOpeningFile(null);
+    }
+  }
 
   const templates = data ?? [];
   const categories = ["all", ...new Set(templates.map((t) => t.category))];
@@ -107,9 +131,17 @@ export function TemplatesView() {
                   </div>
 
                   <h3 className="title-sm mt-3 text-ink-0">{template.name}</h3>
-                  <Badge tone={CATEGORY_TONES[template.category]} className="mt-1.5">
-                    {template.category}
-                  </Badge>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                    <Badge tone={CATEGORY_TONES[template.category]}>
+                      {template.category}
+                    </Badge>
+                    {template.hasFile ? (
+                      <Badge tone="success">
+                        <FileDown className="size-2.5" aria-hidden />
+                        Reference PDF
+                      </Badge>
+                    ) : null}
+                  </div>
                   <p className="mt-2.5 text-xs leading-relaxed text-muted">{template.description}</p>
 
                   <dl className="mt-4 grid grid-cols-3 gap-2 border-t border-hairline pt-3 text-center">
@@ -126,18 +158,26 @@ export function TemplatesView() {
                   </dl>
                 </CardBody>
 
-                <div className="flex gap-2 border-t border-hairline px-4 py-3">
-                  <Button variant="secondary" size="sm" className="flex-1" onClick={() => setEditing(template)}>
-                    <Settings2 className="size-3.5" aria-hidden />
-                    Configure
+                <div className="flex flex-wrap gap-2 border-t border-hairline px-4 py-3">
+                  <Button
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => router.push(`/reports?templateId=${template.id}`)}
+                  >
+                    <Wand2 className="size-3.5" aria-hidden />
+                    Use template
                   </Button>
                   <Button
-                    variant="ghost"
+                    variant="secondary"
                     size="sm"
-                    aria-label={`Duplicate ${template.name}`}
-                    onClick={() => notify({ tone: "success", title: "Template duplicated", description: `${template.name} (copy)` })}
+                    onClick={() => void viewFile(template)}
+                    disabled={openingFile === template.id}
                   >
-                    <Copy className="size-3.5" aria-hidden />
+                    <FileDown className="size-3.5" aria-hidden />
+                    {template.hasFile ? "View PDF" : "No PDF"}
+                  </Button>
+                  <Button variant="ghost" size="sm" aria-label={`Configure ${template.name}`} onClick={() => setEditing(template)}>
+                    <Settings2 className="size-3.5" aria-hidden />
                   </Button>
                 </div>
               </Card>

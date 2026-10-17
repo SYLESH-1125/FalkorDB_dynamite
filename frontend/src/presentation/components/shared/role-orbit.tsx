@@ -67,8 +67,13 @@ function OrbitCard({
             ))}
           </div>
 
-          <span className="grid size-8 shrink-0 place-items-center rounded-full border border-hairline-strong text-ink-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-transparent group-hover:bg-ink-0 group-hover:text-white">
-            <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:rotate-45" aria-hidden />
+          <span className="relative grid size-8 shrink-0 place-items-center overflow-hidden rounded-full border border-hairline-strong text-ink-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:border-transparent group-hover:text-white">
+            <span
+              className="absolute inset-0 scale-0 rounded-full transition-transform duration-300 ease-out group-hover:scale-100"
+              style={{ background: style.solid }}
+              aria-hidden
+            />
+            <ArrowUpRight className="relative size-3.5 transition-transform duration-300 group-hover:rotate-45" aria-hidden />
           </span>
         </div>
       </div>

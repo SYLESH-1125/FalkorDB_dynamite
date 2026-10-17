@@ -12,9 +12,22 @@ import { Card } from "../components/ui/card";
 import { EmptyState } from "../components/ui/empty-state";
 import { Skeleton } from "../components/ui/skeleton";
 
-export function ConversationsView() {
+export function ConversationsView({
+  source = "query",
+  title = "Conversations",
+  description = "Every question asked of the BHUMI Assistant, across every thread.",
+  parentLabel = "AI Query System",
+  parentHref = "/query",
+}: {
+  source?: "query" | "topics";
+  title?: string;
+  description?: string;
+  parentLabel?: string;
+  parentHref?: string;
+}) {
   const router = useRouter();
-  const { data, loading, setData } = useAsync(() => repositories.query.threads(), []);
+  const repo = source === "topics" ? repositories.topics : repositories.query;
+  const { data, loading, setData } = useAsync(() => repo.threads(), [source]);
   const [search, setSearch] = useState("");
   const [creating, setCreating] = useState(false);
 
@@ -25,17 +38,17 @@ export function ConversationsView() {
 
   async function createConversation() {
     setCreating(true);
-    const thread = await repositories.query.createThread();
+    const thread = await repo.createThread();
     setData([thread, ...threads]);
-    router.push(`/query?thread=${thread.id}`);
+    router.push(`${parentHref}?thread=${thread.id}`);
   }
 
   return (
     <>
       <PageHeader
-        title="Conversations"
-        description="Every question asked of the BHUMI Assistant, across every thread."
-        breadcrumbs={[{ label: "Intelligence" }, { label: "AI Query System", href: "/query" }, { label: "Conversations" }]}
+        title={title}
+        description={description}
+        breadcrumbs={[{ label: "Intelligence" }, { label: parentLabel, href: parentHref }, { label: "Conversations" }]}
         action={
           <Button onClick={() => void createConversation()} disabled={creating}>
             <Plus className="size-4" aria-hidden />
@@ -92,7 +105,7 @@ export function ConversationsView() {
                 <li key={thread.id}>
                   <button
                     type="button"
-                    onClick={() => router.push(`/query?thread=${thread.id}`)}
+                    onClick={() => router.push(`${parentHref}?thread=${thread.id}`)}
                     className="group flex w-full items-center gap-3 px-5 py-4 text-left transition-colors hover:bg-surface-soft"
                   >
                     <span className="grid size-9 shrink-0 place-items-center rounded-full bg-tint-navy text-primary-600">
@@ -102,7 +115,10 @@ export function ConversationsView() {
                       <span className="block truncate text-[13.5px] font-semibold text-body-strong group-hover:text-primary-700">
                         {thread.title}
                       </span>
-                      <span className="mt-0.5 block text-[11.5px] text-muted-soft">
+                      <span
+                        className="mt-0.5 block text-[11.5px] text-muted-soft"
+                        title={new Date(thread.updatedAt).toLocaleString()}
+                      >
                         {thread.messages.length} message{thread.messages.length === 1 ? "" : "s"} · {relativeTime(thread.updatedAt)}
                       </span>
                     </span>
