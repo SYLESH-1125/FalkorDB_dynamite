@@ -47,19 +47,16 @@ services:
       exit 0"
     restart: "no"
 
-  neo4j:
-    image: neo4j:5-community
-    container_name: bhumi-neo4j
-    environment:
-      NEO4J_AUTH: neo4j/bhumi_dev_pw
-      NEO4J_PLUGINS: '["apoc"]'
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: bhumi-falkordb
     ports:
-      - "7474:7474"
-      - "7687:7687"
+      - "6379:6379"
+      - "3000:3000"
     volumes:
-      - neo4j_data:/data
+      - falkordb_data:/data
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:7474 || exit 1"]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -75,9 +72,9 @@ services:
       S3_ACCESS_KEY: bhumi_minio
       S3_SECRET_KEY: bhumi_minio_pw
       S3_BUCKET: bhumi-documents
-      NEO4J_URI: bolt://neo4j:7687
-      NEO4J_USER: neo4j
-      NEO4J_PASSWORD: bhumi_dev_pw
+      FALKORDB_HOST: falkordb
+      FALKORDB_PORT: "6379"
+      FALKORDB_GRAPH: bhumi_company_brain
       CORS_ORIGINS: http://localhost:3000
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       SARVAM_API_KEY: ${SARVAM_API_KEY:-}
@@ -99,7 +96,7 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
-      neo4j:
+      falkordb:
         condition: service_healthy
     volumes:
       - ./backend:/app
@@ -112,5 +109,5 @@ services:
 volumes:
   pgdata:
   minio_data:
-  neo4j_data:
+  falkordb_data:
   hf_cache:

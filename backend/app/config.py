@@ -10,9 +10,12 @@ class Settings(BaseSettings):
     s3_access_key: str = "bhumi_minio"
     s3_secret_key: str = "bhumi_minio_pw"
     s3_bucket: str = "bhumi-documents"
-    neo4j_uri: str = "bolt://localhost:7687"
-    neo4j_user: str = "neo4j"
-    neo4j_password: str = "bhumi_dev_pw"
+    falkordb_host: str = "localhost"
+    falkordb_port: int = 6379
+    falkordb_password: str = ""
+    falkordb_graph: str = "bhumi_company_brain"
+    embeddings_enabled: bool = True
+    database_ssl: bool = False
     cors_origins: str = "http://localhost:3000"
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"
