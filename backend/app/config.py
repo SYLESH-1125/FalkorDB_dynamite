@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     falkordb_graph: str = "bhumi_company_brain"
     embeddings_enabled: bool = True
     database_ssl: bool = False
+    database_ssl_insecure: bool = False
     # Set true when using Supabase transaction pooler (port 6543).
     database_pgbouncer: bool = False
     cors_origins: str = "http://localhost:3000"
