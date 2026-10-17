@@ -9,6 +9,8 @@ import {
 } from "./nav-items";
 import { SidebarContent, MobileSidebar } from "./sidebar";
 import { Topbar } from "./topbar";
+import { GraphAmbient } from "../shared/graph-ambient";
+import { GraphFlowRail } from "../shared/graph-flow-rail";
 import { cn } from "../ui/cn";
 
 const ADMIN_ONLY_PATHS = new Set(
@@ -39,7 +41,8 @@ export function AppShell({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (loading) return;
     if (!session) {
-      router.replace("/select-role");
+      const next = encodeURIComponent(pathname);
+      router.replace(`/login?next=${next}`);
       return;
     }
     if (isParliamentary && !isAllowedPath(pathname, PARLIAMENTARY_ALLOWED_PATHS)) {
@@ -88,7 +91,11 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onOpenMenu={() => setMobileOpen(true)} />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
+        <main className="relative min-h-0 min-w-0 flex-1 overflow-y-auto">
+          <GraphAmbient variant="app" className="opacity-35" />
+          <GraphFlowRail />
+          <div className="relative">{children}</div>
+        </main>
       </div>
     </div>
   );

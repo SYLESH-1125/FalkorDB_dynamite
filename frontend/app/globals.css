@@ -508,6 +508,31 @@ body {
   pointer-events: none;
 }
 
+.graph-flow-shimmer {
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(242, 183, 5, 0.12) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: graph-shimmer 6s ease-in-out infinite;
+}
+
+.graph-step-rise {
+  animation: graph-step-rise 0.7s ease-out both;
+}
+
+@keyframes graph-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes graph-step-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

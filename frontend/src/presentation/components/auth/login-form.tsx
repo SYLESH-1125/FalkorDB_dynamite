@@ -9,7 +9,13 @@ import type { AppRole } from "@/src/domain/entities/user";
 import { Button } from "../ui/button";
 import { Label, TextInput } from "../ui/field";
 
-export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole }) {
+export function LoginForm({
+  appRole,
+  nextPath,
+}: {
+  appRole?: AppRole;
+  nextPath?: string | null;
+}) {
   const router = useRouter();
   const [employeeId, setEmployeeId] = useState("");
   const [password, setPassword] = useState("");
@@ -19,6 +25,10 @@ export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole })
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
+    if (!appRole) {
+      setError("Choose your role above before logging in.");
+      return;
+    }
     if (!employeeId.trim() || !password) {
       setError("Enter both your employee ID and password.");
       return;
@@ -27,9 +37,10 @@ export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole })
     setError(null);
     try {
       const session = await repositories.auth.signIn({ employeeId: employeeId.trim(), password, appRole });
-      router.push(ROLE_LANDING_ROUTE[session.user.appRole] ?? "/dashboard");
+      const safeNext = nextPath?.startsWith("/") && !nextPath.startsWith("//") ? nextPath : null;
+      router.push(safeNext ?? ROLE_LANDING_ROUTE[session.user.appRole] ?? "/dashboard");
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : "Sign-in failed. Check your credentials and try again.");
+      setError(err instanceof Error && err.message ? err.message : "Login failed. Check your credentials and try again.");
       setSubmitting(false);
     }
   }
@@ -96,10 +107,10 @@ export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole })
         {submitting ? (
           <>
             <Loader2 className="size-4 animate-spin" aria-hidden />
-            Signing in…
+            Logging in…
           </>
         ) : (
-          "Sign in"
+          "Log in"
         )}
       </Button>
 

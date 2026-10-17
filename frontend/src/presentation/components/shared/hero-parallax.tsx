@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 import { HeroVideoBackground } from "@/src/presentation/components/shared/hero-video-background";
+import { GraphAmbient } from "@/src/presentation/components/shared/graph-ambient";
+import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
 import { useWelcomeTransition } from "@/src/presentation/components/shared/welcome-transition";
 import bhumiMainLogo from "@/app/assets/bhumi-main-logo.png";
 
@@ -53,6 +55,7 @@ export function HeroParallax() {
           style={{ transform: `scale(${videoScale})`, willChange: "transform" }}
         >
           <HeroVideoBackground />
+          <GraphAmbient variant="hero" className="mix-blend-screen opacity-70" />
         </div>
         <div
           className="pointer-events-none absolute inset-0 -z-10 bg-ink-0"
@@ -93,13 +96,7 @@ export function HeroParallax() {
               >
                 Help
               </Link>
-              <Link
-                href="/select-role"
-                onClick={trigger}
-                className="inline-flex h-9 items-center rounded-full bg-white/90 px-5 text-[13.5px] font-semibold text-primary-700 shadow-sm transition-all duration-300 hover:scale-[1.03] hover:bg-white"
-              >
-                Get Started
-              </Link>
+              <PublicAccessNav invert />
             </div>
           </nav>
         </div>
@@ -142,6 +139,12 @@ export function HeroParallax() {
           </p>
 
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+            <Link
+              href="/login"
+              className="bubble-glass inline-flex h-12 items-center gap-2 px-7 text-[15px] font-semibold text-white"
+            >
+              Log in
+            </Link>
             <Link
               href="/select-role"
               onClick={trigger}
