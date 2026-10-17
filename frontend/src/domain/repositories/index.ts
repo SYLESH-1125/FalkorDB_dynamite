@@ -17,6 +17,7 @@ import type { Integration } from "../entities/integration";
 import type { AppNotification } from "../entities/notification";
 import type { HelpResource, FaqItem } from "../entities/help";
 import type { KnowledgeGraph } from "../entities/graph";
+import type { BrainAnswer, BrainBrief, BrainFact } from "../entities/brain";
 
 export interface AuthRepository {
   signIn(credentials: Credentials): Promise<Session>;
@@ -111,6 +112,12 @@ export interface HelpRepository {
 
 export interface GraphRepository {
   knowledgeGraph(): Promise<KnowledgeGraph>;
+}
+
+export interface BrainRepository {
+  brief(): Promise<BrainBrief>;
+  ask(question: string): Promise<BrainAnswer>;
+  record(fact: BrainFact): Promise<{ id: string; title: string }>;
 }
 
 export interface Transcription {

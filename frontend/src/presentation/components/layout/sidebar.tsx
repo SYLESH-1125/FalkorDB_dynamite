@@ -39,8 +39,8 @@ export function SidebarContent({
       <div className={cn("flex h-16 items-center gap-2.5 border-b border-sidebar-border bg-white px-4", collapsed && "justify-center px-2")}>
         <Image src={bhumiLogo} alt="BHUMI" width={collapsed ? 32 : 120} height={32} className="h-8 w-auto shrink-0 object-contain" priority />
         {!collapsed ? (
-          <Link href="/dashboard" className="min-w-0">
-            <p className="truncate text-[11.5px] text-sidebar-text-muted"></p>
+          <Link href="/brain" className="min-w-0">
+            <p className="truncate text-[11.5px] font-medium text-ink-0">Company Brain</p>
           </Link>
         ) : null}
       </div>

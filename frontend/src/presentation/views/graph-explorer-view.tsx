@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Share2, FileText, Landmark, Pickaxe, HelpCircle, X, Search } from "lucide-react";
+import { Share2, FileText, Landmark, Pickaxe, HelpCircle, X, Search, UserRound, Users, FolderKanban, Scale, Ticket, MessageCircle, Brain } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
 import type { GraphNodeKind } from "@/src/domain/entities/graph";
@@ -16,8 +16,19 @@ const KIND_META: Record<GraphNodeKind, { icon: typeof FileText; color: string; d
   Document: { icon: FileText, color: "text-primary-500", dot: "bg-[#12304a]" },
   Subsidiary: { icon: Landmark, color: "text-secondary-600", dot: "bg-[#f2b705]" },
   Mine: { icon: Pickaxe, color: "text-success", dot: "bg-[#278a57]" },
+  Person: { icon: UserRound, color: "text-[#0f766e]", dot: "bg-[#0f766e]" },
+  Team: { icon: Users, color: "text-[#1d4e89]", dot: "bg-[#1d4e89]" },
+  Project: { icon: FolderKanban, color: "text-[#7c3aed]", dot: "bg-[#7c3aed]" },
+  Decision: { icon: Scale, color: "text-[#c2410c]", dot: "bg-[#c2410c]" },
+  Ticket: { icon: Ticket, color: "text-[#be123c]", dot: "bg-[#be123c]" },
+  Chat: { icon: MessageCircle, color: "text-[#0369a1]", dot: "bg-[#0369a1]" },
+  Memory: { icon: Brain, color: "text-[#52525b]", dot: "bg-[#52525b]" },
   Unknown: { icon: HelpCircle, color: "text-muted", dot: "bg-[#6b7280]" },
 };
+
+function kindMeta(kind: string) {
+  return KIND_META[kind as GraphNodeKind] ?? KIND_META.Unknown;
+}
 
 const REL_LABEL: Record<string, string> = {
   BELONGS_TO: "belongs to",
@@ -88,7 +99,7 @@ export function GraphExplorerView() {
     <>
       <PageHeader
         title="Knowledge Graph Explorer"
-        description="Interactive view of the live Neo4j domain graph — documents, subsidiaries and mines, with their relationships."
+        description="The live FalkorDB company graph — people, teams, projects, documents, decisions, tickets, and chats."
         breadcrumbs={[{ label: "Intelligence" }, { label: "Knowledge Graph" }]}
       />
 
@@ -113,7 +124,7 @@ export function GraphExplorerView() {
           ) : null}
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
             {kinds.map((kind) => {
-              const meta = KIND_META[kind];
+              const meta = kindMeta(kind);
               const Icon = meta.icon;
               const active = effectiveActiveKinds.has(kind);
               return (
@@ -195,9 +206,9 @@ export function GraphExplorerView() {
               <div className="p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2.5">
-                    <span className={cn("grid size-9 shrink-0 place-items-center rounded-lg bg-surface-soft", KIND_META[selected.kind].color)}>
+                    <span className={cn("grid size-9 shrink-0 place-items-center rounded-lg bg-surface-soft", kindMeta(selected.kind).color)}>
                       {(() => {
-                        const Icon = KIND_META[selected.kind].icon;
+                        const Icon = kindMeta(selected.kind).icon;
                         return <Icon className="size-4.5" aria-hidden />;
                       })()}
                     </span>
@@ -270,10 +281,9 @@ export function GraphExplorerView() {
             <CardHeader title="About this view" />
             <div className="space-y-2.5 p-4 text-[12.5px] leading-relaxed text-body">
               <p>
-                This is the platform&apos;s live Neo4j knowledge graph: every validated
-                document publishes a <span className="font-medium text-ink-0">Document</span> node
-                linked to its <span className="font-medium text-ink-0">Subsidiary</span> and any
-                referenced <span className="font-medium text-ink-0">Mine</span>.
+                This canvas is drawn from FalkorDB. People, teams, projects, documents,
+                decisions, tickets, and chats are nodes the Company Brain agent traverses.
+                A validated upload is merged in as a document, so the graph stays current.
               </p>
             </div>
           </Card>

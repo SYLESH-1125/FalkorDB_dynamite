@@ -2,7 +2,7 @@ import type {
   AuthRepository, DocumentRepository, ValidationRepository, QueryRepository,
   ReportRepository, TopicRepository, ParliamentaryRepository, AnalyticsRepository,
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
-  HelpRepository, GraphRepository, VoiceRepository, Transcription,
+  HelpRepository, GraphRepository, BrainRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
 import { apiClient, LLM_TIMEOUT_MS } from "../http/api-client";
 import type { Session } from "@/src/domain/entities/user";
@@ -10,6 +10,7 @@ import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type { DashboardSnapshot } from "@/src/domain/entities/analytics";
 import type { ValidationRecord } from "@/src/domain/entities/validation";
 import type { KnowledgeGraph } from "@/src/domain/entities/graph";
+import type { BrainAnswer, BrainBrief } from "@/src/domain/entities/brain";
 
 const SESSION_KEY = "bhumi.session";
 
@@ -125,6 +126,12 @@ export const helpRepository: HelpRepository = {
 
 export const graphRepository: GraphRepository = {
   knowledgeGraph: () => apiClient.get<KnowledgeGraph>("/api/graph"),
+};
+
+export const brainRepository: BrainRepository = {
+  brief: () => apiClient.get<BrainBrief>("/api/brain/brief"),
+  ask: (question) => apiClient.post<BrainAnswer>("/api/brain/ask", { question }, LLM_TIMEOUT_MS),
+  record: (fact) => apiClient.post("/api/brain/facts", fact),
 };
 
 export const voiceRepository: VoiceRepository = {

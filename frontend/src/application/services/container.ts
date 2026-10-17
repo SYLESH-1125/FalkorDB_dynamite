@@ -23,5 +23,8 @@ export const repositories = {
   notifications: impl.notificationRepository,
   help: impl.helpRepository,
   graph: impl.graphRepository,
+  // Company Brain follows the API URL on its own so a Vercel deploy hits FalkorDB
+  // even while the rest of the workspace stays on the in-browser preview.
+  brain: process.env.NEXT_PUBLIC_API_URL ? api.brainRepository : mock.brainRepository,
   voice: impl.voiceRepository,
 };

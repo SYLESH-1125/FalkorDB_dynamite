@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s · BHUMI",
   },
   description:
-    "Document digitisation, AI-assisted query and automated reporting platform — Bharat Hub for Unified Mining Intelligence.",
+    "Company Brain for the ministry — people, teams, projects, documents, and decisions in one FalkorDB graph.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

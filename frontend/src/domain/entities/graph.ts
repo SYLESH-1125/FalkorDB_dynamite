@@ -1,4 +1,15 @@
-export type GraphNodeKind = "Document" | "Subsidiary" | "Mine" | "Unknown";
+export type GraphNodeKind =
+  | "Document"
+  | "Subsidiary"
+  | "Mine"
+  | "Person"
+  | "Team"
+  | "Project"
+  | "Decision"
+  | "Ticket"
+  | "Chat"
+  | "Memory"
+  | "Unknown";
 
 export interface GraphNode {
   id: string;

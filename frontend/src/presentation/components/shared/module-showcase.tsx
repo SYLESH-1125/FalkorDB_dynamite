@@ -40,9 +40,9 @@ const MODULES: Module[] = [
   {
     icon: Share2,
     tint: "bg-tint-red text-danger",
-    title: "Knowledge Graph",
-    body: "Documents, subsidiaries and mines linked as a live graph — trace how any record connects to the rest of the record.",
-    href: "/graph",
+    title: "Company Brain",
+    body: "People, teams, projects, documents, and decisions in FalkorDB. Ask a question and read the path that produced the answer.",
+    href: "/brain",
   },
   {
     icon: FileBarChart,

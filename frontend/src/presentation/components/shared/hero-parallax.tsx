@@ -122,7 +122,7 @@ export function HeroParallax() {
           >
             <span className="nav-glass inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-[12px] font-medium text-white/90">
               <Sparkles className="size-3 text-secondary-300" aria-hidden />
-              Smart India Hackathon 2026 · Problem Statement 23
+              Graph Hacks · Company Brain · FalkorDB
             </span>
           </div>
 
@@ -134,11 +134,11 @@ export function HeroParallax() {
           />
 
           <p className="mx-auto max-w-2xl text-[15px] leading-relaxed text-white/80 sm:text-base">
-            Bharat Hub for Unified Mining Intelligence
+            Company Brain for the ministry
           </p>
           <p className="mx-auto max-w-xl text-[13.5px] leading-relaxed text-white/60">
-            One indexed record of every scan, ledger and clearance across nine coal subsidiaries —
-            queryable in plain language, traceable to the page.
+            People, teams, projects, documents, and decisions in one FalkorDB graph.
+            The agent follows those edges and shows the path behind every answer.
           </p>
 
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">

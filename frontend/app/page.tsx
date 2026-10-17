@@ -15,14 +15,14 @@ const FEATURES = [
   {
     icon: FileText,
     tint: "bg-tint-leaf text-success",
-    title: "Ingest anything",
-    body: "PDFs, decades-old scans, spreadsheets and photographs — digitised through OCR and layout-aware extraction into a single searchable corpus.",
+    title: "One graph for the desk",
+    body: "Documents, tickets, and chats land on the same FalkorDB graph as the people and projects they belong to.",
   },
   {
     icon: Sparkles,
     tint: "bg-tint-gold text-secondary-600",
-    title: "Ask in plain language",
-    body: "Natural-language queries answered from your own indexed records, with every claim traced back to a source document and page.",
+    title: "Answers with a path",
+    body: "Ask who owns a project, who knows a mine, or why a decision was taken. The reply is the traversal, plus its sources.",
   },
   {
     icon: BarChart3,
@@ -93,13 +93,13 @@ export default function LandingPage() {
             <div className="mx-auto max-w-2xl text-center">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface-card px-3.5 py-1.5 text-[12px] font-semibold text-primary-600 shadow-sm">
                 <Sparkles className="size-3.5 text-secondary-500" aria-hidden />
-                Why ministries choose BHUMI
+                Graph Hacks · Company Brain
               </span>
               <h2 className="display-lg mt-5 text-ink-0">
-                Built for the way ministries actually work
+                The ministry, as a graph the agent can walk
               </h2>
               <p className="mt-4 text-[16px] leading-relaxed text-body">
-                Every answer carries its provenance. Every report can be traced to the page it came from.
+                Ownership, expertise, and decisions stay connected. Every answer names the node it came from.
               </p>
             </div>
           </Reveal>

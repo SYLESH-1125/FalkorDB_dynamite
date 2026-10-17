@@ -4,7 +4,7 @@ import type {
   AuthRepository, DocumentRepository, ValidationRepository, QueryRepository,
   ReportRepository, TopicRepository, ParliamentaryRepository, AnalyticsRepository,
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
-  HelpRepository, GraphRepository, VoiceRepository, Transcription,
+  HelpRepository, GraphRepository, BrainRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
 import type { AppRole, Credentials, Session, User, UserRole } from "@/src/domain/entities/user";
 import type { IngestedDocument, ProcessingJob } from "@/src/domain/entities/document";
@@ -22,6 +22,7 @@ import type { Integration } from "@/src/domain/entities/integration";
 import type { AppNotification } from "@/src/domain/entities/notification";
 import type { FaqItem, HelpResource } from "@/src/domain/entities/help";
 import type { KnowledgeGraph } from "@/src/domain/entities/graph";
+import type { BrainAnswer, BrainBrief, BrainFact } from "@/src/domain/entities/brain";
 import { answerQuestion, computeTerms, computeClusters, assembleReport } from "@/src/infrastructure/engine/knowledge-engine";
 
 const SESSION_KEY = "bhumi.session";
@@ -616,6 +617,40 @@ function buildGraph(): KnowledgeGraph {
 }
 
 export const graphRepository: GraphRepository = { knowledgeGraph: () => ok(buildGraph()) };
+
+const previewBrief: BrainBrief = {
+  graph: "preview",
+  counts: { Person: 5, Team: 5, Project: 4, Document: 4, Decision: 3, Ticket: 2, Chat: 1 },
+  centralPeople: [
+    { name: "Meera Iyer", role: "CMPDI domain lead", connections: 6 },
+    { name: "Ananya Rao", role: "Joint Secretary, Policy", connections: 5 },
+  ],
+  recentDecisions: [
+    {
+      title: "Hold the Gevra dispatch brief until the annexure is validated",
+      decidedOn: "2026-07-18",
+      summary: "The production brief waits on the Q1 annexure passing validation.",
+    },
+  ],
+};
+
+export const brainRepository: BrainRepository = {
+  brief: () => ok(previewBrief),
+  ask: (question) => ok<BrainAnswer>({
+    answer: `Preview only — “${question}” was not run on FalkorDB. Set NEXT_PUBLIC_API_URL to the Company Brain API.`,
+    intent: "preview",
+    path: [
+      { fromLabel: "Ananya Rao", relationship: "OWNS", toLabel: "Legacy Record Digitisation" },
+      { fromLabel: "Adopt human-in-loop validation before publication", relationship: "BASED_ON", toLabel: "Validation SOP 2026" },
+    ],
+    sources: [
+      { label: "Validation SOP 2026", kind: "Document", nodeId: "doc-validation-sop", detail: "source document" },
+    ],
+    cypher: "MATCH (person:Person)-[:OWNS]->(thing {id: $id}) RETURN person.name",
+    remembered: [],
+  }),
+  record: (fact: BrainFact) => ok({ id: "preview", title: fact.title }),
+};
 
 // ── Voice ─────────────────────────────────────────────────────────────────────
 export const voiceRepository: VoiceRepository = {

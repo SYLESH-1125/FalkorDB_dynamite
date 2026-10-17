@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, Upload, Cpu, CheckSquare, MessageSquareText, MessagesSquare, FileBarChart,
   LayoutTemplate, Cloud, Archive, Landmark, TrendingUp, Users, ScrollText,
-  Settings, Bell, LifeBuoy, Share2, AlertTriangle, type LucideIcon,
+  Settings, Bell, LifeBuoy, Share2, AlertTriangle, Brain, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -12,6 +12,7 @@ export interface NavItem {
 }
 
 export const NAV_ITEMS: NavItem[] = [
+  { href: "/brain", label: "Company Brain", icon: Brain, group: "Overview" },
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, group: "Overview" },
   { href: "/problem", label: "The Problem", icon: AlertTriangle, group: "Overview" },
   { href: "/upload", label: "Document Upload", icon: Upload, group: "Data Pipeline" },
@@ -40,16 +41,16 @@ export const NAV_GROUPS = ["Overview", "Data Pipeline", "Intelligence", "Reporti
 export const ADMIN_ONLY_GROUPS = new Set(["Data Pipeline", "Administration"]);
 
 // the Parliamentary Response Team role is scoped to the AI Query chatbot plus its own problem-statement page
-export const PARLIAMENTARY_ALLOWED_PATHS = new Set(["/query", "/query/conversations", "/problem"]);
+export const PARLIAMENTARY_ALLOWED_PATHS = new Set(["/brain", "/query", "/query/conversations", "/problem"]);
 
 // visible only to the Parliamentary Response Team — hidden from every other role's sidebar
 export const PARLIAMENTARY_ONLY_PATHS = new Set(["/problem"]);
 
 // CMPDI / CIL Domain Officers only need the Word Cloud & Topics intelligence feature
-export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/topics", "/topics/conversations"]);
+export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/brain", "/topics", "/topics/conversations"]);
 
 // visible only to CMPDI / CIL Domain Officers — hidden from every other role's sidebar
 export const DOMAIN_OFFICER_ONLY_PATHS = new Set(["/topics/conversations"]);
 
 // Ministry Policy & Monitoring Officers only need Report Generation and its template library
-export const MINISTRY_ALLOWED_PATHS = new Set(["/reports", "/templates"]);
+export const MINISTRY_ALLOWED_PATHS = new Set(["/brain", "/reports", "/templates"]);

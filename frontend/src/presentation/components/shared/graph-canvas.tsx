@@ -15,11 +15,19 @@ const NODE_COLOR: Record<GraphNodeKind, { fill: string; ring: string }> = {
   Document: { fill: "#12304a", ring: "#0c2338" },
   Subsidiary: { fill: "#f2b705", ring: "#a67d00" },
   Mine: { fill: "#278a57", ring: "#1e6c43" },
+  Person: { fill: "#0f766e", ring: "#115e59" },
+  Team: { fill: "#1d4e89", ring: "#163a66" },
+  Project: { fill: "#7c3aed", ring: "#5b21b6" },
+  Decision: { fill: "#c2410c", ring: "#9a3412" },
+  Ticket: { fill: "#be123c", ring: "#9f1239" },
+  Chat: { fill: "#0369a1", ring: "#075985" },
+  Memory: { fill: "#52525b", ring: "#3f3f46" },
   Unknown: { fill: "#6b7280", ring: "#4b5158" },
 };
 
 const NODE_RADIUS: Record<GraphNodeKind, number> = {
-  Document: 16, Subsidiary: 22, Mine: 19, Unknown: 14,
+  Document: 16, Subsidiary: 22, Mine: 19, Person: 18, Team: 20, Project: 18,
+  Decision: 17, Ticket: 15, Chat: 15, Memory: 14, Unknown: 14,
 };
 
 function seededRandom(seed: number) {
@@ -244,8 +252,8 @@ export function GraphCanvas({
           })}
 
           {nodes.map((n) => {
-            const color = NODE_COLOR[n.kind];
-            const r = NODE_RADIUS[n.kind];
+            const color = NODE_COLOR[n.kind] ?? NODE_COLOR.Unknown;
+            const r = NODE_RADIUS[n.kind] ?? NODE_RADIUS.Unknown;
             const dimmed = neighborIds ? !neighborIds.has(n.id) : false;
             const isSelected = n.id === selectedId;
             return (
