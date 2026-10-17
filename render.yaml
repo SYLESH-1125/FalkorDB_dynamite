@@ -16,6 +16,7 @@ services:
     dockerfilePath: ./Dockerfile.free
     dockerContext: .
     healthCheckPath: /health
+    healthCheckInitialDelay: 120
     envVars:
       - key: DATABASE_URL
         sync: false # Supabase URI, postgresql://... Keep the direct host, port 5432.

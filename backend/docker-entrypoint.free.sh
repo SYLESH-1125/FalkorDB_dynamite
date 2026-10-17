@@ -1,11 +1,26 @@
 #!/bin/sh
 set -e
 
-MODULE=$(find /var /usr -name 'falkordb.so' 2>/dev/null | head -1)
+MODULE="${FALKORDB_MODULE_PATH:-}"
+if [ -z "$MODULE" ]; then
+  for candidate in \
+    /usr/lib/redis/modules/falkordb.so \
+    /opt/FalkorDB/lib/falkordb.so \
+    /FalkorDB/lib/falkordb.so; do
+    if [ -f "$candidate" ]; then
+      MODULE="$candidate"
+      break
+    fi
+  done
+fi
+if [ -z "$MODULE" ]; then
+  MODULE=$(find /usr /opt /var /FalkorDB -name 'falkordb.so' 2>/dev/null | head -1)
+fi
 if [ -z "$MODULE" ]; then
   echo "falkordb.so was not found in the image" >&2
   exit 1
 fi
+echo "Using FalkorDB module: $MODULE"
 
 mkdir -p /data
 redis-server \
