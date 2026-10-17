@@ -17,7 +17,14 @@ function authHeader(): Record<string, string> {
 async function handle<T>(res: Response): Promise<T> {
   if (!res.ok) {
     const body = await res.text().catch(() => "");
-    throw new Error(`${res.status} ${body}`);
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body) as { detail?: unknown };
+      if (typeof parsed.detail === "string") detail = parsed.detail;
+    } catch {
+      // body wasn't JSON — fall back to the raw text
+    }
+    throw new Error(detail || `Request failed with status ${res.status}`);
   }
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
@@ -76,5 +83,21 @@ export const apiClient = {
       headers: { ...authHeader() },
       body: form,
     });
+  },
+  postForm<T>(path: string, form: FormData): Promise<T> {
+    return request<T>(path, {
+      method: "POST",
+      headers: { ...authHeader() },
+      body: form,
+    });
+  },
+  async postJsonForBlob(path: string, body: unknown): Promise<Blob> {
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout({
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeader() },
+      body: JSON.stringify(body),
+    }));
+    if (!res.ok) throw new Error(`${res.status} ${await res.text().catch(() => "")}`);
+    return res.blob();
   },
 };

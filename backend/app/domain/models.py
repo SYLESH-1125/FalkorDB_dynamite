@@ -82,6 +82,7 @@ class UserOut(CamelModel):
     name: str
     email: str
     role: str
+    app_role: str
     subsidiary: str
     designation: str
     status: str
@@ -120,6 +121,16 @@ class ChatThreadOut(CamelModel):
 
 class AskRequest(CamelModel):
     question: str
+
+
+class TranscribeOut(CamelModel):
+    transcript: str
+    language_code: str
+
+
+class SpeakRequest(CamelModel):
+    text: str
+    language_code: str
 
 
 class ReportSectionOut(CamelModel):

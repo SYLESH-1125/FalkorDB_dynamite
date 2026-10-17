@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Eye, EyeOff, AlertCircle } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
+import { ROLE_LANDING_ROUTE } from "@/src/application/services/role-catalog";
 import type { AppRole } from "@/src/domain/entities/user";
 import { Button } from "../ui/button";
 import { Label, TextInput } from "../ui/field";
@@ -25,8 +26,8 @@ export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole })
     setSubmitting(true);
     setError(null);
     try {
-      await repositories.auth.signIn({ employeeId: employeeId.trim(), password, appRole });
-      router.push("/dashboard");
+      const session = await repositories.auth.signIn({ employeeId: employeeId.trim(), password, appRole });
+      router.push(ROLE_LANDING_ROUTE[session.user.appRole] ?? "/dashboard");
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : "Sign-in failed. Check your credentials and try again.");
       setSubmitting(false);

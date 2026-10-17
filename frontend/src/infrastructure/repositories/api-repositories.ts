@@ -2,7 +2,7 @@ import type {
   AuthRepository, DocumentRepository, ValidationRepository, QueryRepository,
   ReportRepository, TopicRepository, ParliamentaryRepository, AnalyticsRepository,
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
-  HelpRepository, GraphRepository,
+  HelpRepository, GraphRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
 import { apiClient } from "../http/api-client";
 import type { Session } from "@/src/domain/entities/user";
@@ -112,4 +112,15 @@ export const helpRepository: HelpRepository = {
 
 export const graphRepository: GraphRepository = {
   knowledgeGraph: () => apiClient.get<KnowledgeGraph>("/api/graph"),
+};
+
+export const voiceRepository: VoiceRepository = {
+  transcribe: (audio, languageCode) => {
+    const form = new FormData();
+    form.append("file", audio, "speech.webm");
+    form.append("language_code", languageCode);
+    return apiClient.postForm<Transcription>("/api/voice/transcribe", form);
+  },
+  speak: (text, languageCode) =>
+    apiClient.postJsonForBlob("/api/voice/speak", { text, languageCode }),
 };

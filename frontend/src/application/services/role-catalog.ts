@@ -1,5 +1,12 @@
 import type { AppRole } from "@/src/domain/entities/user";
 
+export const ROLE_LANDING_ROUTE: Record<AppRole, string> = {
+  parliamentary: "/problem",
+  ministry: "/analytics",
+  "domain-officer": "/topics",
+  admin: "/dashboard",
+};
+
 export interface RoleOption {
   id: AppRole;
   label: string;

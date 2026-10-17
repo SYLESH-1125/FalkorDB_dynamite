@@ -36,6 +36,7 @@ class User(Base):
     email: Mapped[str]
     password_hash: Mapped[str]
     role: Mapped[str]
+    app_role: Mapped[str] = mapped_column(default="domain-officer")
     subsidiary_code: Mapped[str] = mapped_column(ForeignKey("subsidiaries.code"))
     designation: Mapped[str]
     status: Mapped[str] = mapped_column(default="active")

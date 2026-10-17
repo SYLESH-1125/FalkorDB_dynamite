@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/users", tags=["users"])
 
 def _out(u: User) -> UserOut:
     return UserOut(
-        id=u.id, name=u.name, email=u.email, role=u.role, subsidiary=u.subsidiary_code,
+        id=u.id, name=u.name, email=u.email, role=u.role, app_role=u.app_role, subsidiary=u.subsidiary_code,
         designation=u.designation, status=u.status, last_active=u.created_at, created_at=u.created_at,
     )
 

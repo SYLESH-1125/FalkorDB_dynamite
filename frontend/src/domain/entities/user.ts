@@ -9,6 +9,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+  appRole: AppRole;
   subsidiary: string;
   designation: string;
   status: UserStatus;

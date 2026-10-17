@@ -1,7 +1,7 @@
 import {
-  LayoutDashboard, Upload, Cpu, CheckSquare, MessageSquareText, FileBarChart,
+  LayoutDashboard, Upload, Cpu, CheckSquare, MessageSquareText, MessagesSquare, FileBarChart,
   LayoutTemplate, Cloud, Archive, Landmark, TrendingUp, Users, ScrollText,
-  Settings, Bell, LifeBuoy, Share2, type LucideIcon,
+  Settings, Bell, LifeBuoy, Share2, AlertTriangle, type LucideIcon,
 } from "lucide-react";
 
 export interface NavItem {
@@ -13,10 +13,12 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, group: "Overview" },
+  { href: "/problem", label: "The Problem", icon: AlertTriangle, group: "Overview" },
   { href: "/upload", label: "Document Upload", icon: Upload, group: "Data Pipeline" },
   { href: "/processing", label: "Processing Status", icon: Cpu, group: "Data Pipeline" },
   { href: "/validation", label: "Data Validation", icon: CheckSquare, group: "Data Pipeline" },
   { href: "/query", label: "AI Query System", icon: MessageSquareText, group: "Intelligence" },
+  { href: "/query/conversations", label: "Conversations", icon: MessagesSquare, group: "Intelligence" },
   { href: "/topics", label: "Word Cloud & Topics", icon: Cloud, group: "Intelligence" },
   { href: "/analytics", label: "Analytics & Insights", icon: TrendingUp, group: "Intelligence" },
   { href: "/graph", label: "Knowledge Graph", icon: Share2, group: "Intelligence" },
@@ -35,3 +37,12 @@ export const NAV_GROUPS = ["Overview", "Data Pipeline", "Intelligence", "Reporti
 
 // visible only to Administrator accounts — kept out of the sidebar for every other role
 export const ADMIN_ONLY_GROUPS = new Set(["Data Pipeline", "Administration"]);
+
+// the Parliamentary Response Team role is scoped to the AI Query chatbot plus its own problem-statement page
+export const PARLIAMENTARY_ALLOWED_PATHS = new Set(["/query", "/query/conversations", "/problem"]);
+
+// visible only to the Parliamentary Response Team — hidden from every other role's sidebar
+export const PARLIAMENTARY_ONLY_PATHS = new Set(["/problem"]);
+
+// CMPDI / CIL Domain Officers only need the Word Cloud & Topics intelligence feature
+export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/topics"]);

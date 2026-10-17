@@ -24,13 +24,6 @@ export interface ChatThread {
   messages: ChatMessage[];
 }
 
-export const SUGGESTED_QUERIES: string[] = [
-  "Summarise coal production trends across subsidiaries for FY 2025-26",
-  "Which mines reported the highest overburden removal last quarter?",
-  "List pending environmental clearance issues by state",
-  "Compare washery throughput between SECL and MCL",
-];
-
 export interface VoiceLanguage {
   code: string;
   label: string;

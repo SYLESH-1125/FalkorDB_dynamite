@@ -4,24 +4,34 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
-import { NAV_ITEMS, NAV_GROUPS, ADMIN_ONLY_GROUPS } from "./nav-items";
+import {
+  NAV_ITEMS, NAV_GROUPS, ADMIN_ONLY_GROUPS,
+  PARLIAMENTARY_ALLOWED_PATHS, PARLIAMENTARY_ONLY_PATHS, DOMAIN_OFFICER_ALLOWED_PATHS,
+} from "./nav-items";
 import { cn } from "../ui/cn";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
 export function SidebarContent({
-  collapsed, isAdministrator = false, onNavigate, onToggleCollapse,
+  collapsed, isAdministrator = false, isParliamentary = false, isDomainOfficer = false, onNavigate, onToggleCollapse,
 }: {
   collapsed: boolean;
   isAdministrator?: boolean;
+  isParliamentary?: boolean;
+  isDomainOfficer?: boolean;
   onNavigate?: () => void;
   onToggleCollapse?: () => void;
 }) {
   const pathname = usePathname();
   const groups = NAV_GROUPS.filter((group) => isAdministrator || !ADMIN_ONLY_GROUPS.has(group));
+  const navItems = isParliamentary
+    ? NAV_ITEMS.filter((item) => PARLIAMENTARY_ALLOWED_PATHS.has(item.href))
+    : isDomainOfficer
+      ? NAV_ITEMS.filter((item) => DOMAIN_OFFICER_ALLOWED_PATHS.has(item.href))
+      : NAV_ITEMS.filter((item) => !PARLIAMENTARY_ONLY_PATHS.has(item.href));
 
   return (
     <div className="flex h-full flex-col bg-sidebar">
-      <div className={cn("flex h-16 items-center gap-2.5 border-b border-sidebar-border px-4", collapsed && "justify-center px-2")}>
+      <div className={cn("flex h-16 items-center gap-2.5 border-b border-sidebar-border bg-white px-4", collapsed && "justify-center px-2")}>
         <Image src={bhumiLogo} alt="BHUMI" width={collapsed ? 32 : 120} height={32} className="h-8 w-auto shrink-0 object-contain" priority />
         {!collapsed ? (
           <Link href="/dashboard" className="min-w-0">
@@ -32,7 +42,8 @@ export function SidebarContent({
 
       <nav aria-label="Main navigation" className="scrollbar-thin flex-1 overflow-y-auto px-2.5 pb-4 pt-3">
         {groups.map((group) => {
-          const items = NAV_ITEMS.filter((item) => item.group === group);
+          const items = navItems.filter((item) => item.group === group);
+          if (items.length === 0) return null;
           return (
             <div key={group} className="mb-5">
               {!collapsed ? (
@@ -44,7 +55,8 @@ export function SidebarContent({
               )}
               <ul className="space-y-0.5">
                 {items.map((item) => {
-                  const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+                  const active = pathname === item.href
+                    || (pathname.startsWith(`${item.href}/`) && !navItems.some((other) => other.href === pathname));
                   const Icon = item.icon;
                   return (
                     <li key={item.href}>
@@ -95,10 +107,12 @@ export function SidebarContent({
 }
 
 export function MobileSidebar({
-  open, isAdministrator, onClose,
+  open, isAdministrator, isParliamentary, isDomainOfficer, onClose,
 }: {
   open: boolean;
   isAdministrator?: boolean;
+  isParliamentary?: boolean;
+  isDomainOfficer?: boolean;
   onClose: () => void;
 }) {
   if (!open) return null;
@@ -114,7 +128,13 @@ export function MobileSidebar({
         >
           <X className="size-4" aria-hidden />
         </button>
-        <SidebarContent collapsed={false} isAdministrator={isAdministrator} onNavigate={onClose} />
+        <SidebarContent
+          collapsed={false}
+          isAdministrator={isAdministrator}
+          isParliamentary={isParliamentary}
+          isDomainOfficer={isDomainOfficer}
+          onNavigate={onClose}
+        />
       </div>
     </div>
   );

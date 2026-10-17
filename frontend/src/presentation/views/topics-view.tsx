@@ -34,10 +34,12 @@ function toneFor(weight: number): string {
 export function TopicsView() {
   const terms = useAsync(() => repositories.topics.terms(), []);
   const clusters = useAsync(() => repositories.topics.clusters(), []);
+  const documents = useAsync(() => repositories.documents.list(), []);
   const [category, setCategory] = useState("all");
   const [selected, setSelected] = useState<TopicTerm | null>(null);
 
   const allTerms = useMemo(() => terms.data ?? [], [terms.data]);
+  const dominantTheme = clusters.data?.[0]?.label ?? "—";
   const categories = useMemo(
     () => ["all", ...new Set(allTerms.map((t) => t.category))],
     [allTerms],
@@ -75,8 +77,8 @@ export function TopicsView() {
           {[
             ["Unique terms", allTerms.length],
             ["Topic clusters", clusters.data?.length ?? 0],
-            ["Documents analysed", "18,942"],
-            ["Dominant theme", "Production & Output"],
+            ["Documents analysed", documents.data?.length ?? 0],
+            ["Dominant theme", dominantTheme],
           ].map(([label, value]) => (
             <div key={label as string} className=" card-raise rounded-xl border border-hairline bg-surface-card p-4">
               <p className="type-caption text-muted">{label as string}</p>

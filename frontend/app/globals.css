@@ -401,6 +401,23 @@ body {
   animation: voice-ring 1.8s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
 }
 
+@keyframes flow-dash {
+  to { stroke-dashoffset: -32; }
+}
+
+@utility animate-flow-dash {
+  animation: flow-dash 0.9s linear infinite;
+}
+
+@keyframes orbit-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(0.92); }
+  50% { opacity: 0.85; transform: scale(1.08); }
+}
+
+@utility animate-orbit-pulse {
+  animation: orbit-pulse 3s ease-in-out infinite;
+}
+
 @utility skeleton {
   position: relative;
   overflow: hidden;
@@ -414,6 +431,14 @@ body {
   transform: translateX(-100%);
   background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.75), transparent);
   animation: shimmer 1.6s infinite;
+}
+
+.markdown-body {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.markdown-body pre {
+  overflow-x: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {

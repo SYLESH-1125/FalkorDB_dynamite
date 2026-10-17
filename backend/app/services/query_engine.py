@@ -3,16 +3,22 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.models import Document, DocumentChunk, ExtractedField, ValidationRecord
 from app.services.embeddings import embed_async
-from app.services.llm import LlmNotConfigured, generate_answer
+from app.services.llm import LlmNotConfigured, generate_answer, generate_general_knowledge_answer
 
 TOP_K = 6
 
+# cosine distance above this is treated as "not actually relevant" — pgvector's
+# ORDER BY always returns TOP_K rows regardless of how poor the match is, so without
+# this cutoff every query would look like a retrieval hit even when nothing relates
+MAX_RELEVANT_DISTANCE = 0.45
+
 
 async def _search_chunks(db: AsyncSession, query_vector: list[float]) -> list[DocumentChunk]:
+    distance = DocumentChunk.embedding.cosine_distance(query_vector)
     result = await db.execute(
         select(DocumentChunk)
-        .where(DocumentChunk.embedding.is_not(None))
-        .order_by(DocumentChunk.embedding.cosine_distance(query_vector))
+        .where(DocumentChunk.embedding.is_not(None), distance <= MAX_RELEVANT_DISTANCE)
+        .order_by(distance)
         .limit(TOP_K),
     )
     return list(result.scalars().all())
@@ -20,11 +26,16 @@ async def _search_chunks(db: AsyncSession, query_vector: list[float]) -> list[Do
 
 async def _search_fields(db: AsyncSession, query_vector: list[float]) -> list[tuple[ExtractedField, str]]:
     """Returns (field, document_id) pairs — joined so the caller never needs a lazy load."""
+    distance = ExtractedField.embedding.cosine_distance(query_vector)
     result = await db.execute(
         select(ExtractedField, ValidationRecord.document_id)
         .join(ValidationRecord, ExtractedField.record_id == ValidationRecord.id)
-        .where(ExtractedField.embedding.is_not(None), ExtractedField.extracted_value != "")
-        .order_by(ExtractedField.embedding.cosine_distance(query_vector))
+        .where(
+            ExtractedField.embedding.is_not(None),
+            ExtractedField.extracted_value != "",
+            distance <= MAX_RELEVANT_DISTANCE,
+        )
+        .order_by(distance)
         .limit(TOP_K),
     )
     return [(row[0], row[1]) for row in result.all()]
@@ -39,10 +50,25 @@ async def answer_question(db: AsyncSession, question: str) -> tuple[str, list[di
     fields = await _search_fields(db, query_vector)
 
     if not chunks and not fields:
+        try:
+            body = await generate_general_knowledge_answer(question)
+        except LlmNotConfigured:
+            return (
+                "No indexed documents matched this question yet. Upload and validate documents "
+                "on the Data Pipeline pages, then ask again once extraction completes.",
+                [],
+            )
+        except Exception as exc:
+            return (f"No indexed documents matched this question, and the language model call failed ({exc}).", [])
+
         return (
-            "No indexed documents matched this question yet. Upload and validate documents "
-            "on the Data Pipeline pages, then ask again once extraction completes.",
-            [],
+            body,
+            [{
+                "document_name": "General knowledge — not from indexed documents",
+                "page": 0,
+                "snippet": "This answer was not found in the indexed corpus and is based on the model's general knowledge. It has not been verified against a source document.",
+                "relevance": 0.0,
+            }],
         )
 
     doc_ids = {c.document_id for c in chunks} | {doc_id for _, doc_id in fields}

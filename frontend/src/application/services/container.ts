@@ -16,4 +16,5 @@ export const repositories = {
   notifications: api.notificationRepository,
   help: api.helpRepository,
   graph: api.graphRepository,
+  voice: api.voiceRepository,
 };

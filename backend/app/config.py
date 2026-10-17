@@ -13,12 +13,21 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000"
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"
+    sarvam_api_key: str = ""
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
     jwt_secret: str
     jwt_algorithm: str = "HS256"
     jwt_expires_minutes: int = 480
     bootstrap_admin_employee_id: str = ""
     bootstrap_admin_password: str = ""
+    demo_parliamentary_employee_id: str = ""
+    demo_parliamentary_password: str = ""
+    demo_ministry_employee_id: str = ""
+    demo_ministry_password: str = ""
+    demo_domain_officer_employee_id: str = ""
+    demo_domain_officer_password: str = ""
+    demo_admin_employee_id: str = ""
+    demo_admin_password: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:

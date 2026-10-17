@@ -98,3 +98,13 @@ export interface HelpRepository {
 export interface GraphRepository {
   knowledgeGraph(): Promise<KnowledgeGraph>;
 }
+
+export interface Transcription {
+  transcript: string;
+  languageCode: string;
+}
+
+export interface VoiceRepository {
+  transcribe(audio: Blob, languageCode: string): Promise<Transcription>;
+  speak(text: string, languageCode: string): Promise<Blob>;
+}

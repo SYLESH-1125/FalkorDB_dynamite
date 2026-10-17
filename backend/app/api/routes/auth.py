@@ -11,6 +11,13 @@ from app.infrastructure.security import create_access_token, verify_password
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
+ROLE_LABELS = {
+    "parliamentary": "Parliamentary Response Team",
+    "ministry": "Ministry Policy & Monitoring Officers",
+    "domain-officer": "CMPDI / CIL Domain Officers",
+    "admin": "Administrator",
+}
+
 
 class SignInRequest(CamelModel):
     employee_id: str
@@ -20,7 +27,7 @@ class SignInRequest(CamelModel):
 
 def _user_out(user: User) -> UserOut:
     return UserOut(
-        id=user.id, name=user.name, email=user.email, role=user.role,
+        id=user.id, name=user.name, email=user.email, role=user.role, app_role=user.app_role,
         subsidiary=user.subsidiary_code, designation=user.designation, status=user.status,
         last_active=datetime.now(timezone.utc), created_at=user.created_at,
     )
@@ -41,6 +48,13 @@ async def sign_in(payload: SignInRequest, db: AsyncSession = Depends(get_db)):
 
     if user.status != "active":
         raise HTTPException(status_code=403, detail="Account is not active")
+
+    if user.app_role != payload.app_role:
+        actual_label = ROLE_LABELS.get(user.app_role, user.app_role)
+        raise HTTPException(
+            status_code=403,
+            detail=f"This account is registered as '{actual_label}'. Sign in from that role instead.",
+        )
 
     return SessionOut(
         user=_user_out(user),

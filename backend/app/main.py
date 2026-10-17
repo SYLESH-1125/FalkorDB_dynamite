@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
     analytics, audit, auth, documents, graph, help, integrations, notifications, parliamentary,
-    query, reports, topics, users, validations,
+    query, reports, topics, users, validations, voice,
 )
 from app.config import settings
 from app.infrastructure.db.base import SessionLocal
@@ -57,6 +57,7 @@ app.include_router(integrations.router)
 app.include_router(notifications.router)
 app.include_router(help.router)
 app.include_router(graph.router)
+app.include_router(voice.router)
 
 
 @app.get("/health")
