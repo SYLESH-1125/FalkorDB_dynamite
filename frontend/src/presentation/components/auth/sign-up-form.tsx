@@ -1,38 +1,46 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2, AlertCircle } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
-import { ROLE_LANDING_ROUTE } from "@/src/application/services/role-catalog";
+import { ROLE_LANDING_ROUTE, USER_ROLES } from "@/src/application/services/role-catalog";
 import type { AppRole } from "@/src/domain/entities/user";
 import { Button } from "../ui/button";
 import { Label, TextInput } from "../ui/field";
+import { SignUpRolePicker } from "./sign-up-role-picker";
 
 const SUBSIDIARIES = ["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"] as const;
 
-const APP_ROLES: { id: AppRole; label: string }[] = [
-  { id: "parliamentary", label: "Parliamentary Response" },
-  { id: "ministry", label: "Ministry Policy & Monitoring" },
-  { id: "domain-officer", label: "CMPDI / CIL Domain Officer" },
-];
+function roleLabel(id: AppRole): string {
+  return USER_ROLES.find((r) => r.id === id)?.label ?? id;
+}
 
-export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
+export function SignUpForm({ selectedRole }: { selectedRole?: AppRole }) {
   const router = useRouter();
   const [employeeId, setEmployeeId] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [appRole, setAppRole] = useState<AppRole>(defaultRole ?? "domain-officer");
+  const [appRole, setAppRole] = useState<AppRole>(selectedRole ?? "domain-officer");
   const [subsidiary, setSubsidiary] = useState<string>(SUBSIDIARIES[0]);
   const [designation, setDesignation] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (selectedRole) setAppRole(selectedRole);
+  }, [selectedRole]);
+
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
+    const role = appRole;
     const mail = email.trim();
+    if (!role) {
+      setError("Choose your role above before creating an account.");
+      return;
+    }
     if (!employeeId.trim() || !name.trim() || !mail || password.length < 8) {
       setError("Fill all fields. Password must be at least 8 characters.");
       return;
@@ -47,18 +55,26 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
       const session = await repositories.auth.signUp({
         employeeId: employeeId.trim(),
         name: name.trim(),
-        email: email.trim(),
+        email: mail,
         password,
-        appRole,
+        appRole: role,
         subsidiary,
         designation: designation.trim() || undefined,
       });
-      router.push(ROLE_LANDING_ROUTE[session.user.appRole] ?? "/brain");
+      const storedRole = session.user.appRole;
+      if (storedRole !== role) {
+        setError("Account role mismatch from server. Sign in with the role shown on your profile.");
+        setSubmitting(false);
+        return;
+      }
+      router.push(ROLE_LANDING_ROUTE[storedRole] ?? "/brain");
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : "Sign up failed. Try a different employee ID.");
       setSubmitting(false);
     }
   }
+
+  const displayRole = selectedRole ?? appRole;
 
   return (
     <form onSubmit={onSubmit} className="mt-7 space-y-4" noValidate>
@@ -68,6 +84,16 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
           {error}
         </p>
       ) : null}
+
+      <SignUpRolePicker activeRole={displayRole} onRoleChange={setAppRole} />
+
+      <div className="rounded-lg border border-hairline bg-surface-soft px-3 py-2.5">
+        <p className="text-[10px] font-semibold tracking-wide text-muted uppercase">Account role</p>
+        <p className="mt-0.5 text-[13.5px] font-semibold text-ink-0">{roleLabel(displayRole)}</p>
+        <p className="mt-1 text-[11.5px] text-muted">
+          You will sign in with this same role every time ({displayRole}).
+        </p>
+      </div>
 
       <div>
         <Label htmlFor="signup-employeeId">Employee ID</Label>
@@ -107,20 +133,6 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
       </div>
 
       <div>
-        <Label htmlFor="signup-role">Role</Label>
-        <select
-          id="signup-role"
-          value={appRole}
-          onChange={(e) => setAppRole(e.target.value as AppRole)}
-          className="h-10 w-full rounded-md border border-hairline bg-surface-card px-3 text-[13.5px] text-ink-0"
-        >
-          {APP_ROLES.map((r) => (
-            <option key={r.id} value={r.id}>{r.label}</option>
-          ))}
-        </select>
-      </div>
-
-      <div>
         <Label htmlFor="signup-subsidiary">Subsidiary</Label>
         <select
           id="signup-subsidiary"
@@ -157,7 +169,12 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
 
       <p className="text-center text-[12.5px] text-muted">
         Already registered?{" "}
-        <Link href="/login" className="font-semibold text-primary-600 hover:underline">Sign in</Link>
+        <Link
+          href={`/login?role=${displayRole}`}
+          className="font-semibold text-primary-600 hover:underline"
+        >
+          Sign in as {roleLabel(displayRole).split(" ")[0]}
+        </Link>
       </p>
     </form>
   );

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 import { UserPlus } from "lucide-react";
 import { SignUpForm } from "@/src/presentation/components/auth/sign-up-form";
 import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
+import { USER_ROLES } from "@/src/application/services/role-catalog";
 import type { AppRole } from "@/src/domain/entities/user";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
@@ -15,10 +17,11 @@ export const metadata: Metadata = {
 export default async function SignUpPage({
   searchParams,
 }: {
-  searchParams: Promise<{ role?: string }>;
+  searchParams: Promise<{ role?: string; appRole?: string }>;
 }) {
-  const { role } = await searchParams;
-  const defaultRole = role as AppRole | undefined;
+  const params = await searchParams;
+  const roleId = (params.role ?? params.appRole) as AppRole | undefined;
+  const selectedRole = USER_ROLES.find((r) => r.id === roleId)?.id;
 
   return (
     <div className="flex min-h-screen flex-col bg-canvas">
@@ -41,7 +44,9 @@ export default async function SignUpPage({
           <p className="mt-1.5 text-[14px] text-body">
             Create your employee account, then sign in to use Query, Reports, and Company Brain.
           </p>
-          <SignUpForm defaultRole={defaultRole} />
+          <Suspense fallback={null}>
+            <SignUpForm selectedRole={selectedRole} />
+          </Suspense>
         </div>
       </div>
 

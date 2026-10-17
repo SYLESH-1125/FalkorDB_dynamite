@@ -110,7 +110,10 @@ export default async function LoginPage({
 
               <p className="mt-5 text-center text-[12.5px] text-muted">
                 New to BHUMI?{" "}
-                <Link href="/sign-up" className="font-semibold text-primary-600 hover:underline">
+                <Link
+                  href={role ? `/sign-up?role=${role.id}` : "/sign-up?role=domain-officer"}
+                  className="font-semibold text-primary-600 hover:underline"
+                >
                   Create an account
                 </Link>
               </p>
