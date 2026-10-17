@@ -1,4 +1,3 @@
-import re
 from collections.abc import AsyncGenerator
 
 from fastapi import Depends, Header, HTTPException
@@ -7,8 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.base import SessionLocal
 from app.infrastructure.db.models import User
-
-TOKEN_RE = re.compile(r"^mock-jwt-(?P<employee_id>.+)$")
+from app.infrastructure.security import decode_access_token
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
@@ -24,15 +22,14 @@ async def get_current_user(
         raise HTTPException(status_code=401, detail="Missing or malformed Authorization header")
 
     token = authorization.removeprefix("Bearer ").strip()
-    match = TOKEN_RE.match(token)
-    if not match:
-        raise HTTPException(status_code=401, detail="Malformed token")
+    user_id = decode_access_token(token)
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    employee_id = match.group("employee_id")
-    result = await db.execute(select(User).where(User.employee_id == employee_id))
+    result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
     if user is None:
-        raise HTTPException(status_code=401, detail="Unknown employee ID")
+        raise HTTPException(status_code=401, detail="Unknown user")
     if user.status != "active":
         raise HTTPException(status_code=403, detail="Account is not active")
 

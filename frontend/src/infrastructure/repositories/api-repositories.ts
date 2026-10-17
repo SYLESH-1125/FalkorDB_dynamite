@@ -2,13 +2,14 @@ import type {
   AuthRepository, DocumentRepository, ValidationRepository, QueryRepository,
   ReportRepository, TopicRepository, ParliamentaryRepository, AnalyticsRepository,
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
-  HelpRepository,
+  HelpRepository, GraphRepository,
 } from "@/src/domain/repositories";
 import { apiClient } from "../http/api-client";
 import type { Session } from "@/src/domain/entities/user";
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type { DashboardSnapshot } from "@/src/domain/entities/analytics";
 import type { ValidationRecord } from "@/src/domain/entities/validation";
+import type { KnowledgeGraph } from "@/src/domain/entities/graph";
 
 const SESSION_KEY = "bhumi.session";
 
@@ -107,4 +108,8 @@ export const notificationRepository: NotificationRepository = {
 export const helpRepository: HelpRepository = {
   resources: () => apiClient.get("/api/help/resources"),
   faqs: () => apiClient.get("/api/help/faqs"),
+};
+
+export const graphRepository: GraphRepository = {
+  knowledgeGraph: () => apiClient.get<KnowledgeGraph>("/api/graph"),
 };

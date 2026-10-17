@@ -3,8 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db, require_admin
-from app.domain.models import UpdateRoleIn, UpdateStatusIn, UserOut
+from app.domain.models import CreateUserIn, UpdateRoleIn, UpdateStatusIn, UserOut
 from app.infrastructure.db.models import User
+from app.infrastructure.security import hash_password
 
 router = APIRouter(prefix="/api/users", tags=["users"])
 
@@ -20,6 +21,36 @@ def _out(u: User) -> UserOut:
 async def list_users(db: AsyncSession = Depends(get_db), _user: User = Depends(require_admin)):
     users = (await db.execute(select(User).order_by(User.name))).scalars().all()
     return [_out(u) for u in users]
+
+
+@router.post("", response_model=UserOut, status_code=201)
+async def create_user(
+    payload: CreateUserIn, db: AsyncSession = Depends(get_db), _current: User = Depends(require_admin),
+):
+    employee_id = payload.employee_id.strip()
+    if not employee_id or not payload.password:
+        raise HTTPException(status_code=400, detail="Employee ID and password are required")
+
+    existing = (
+        await db.execute(select(User).where(User.employee_id == employee_id))
+    ).scalar_one_or_none()
+    if existing is not None:
+        raise HTTPException(status_code=409, detail="Employee ID already exists")
+
+    user = User(
+        employee_id=employee_id,
+        name=payload.name,
+        email=payload.email,
+        password_hash=hash_password(payload.password),
+        role=payload.role,
+        subsidiary_code=payload.subsidiary,
+        designation=payload.designation,
+        status="active",
+    )
+    db.add(user)
+    await db.commit()
+    await db.refresh(user)
+    return _out(user)
 
 
 @router.put("/{user_id}/role", response_model=UserOut)

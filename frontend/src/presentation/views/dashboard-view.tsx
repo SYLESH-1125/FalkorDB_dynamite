@@ -256,8 +256,8 @@ export function DashboardView() {
             <div className="flex h-full flex-col justify-between gap-4">
               <dl className="grid grid-cols-2 gap-x-3 gap-y-3">
                 {[
-                  ["Uptime", `${health.uptimePercent}%`],
-                  ["Latency", `${health.avgLatencyMs} ms`],
+                  ["Uptime", health.uptimePercent === null ? "—" : `${health.uptimePercent}%`],
+                  ["Latency", health.avgLatencyMs === null ? "—" : `${health.avgLatencyMs} ms`],
                   ["OCR queue", `${health.ocrQueueDepth} jobs`],
                   ["Active users", `${health.activeUsers}`],
                 ].map(([k, v]) => (
@@ -265,7 +265,7 @@ export function DashboardView() {
                     <dt className="text-[10px] font-medium tracking-wide text-muted uppercase">{k}</dt>
                     <dd className="mt-1 flex items-center gap-1.5">
                       <span className="text-[14px] font-semibold text-ink-0">{v}</span>
-                      {k === "Uptime" ? <Badge tone="success">Healthy</Badge> : null}
+                      {k === "Uptime" && health.uptimePercent !== null ? <Badge tone="success">Healthy</Badge> : null}
                     </dd>
                   </div>
                 ))}

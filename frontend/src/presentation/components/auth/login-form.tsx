@@ -99,32 +99,6 @@ export function LoginForm({ appRole = "domain-officer" }: { appRole?: AppRole })
         )}
       </Button>
 
-      <div className="flex items-center gap-3 pt-1">
-        <span className="h-px flex-1 bg-hairline" aria-hidden />
-        <span className="text-[11px] font-medium tracking-wide text-muted-soft uppercase">or</span>
-        <span className="h-px flex-1 bg-hairline" aria-hidden />
-      </div>
-
-      <Button
-        type="button"
-        variant="secondary"
-        className="w-full"
-        disabled={submitting}
-        onClick={async () => {
-          setSubmitting(true);
-          setError(null);
-          try {
-            await repositories.auth.signIn({ employeeId: "nic-sso", password: "sso", appRole });
-            router.push("/dashboard");
-          } catch (err) {
-            setError(err instanceof Error && err.message ? err.message : "Sign-in failed. Check your credentials and try again.");
-            setSubmitting(false);
-          }
-        }}
-      >
-        Continue with NIC Single Sign-On
-      </Button>
-
       <p className="pt-1 text-center text-[11.5px] text-muted">
         No self-registration — all accounts are provisioned by an Administrator.
       </p>

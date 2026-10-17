@@ -14,6 +14,11 @@ class Settings(BaseSettings):
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    jwt_secret: str
+    jwt_algorithm: str = "HS256"
+    jwt_expires_minutes: int = 480
+    bootstrap_admin_employee_id: str = ""
+    bootstrap_admin_password: str = ""
 
     @property
     def cors_origin_list(self) -> list[str]:

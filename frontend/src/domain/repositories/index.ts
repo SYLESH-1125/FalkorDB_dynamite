@@ -13,6 +13,7 @@ import type { AuditEntry } from "../entities/audit";
 import type { Integration } from "../entities/integration";
 import type { AppNotification } from "../entities/notification";
 import type { HelpResource, FaqItem } from "../entities/help";
+import type { KnowledgeGraph } from "../entities/graph";
 
 export interface AuthRepository {
   signIn(credentials: Credentials): Promise<Session>;
@@ -92,4 +93,8 @@ export interface NotificationRepository {
 export interface HelpRepository {
   resources(): Promise<HelpResource[]>;
   faqs(): Promise<FaqItem[]>;
+}
+
+export interface GraphRepository {
+  knowledgeGraph(): Promise<KnowledgeGraph>;
 }

@@ -15,12 +15,11 @@ const NODE_COLOR: Record<GraphNodeKind, { fill: string; ring: string }> = {
   Document: { fill: "#1a3f70", ring: "#0f2a4e" },
   Subsidiary: { fill: "#e5b017", ring: "#a87c0b" },
   Mine: { fill: "#3f8f4a", ring: "#33753c" },
-  Block: { fill: "#7794bd", ring: "#3d6296" },
-  RiskFlag: { fill: "#d92d20", ring: "#a01d13" },
+  Unknown: { fill: "#7794bd", ring: "#3d6296" },
 };
 
 const NODE_RADIUS: Record<GraphNodeKind, number> = {
-  Document: 16, Subsidiary: 22, Mine: 19, Block: 14, RiskFlag: 15,
+  Document: 16, Subsidiary: 22, Mine: 19, Unknown: 14,
 };
 
 function seededRandom(seed: number) {

@@ -1,4 +1,4 @@
-export type GraphNodeKind = "Document" | "Subsidiary" | "Mine" | "Block" | "RiskFlag";
+export type GraphNodeKind = "Document" | "Subsidiary" | "Mine" | "Unknown";
 
 export interface GraphNode {
   id: string;
@@ -7,7 +7,7 @@ export interface GraphNode {
   properties: Record<string, string>;
 }
 
-export type GraphRelationType = "BELONGS_TO" | "REFERENCES" | "LOCATED_IN" | "FLAGGED_BY";
+export type GraphRelationType = "BELONGS_TO" | "REFERENCES" | string;
 
 export interface GraphEdge {
   id: string;

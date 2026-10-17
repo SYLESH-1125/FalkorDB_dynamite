@@ -15,4 +15,5 @@ export const repositories = {
   integrations: api.integrationRepository,
   notifications: api.notificationRepository,
   help: api.helpRepository,
+  graph: api.graphRepository,
 };

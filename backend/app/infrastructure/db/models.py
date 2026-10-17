@@ -34,6 +34,7 @@ class User(Base):
     employee_id: Mapped[str] = mapped_column(unique=True)
     name: Mapped[str]
     email: Mapped[str]
+    password_hash: Mapped[str]
     role: Mapped[str]
     subsidiary_code: Mapped[str] = mapped_column(ForeignKey("subsidiaries.code"))
     designation: Mapped[str]

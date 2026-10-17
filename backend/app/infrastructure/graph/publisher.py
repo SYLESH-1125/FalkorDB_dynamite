@@ -2,6 +2,48 @@ from app.infrastructure.graph.neo4j_client import get_driver
 from app.infrastructure.db.models import Document, ExtractedField
 
 
+NODE_LABELS = ["Document", "Subsidiary", "Mine"]
+
+
+def _node_label(labels: list[str]) -> str:
+    return next((l for l in labels if l in NODE_LABELS), labels[0] if labels else "Unknown")
+
+
+def _node_display(kind: str, properties: dict) -> str:
+    return str(properties.get("name") or properties.get("code") or properties.get("id") or kind)
+
+
+async def fetch_knowledge_graph(limit: int = 500) -> tuple[list[dict], list[dict]]:
+    driver = get_driver()
+    nodes: dict[str, dict] = {}
+    edges: list[dict] = []
+
+    async with driver.session() as session:
+        result = await session.run(
+            "MATCH (a)-[r]->(b) RETURN a, r, b LIMIT $limit", limit=limit,
+        )
+        async for record in result:
+            for node in (record["a"], record["b"]):
+                if node.element_id not in nodes:
+                    kind = _node_label(list(node.labels))
+                    properties = {k: str(v) for k, v in dict(node).items()}
+                    nodes[node.element_id] = {
+                        "id": node.element_id,
+                        "kind": kind,
+                        "label": _node_display(kind, properties),
+                        "properties": properties,
+                    }
+            rel = record["r"]
+            edges.append({
+                "id": rel.element_id,
+                "source": rel.start_node.element_id,
+                "target": rel.end_node.element_id,
+                "type": rel.type,
+            })
+
+    return list(nodes.values()), edges
+
+
 async def seed_subsidiaries(codes: list[str]) -> None:
     driver = get_driver()
     async with driver.session() as session:

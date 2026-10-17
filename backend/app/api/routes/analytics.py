@@ -122,9 +122,9 @@ async def dashboard(db: AsyncSession = Depends(get_db), _user: User = Depends(ge
     used_gb = sum(d.size_bytes for d in documents) / 1e9
     health = SystemHealthOut(
         ocr_queue_depth=pipeline_counts.get("processing", 0) + pipeline_counts.get("queued", 0),
-        avg_latency_ms=180,
-        uptime_percent=99.8,
-        index_freshness_min=1,
+        avg_latency_ms=None,
+        uptime_percent=None,
+        index_freshness_min=None,
         active_users=(await db.execute(select(func.count(User.id)))).scalar() or 0,
         storage_used_gb=round(used_gb, 3),
         storage_total_gb=total_capacity_gb,

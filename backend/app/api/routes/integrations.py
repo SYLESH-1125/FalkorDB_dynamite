@@ -1,6 +1,6 @@
-import random
 from datetime import datetime, timezone
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,8 +36,19 @@ async def sync_integration(
     if integration is None:
         raise HTTPException(status_code=404, detail="Integration not found")
 
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            response = await client.get(integration.endpoint)
+            response.raise_for_status()
+            body = response.json()
+    except (httpx.HTTPError, ValueError):
+        integration.status = "error"
+        await db.commit()
+        raise HTTPException(status_code=502, detail="Could not reach integration endpoint")
+
     integration.status = "connected"
     integration.last_sync_at = datetime.now(timezone.utc)
-    integration.records_synced += random.randint(20, 420)
+    if isinstance(body, dict) and isinstance(body.get("recordCount"), int):
+        integration.records_synced += body["recordCount"]
     await db.commit()
     return _out(integration)

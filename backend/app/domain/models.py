@@ -289,9 +289,9 @@ class DeadlineItemOut(CamelModel):
 
 class SystemHealthOut(CamelModel):
     ocr_queue_depth: int
-    avg_latency_ms: int
-    uptime_percent: float
-    index_freshness_min: int
+    avg_latency_ms: int | None
+    uptime_percent: float | None
+    index_freshness_min: int | None
     active_users: int
     storage_used_gb: float
     storage_total_gb: float
@@ -377,3 +377,32 @@ class UpdateRoleIn(CamelModel):
 
 class UpdateStatusIn(CamelModel):
     status: str
+
+
+class CreateUserIn(CamelModel):
+    employee_id: str
+    name: str
+    email: str
+    password: str
+    role: str
+    subsidiary: str
+    designation: str
+
+
+class GraphNodeOut(CamelModel):
+    id: str
+    kind: str
+    label: str
+    properties: dict[str, str]
+
+
+class GraphEdgeOut(CamelModel):
+    id: str
+    source: str
+    target: str
+    type: str
+
+
+class KnowledgeGraphOut(CamelModel):
+    nodes: list[GraphNodeOut]
+    edges: list[GraphEdgeOut]

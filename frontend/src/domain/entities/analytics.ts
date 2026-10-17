@@ -84,9 +84,9 @@ export interface DeadlineItem {
 
 export interface SystemHealth {
   ocrQueueDepth: number;
-  avgLatencyMs: number;
-  uptimePercent: number;
-  indexFreshnessMin: number;
+  avgLatencyMs: number | null;
+  uptimePercent: number | null;
+  indexFreshnessMin: number | null;
   activeUsers: number;
   storageUsedGb: number;
   storageTotalGb: number;
