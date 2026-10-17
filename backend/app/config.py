@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     falkordb_graph: str = "bhumi_company_brain"
     embeddings_enabled: bool = True
     database_ssl: bool = False
+    # Set true when using Supabase transaction pooler (port 6543).
+    database_pgbouncer: bool = False
     cors_origins: str = "http://localhost:3000"
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"

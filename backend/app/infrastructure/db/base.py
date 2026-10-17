@@ -7,7 +7,11 @@ from sqlalchemy.orm import DeclarativeBase
 
 from app.config import settings
 
-_connect_args = {"ssl": True} if settings.database_ssl else {}
+_connect_args: dict = {}
+if settings.database_ssl:
+    _connect_args["ssl"] = True
+if settings.database_pgbouncer:
+    _connect_args["statement_cache_size"] = 0
 engine = create_async_engine(settings.database_url, echo=False, connect_args=_connect_args)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False)
 

@@ -18,9 +18,11 @@ services:
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        sync: false # Supabase URI, postgresql://... Keep the direct host, port 5432.
+        sync: false # Supabase Session pooler URI (not db.*.supabase.co direct — Render cannot reach IPv6 direct).
       - key: DATABASE_SSL
         value: "true"
+      - key: DATABASE_PGBOUNCER
+        value: "false"
       - key: EMBEDDINGS_ENABLED
         value: "0"
       - key: FALKORDB_HOST

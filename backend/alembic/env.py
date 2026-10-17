@@ -16,7 +16,11 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
-_connect_args = {"ssl": True} if settings.database_ssl else {}
+_connect_args: dict = {}
+if settings.database_ssl:
+    _connect_args["ssl"] = True
+if settings.database_pgbouncer:
+    _connect_args["statement_cache_size"] = 0
 
 
 def run_migrations_offline() -> None:

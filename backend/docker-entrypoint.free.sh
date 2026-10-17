@@ -14,7 +14,7 @@ if [ -z "$MODULE" ]; then
   done
 fi
 if [ -z "$MODULE" ]; then
-  MODULE=$(find /usr /opt /var /FalkorDB -name 'falkordb.so' 2>/dev/null | head -1)
+  MODULE=$(find /usr/lib/redis /opt/FalkorDB/lib /FalkorDB/lib -name 'falkordb.so' 2>/dev/null | head -1)
 fi
 if [ -z "$MODULE" ]; then
   echo "falkordb.so was not found in the image" >&2
