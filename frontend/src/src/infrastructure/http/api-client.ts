@@ -1,0 +1,113 @@
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const SESSION_KEY = "bhumi.session";
+const REQUEST_TIMEOUT_MS = 15_000;
+// LLM-backed analysis calls (trend/prediction reasoning over the full corpus) run meaningfully
+// longer than a lookup — give them room instead of aborting a request the backend would've finished
+const LLM_REQUEST_TIMEOUT_MS = 60_000;
+
+function authHeader(): Record<string, string> {
+  if (typeof window === "undefined") return {};
+  const raw = window.localStorage.getItem(SESSION_KEY);
+  if (!raw) return {};
+  try {
+    const token = (JSON.parse(raw) as { token: string }).token;
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  } catch {
+    return {};
+  }
+}
+
+async function handle<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    let detail = body;
+    try {
+      const parsed = JSON.parse(body) as { detail?: unknown };
+      if (typeof parsed.detail === "string") detail = parsed.detail;
+    } catch {
+      // body wasn't JSON — fall back to the raw text
+    }
+    throw new Error(detail || `Request failed with status ${res.status}`);
+  }
+  if (res.status === 204) return undefined as T;
+  return res.json() as Promise<T>;
+}
+
+function withTimeout(init: RequestInit, timeoutMs: number): RequestInit {
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeoutMs);
+  return { ...init, signal: controller.signal };
+}
+
+async function request<T>(path: string, init: RequestInit, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout(init, timeoutMs));
+    return await handle<T>(res);
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new Error("Request timed out — the server is not responding.");
+    }
+    if (err instanceof TypeError) {
+      throw new Error("Could not reach the server. Check your connection and try again.");
+    }
+    throw err;
+  }
+}
+
+export const LLM_TIMEOUT_MS = LLM_REQUEST_TIMEOUT_MS;
+
+export const apiClient = {
+  get<T>(path: string): Promise<T> {
+    return request<T>(path, { headers: { ...authHeader() } });
+  },
+  post<T>(path: string, body?: unknown, timeoutMs?: number): Promise<T> {
+    return request<T>(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeader() },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    }, timeoutMs);
+  },
+  put<T>(path: string, body: unknown): Promise<T> {
+    return request<T>(path, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", ...authHeader() },
+      body: JSON.stringify(body),
+    });
+  },
+  delete<T>(path: string): Promise<T> {
+    return request<T>(path, {
+      method: "DELETE",
+      headers: { ...authHeader() },
+    });
+  },
+  upload<T>(path: string, files: File[]): Promise<T> {
+    const form = new FormData();
+    files.forEach((f) => form.append("files", f));
+    return request<T>(path, {
+      method: "POST",
+      headers: { ...authHeader() },
+      body: form,
+    });
+  },
+  postForm<T>(path: string, form: FormData): Promise<T> {
+    return request<T>(path, {
+      method: "POST",
+      headers: { ...authHeader() },
+      body: form,
+    });
+  },
+  async postJsonForBlob(path: string, body: unknown): Promise<Blob> {
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout({
+      method: "POST",
+      headers: { "Content-Type": "application/json", ...authHeader() },
+      body: JSON.stringify(body),
+    }, REQUEST_TIMEOUT_MS));
+    if (!res.ok) throw new Error(`${res.status} ${await res.text().catch(() => "")}`);
+    return res.blob();
+  },
+  async getBlob(path: string): Promise<Blob> {
+    const res = await fetch(`${BASE_URL}${path}`, withTimeout({ headers: { ...authHeader() } }, REQUEST_TIMEOUT_MS));
+    if (!res.ok) throw new Error(`${res.status} ${await res.text().catch(() => "")}`);
+    return res.blob();
+  },
+};
