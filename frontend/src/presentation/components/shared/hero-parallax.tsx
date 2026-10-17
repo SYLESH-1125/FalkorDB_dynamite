@@ -5,8 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
 import { HeroVideoBackground } from "@/src/presentation/components/shared/hero-video-background";
-import { GraphAmbient } from "@/src/presentation/components/shared/graph-ambient";
-import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
 import { useWelcomeTransition } from "@/src/presentation/components/shared/welcome-transition";
 import bhumiMainLogo from "@/app/assets/bhumi-main-logo.png";
 
@@ -27,8 +25,6 @@ export function HeroParallax() {
       const rect = el.getBoundingClientRect();
       const range = rect.height - window.innerHeight;
       const raw = range > 0 ? Math.min(Math.max(-rect.top / range, 0), 1) : 0;
-      // Zoom finishes early in the pinned range, then holds completely static
-      // for the remainder while the next section curtains up over the video.
       const p = Math.min(raw / 0.3, 1);
       setProgress(p);
     }
@@ -55,7 +51,6 @@ export function HeroParallax() {
           style={{ transform: `scale(${videoScale})`, willChange: "transform" }}
         >
           <HeroVideoBackground />
-          <GraphAmbient variant="hero" className="mix-blend-screen opacity-70" />
         </div>
         <div
           className="pointer-events-none absolute inset-0 -z-10 bg-ink-0"
@@ -91,12 +86,30 @@ export function HeroParallax() {
 
             <div className="ml-auto flex shrink-0 items-center gap-2">
               <Link
+                href="/login"
+                className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/sign-up"
+                className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
+              >
+                Sign up
+              </Link>
+              <Link
                 href="/help"
                 className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
               >
                 Help
               </Link>
-              <PublicAccessNav invert />
+              <Link
+                href="/select-role"
+                onClick={trigger}
+                className="inline-flex h-9 items-center rounded-full bg-white/90 px-5 text-[13.5px] font-semibold text-primary-700 shadow-sm transition-all duration-300 hover:scale-[1.03] hover:bg-white"
+              >
+                Get Started
+              </Link>
             </div>
           </nav>
         </div>
@@ -139,12 +152,6 @@ export function HeroParallax() {
           </p>
 
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
-            <Link
-              href="/login"
-              className="bubble-glass inline-flex h-12 items-center gap-2 px-7 text-[15px] font-semibold text-white"
-            >
-              Log in
-            </Link>
             <Link
               href="/select-role"
               onClick={trigger}

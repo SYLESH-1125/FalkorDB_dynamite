@@ -107,10 +107,10 @@ export function LoginForm({
         {submitting ? (
           <>
             <Loader2 className="size-4 animate-spin" aria-hidden />
-            Logging in…
+            Signing in…
           </>
         ) : (
-          "Log in"
+          "Sign in"
         )}
       </Button>
 

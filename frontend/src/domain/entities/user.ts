@@ -23,6 +23,16 @@ export interface Credentials {
   appRole: AppRole;
 }
 
+export interface SignUpInput {
+  employeeId: string;
+  name: string;
+  email: string;
+  password: string;
+  appRole: AppRole;
+  subsidiary: string;
+  designation?: string;
+}
+
 export interface Session {
   user: User;
   token: string;

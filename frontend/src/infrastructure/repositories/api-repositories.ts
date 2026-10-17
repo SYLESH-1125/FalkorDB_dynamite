@@ -30,6 +30,8 @@ function clearSession(): void {
 export const authRepository: AuthRepository = {
   signIn: (credentials) =>
     apiClient.post<Session>("/api/auth/sign-in", credentials).then(writeSession),
+  signUp: (input) =>
+    apiClient.post<Session>("/api/auth/sign-up", input).then(writeSession),
   signOut: () => apiClient.post<void>("/api/auth/sign-out").finally(clearSession),
   currentSession: () =>
     apiClient.get<Session>("/api/auth/session").catch(() => null),

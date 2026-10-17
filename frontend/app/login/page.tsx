@@ -6,16 +6,12 @@ import { ShieldCheck, Sparkles, ArrowLeft } from "lucide-react";
 import { LoginForm } from "@/src/presentation/components/auth/login-form";
 import { LoginRolePicker } from "@/src/presentation/components/auth/login-role-picker";
 import { RoleShowcase } from "@/src/presentation/components/shared/role-showcase";
-import { GraphAmbient } from "@/src/presentation/components/shared/graph-ambient";
 import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
 import { USER_ROLES, ADMIN_ROLE } from "@/src/application/services/role-catalog";
 import type { AppRole } from "@/src/domain/entities/user";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
 
-export const metadata: Metadata = {
-  title: "Log in",
-  description: "Log in to BHUMI with your employee credentials. Sign in is the same secure session.",
-};
+export const metadata: Metadata = { title: "Sign in" };
 
 const PROOF = [
   ["18,942", "documents indexed and query-ready"],
@@ -40,8 +36,7 @@ export default async function LoginPage({
 
   return (
     <div className="relative flex min-h-screen flex-col bg-canvas">
-      <GraphAmbient variant="subtle" className="opacity-60" />
-      <header className="relative border-b border-hairline bg-surface-card/90 backdrop-blur-sm">
+      <header className="relative border-b border-hairline bg-surface-card">
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto" priority />
@@ -52,7 +47,7 @@ export default async function LoginPage({
 
       <div className="grid-overlay relative flex flex-1 flex-col">
         <div className="relative flex flex-1 items-center justify-center px-4 py-8 sm:px-6">
-          <div className="card-float relative w-full max-w-5xl overflow-hidden rounded-3xl border border-hairline bg-surface-card/95 backdrop-blur-sm lg:grid lg:grid-cols-[1.05fr_1fr]">
+          <div className="card-float relative w-full max-w-5xl overflow-hidden rounded-3xl border border-hairline bg-surface-card lg:grid lg:grid-cols-[1.05fr_1fr]">
             {role ? (
               <RoleShowcase role={role} />
             ) : (
@@ -60,14 +55,15 @@ export default async function LoginPage({
                 <div>
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-card/70 px-3 py-1 text-[11.5px] font-medium text-ink-0">
                     <Sparkles className="size-3" aria-hidden />
-                    FalkorDB · Company Brain
+                    Government of India
                   </span>
                   <h2 className="display-sm mt-6 text-ink-0">
-                    Log in once. Walk the graph everywhere.
+                    Bharat Hub for Unified Mining Intelligence
                   </h2>
                   <p className="mt-3.5 text-[14px] leading-relaxed text-ink-0/70">
-                    Use the same employee session across Query, Reports, Analytics, and Company Brain —
-                    every module reads from one FalkorDB graph.
+                    Document digitisation, AI-assisted query and automated reporting across nine
+                    subsidiaries — with full traceability from every published figure back to its
+                    source page.
                   </p>
                 </div>
 
@@ -80,7 +76,8 @@ export default async function LoginPage({
                   ))}
                   <p className="flex items-start gap-2 border-t border-ink-0/10 pt-4 text-[11.5px] leading-relaxed text-ink-0/60">
                     <ShieldCheck className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-                    Authorised personnel only. All access is logged and subject to audit.
+                    Authorised personnel only. All access is logged and subject to audit under
+                    information security policy.
                   </p>
                 </div>
               </div>
@@ -96,13 +93,13 @@ export default async function LoginPage({
                 className="inline-flex w-fit items-center gap-1.5 text-[12.5px] font-medium text-muted transition-colors hover:text-ink-0"
               >
                 <ArrowLeft className="size-3.5" aria-hidden />
-                Choose role visually
+                Change role
               </Link>
-              <h1 className="display-sm mt-4 text-ink-0">Log in</h1>
+              <h1 className="display-sm mt-4 text-ink-0">Sign in</h1>
               <p className="mt-1.5 text-[14px] text-body">
                 {role
                   ? <>Signing in as <span className="font-semibold text-body-strong">{role.label}</span>.</>
-                  : "Employee ID and password — same secure sign-in used across the platform."}
+                  : "Use your employee credentials to access the platform."}
               </p>
 
               <Suspense fallback={null}>
@@ -111,21 +108,18 @@ export default async function LoginPage({
 
               <LoginForm appRole={role?.id} nextPath={params.next} />
 
-              <p className="mt-4 text-center text-[11.5px] text-muted">
-                Also available at{" "}
-                <Link href="/sign-in" className="font-semibold text-primary-600 hover:underline">
-                  /sign-in
+              <p className="mt-5 text-center text-[12.5px] text-muted">
+                New to BHUMI?{" "}
+                <Link href="/sign-up" className="font-semibold text-primary-600 hover:underline">
+                  Create an account
                 </Link>
-                {" "}(alias)
               </p>
             </div>
           </div>
         </div>
 
         <footer className="relative px-4 py-6 text-center">
-          <p className="text-[12px] text-muted">
-            BHUMI · Smart India Hackathon 2026 · Graph Hacks Track 03
-          </p>
+          <p className="text-[12px] text-muted">BHUMI · Smart India Hackathon 2026</p>
         </footer>
       </div>
     </div>

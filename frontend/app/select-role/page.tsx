@@ -6,8 +6,6 @@ import { USER_ROLES, ADMIN_ROLE } from "@/src/application/services/role-catalog"
 import { RoleCard } from "@/src/presentation/components/shared/role-card";
 import { RoleOrbit } from "@/src/presentation/components/shared/role-orbit";
 import bhumiLogo from "@/app/assets/bhumi-logo.png";
-import { GraphAmbient } from "@/src/presentation/components/shared/graph-ambient";
-import { PublicAccessNav } from "@/src/presentation/components/shared/public-access-nav";
 
 export const metadata: Metadata = { title: "Continue as" };
 
@@ -15,14 +13,17 @@ const TINTS = ["navy", "gold", "leaf"] as const;
 
 export default function SelectRolePage() {
   return (
-    <div className="relative flex min-h-screen flex-col bg-canvas">
-      <GraphAmbient variant="subtle" className="opacity-50" />
-      <header className="relative border-b border-hairline bg-surface-card/90 backdrop-blur-sm">
-        <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+    <div className="flex min-h-screen flex-col bg-canvas">
+      <header className="relative border-b border-hairline bg-surface-card">
+        <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto" priority />
           </Link>
-          <PublicAccessNav />
+          <p className="text-[12.5px] text-muted">
+            <Link href="/login" className="font-semibold text-primary-600 hover:underline">Sign in</Link>
+            {" · "}
+            <Link href="/sign-up" className="font-semibold text-primary-600 hover:underline">Sign up</Link>
+          </p>
         </div>
       </header>
 
@@ -49,7 +50,7 @@ export default function SelectRolePage() {
           <RoleCard role={ADMIN_ROLE} tint="red" index="00" accent />
         </div>
 
-        <p className="mt-8 flex items-center gap-2 text-[12.5px] text-muted">
+        <p className="mt-8 flex flex-wrap items-center gap-2 text-[12.5px] text-muted">
           Don&apos;t recognise your role here?
           <Link href="/help" className="inline-flex items-center gap-1 font-semibold text-primary-600 hover:underline">
             Contact your subsidiary administrator

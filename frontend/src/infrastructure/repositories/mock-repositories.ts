@@ -6,7 +6,7 @@ import type {
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
   HelpRepository, GraphRepository, BrainRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
-import type { AppRole, Credentials, Session, User, UserRole } from "@/src/domain/entities/user";
+import type { AppRole, Credentials, Session, SignUpInput, User, UserRole } from "@/src/domain/entities/user";
 import type { IngestedDocument, ProcessingJob } from "@/src/domain/entities/document";
 import type { ExtractedField, ValidationRecord } from "@/src/domain/entities/validation";
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
@@ -73,6 +73,24 @@ function readSession(): Session | null {
 export const authRepository: AuthRepository = {
   signIn: (credentials) => {
     const session: Session = { user: buildUser(credentials), token: `demo.${credentials.appRole}.${credentials.employeeId}`, issuedAt: iso(0) };
+    if (typeof window !== "undefined") window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    return ok(session);
+  },
+  signUp: (input: SignUpInput) => {
+    const profile = ROLE_PROFILE[input.appRole];
+    const user: User = {
+      id: `emp-${input.employeeId}`,
+      name: input.name,
+      email: input.email,
+      role: profile.role,
+      appRole: input.appRole,
+      subsidiary: input.subsidiary,
+      designation: input.designation ?? profile.designation,
+      status: "active",
+      lastActive: iso(0),
+      createdAt: iso(0),
+    };
+    const session: Session = { user, token: `demo.${input.appRole}.${input.employeeId}`, issuedAt: iso(0) };
     if (typeof window !== "undefined") window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     return ok(session);
   },

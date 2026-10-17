@@ -1,4 +1,4 @@
-import type { Session, Credentials, User } from "../entities/user";
+import type { Session, Credentials, SignUpInput, User } from "../entities/user";
 import type { IngestedDocument, ProcessingJob } from "../entities/document";
 import type { ValidationRecord, ExtractedField } from "../entities/validation";
 import type { ChatThread, ChatMessage } from "../entities/query";
@@ -21,6 +21,7 @@ import type { BrainAnswer, BrainBrief, BrainFact } from "../entities/brain";
 
 export interface AuthRepository {
   signIn(credentials: Credentials): Promise<Session>;
+  signUp(input: SignUpInput): Promise<Session>;
   signOut(): Promise<void>;
   currentSession(): Promise<Session | null>;
 }
