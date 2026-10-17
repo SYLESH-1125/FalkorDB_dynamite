@@ -87,9 +87,9 @@ export const CORPUS_FACTS: CorpusFact[] = [
   { id: "f-disp-bccl", metric: "Annual dispatch (BCCL)", keywords: ["dispatch", "production", "bccl", "jharia"], value: 34, display: "34 MT", unit: "MT", subsidiary: "BCCL", period: "FY 2025-26", docName: "CIL-Annual-Report-FY25.pdf", page: 42, table: "Subsidiary Production", cell: "BCCL row", category: "Operations" },
 ];
 
-// topics the corpus is known NOT to hold — the Coverage Check declares these instead of guessing
+// figures the corpus is known NOT to hold — the Coverage Check declares these instead of guessing.
+// (Forecasts are handled separately as a soft note, so they don't zero out an otherwise-good answer.)
 export const KNOWN_GAPS: { keywords: string[]; fact: string; owner: string }[] = [
-  { keywords: ["borehole", "seam thickness", "drilling log", "core"], fact: "Borehole seam-thickness logs for the requested block are not held in any validated source.", owner: "CMPDI Exploration · borehole digitisation" },
-  { keywords: ["forecast", "projection", "next year", "2027 production", "predict"], fact: "A validated forward production projection is not held — BHUMI reports facts true as-of a date, not forecasts.", owner: "CIL Planning · demand projection cell" },
+  { keywords: ["borehole", "seam thickness", "drilling log"], fact: "Borehole seam-thickness logs for the requested block are not held in any validated source.", owner: "CMPDI Exploration · borehole digitisation" },
   { keywords: ["overburden removal volume", "ob removal"], fact: "Overburden removal volume for NCL Amlohri FY26 is still in the scan queue, not yet validated.", owner: "CMPDI · scan queue (doc-3)" },
 ];

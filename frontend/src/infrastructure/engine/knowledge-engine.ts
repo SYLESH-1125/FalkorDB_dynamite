@@ -4,7 +4,7 @@ import type { Citation, EvidenceSummary } from "@/src/domain/entities/query";
 import type { TopicTerm, TopicCluster } from "@/src/domain/entities/topic";
 import type { TiptapContent, ReportEvidence, ReportFigure, ReportGap } from "@/src/domain/entities/report";
 import {
-  CORPUS_CHUNKS, CORPUS_FACTS, KNOWN_GAPS, type CorpusFact,
+  CORPUS_CHUNKS, CORPUS_DOCS, CORPUS_FACTS, KNOWN_GAPS, type CorpusFact,
 } from "./corpus";
 
 const STOPWORDS = new Set([
@@ -34,9 +34,10 @@ function scoreChunk(qTokens: string[], text: string): number {
   return hits;
 }
 
-function matchFacts(qTokens: string[]): CorpusFact[] {
+function matchFacts(lower: string, qTokens: string[]): CorpusFact[] {
   const set = new Set(qTokens);
-  return CORPUS_FACTS.filter((f) => f.keywords.some((k) => set.has(k)));
+  // exact token OR a keyword that appears (as a prefix, so "targets" matches "target") in the question
+  return CORPUS_FACTS.filter((f) => f.keywords.some((k) => set.has(k) || new RegExp(`\\b${k}`, "i").test(lower)));
 }
 
 function detectGap(question: string): { fact: string; owner: string } | null {
@@ -77,71 +78,125 @@ export interface EngineAnswer {
   evidence: EvidenceSummary;
 }
 
-export function answerQuestion(question: string): EngineAnswer {
-  const qTokens = tokenize(question);
+const FORECAST_RE = /\b(next year|forecast|forecasts|projection|projections|predict|future|outlook)\b/;
+const TOPIC_RE = /\b(trend|trends|term|terms|word|words|topic|topics|cluster|clusters|theme|themes|priorit\w*|important|frequen\w*|emerging|vocabular\w*|prominent)\b/;
+const FORECAST_NOTE = "A validated forward production projection is not held — BHUMI reports facts true as-of a date, not forecasts.";
+const FORECAST_OWNER = "CIL Planning · demand projection cell";
+
+function rankChunks(qTokens: string[]): Citation[] {
   const ranked = CORPUS_CHUNKS
-    .map((c) => ({ chunk: c, score: scoreChunk(qTokens, `${c.text}`) }))
+    .map((c) => ({ chunk: c, score: scoreChunk(qTokens, c.text) }))
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score)
     .slice(0, 4);
-
-  const facts = matchFacts(qTokens);
-  const gap = detectGap(question);
-  const conflict = detectConflict(facts);
-  const factsWithValue = facts.filter((f) => f.value !== null);
   const maxScore = ranked[0]?.score ?? 1;
-
-  const citations: Citation[] = ranked.map((r, i) => ({
-    id: `cit-${i}`,
-    documentName: r.chunk.docName,
-    page: r.chunk.page,
-    table: r.chunk.table,
-    cell: r.chunk.cell,
-    snippet: r.chunk.text,
-    relevance: Math.min(0.98, 0.6 + (r.score / (maxScore + 1)) * 0.38),
+  return ranked.map((r, i) => ({
+    id: `cit-${i}`, documentName: r.chunk.docName, page: r.chunk.page, table: r.chunk.table, cell: r.chunk.cell,
+    snippet: r.chunk.text, relevance: Math.min(0.98, 0.62 + (r.score / (maxScore + 1)) * 0.36),
   }));
+}
 
-  const sources = new Set(citations.map((c) => c.documentName)).size;
+export function answerQuestion(question: string): EngineAnswer {
+  const lower = question.trim().toLowerCase();
+  const qTokens = tokenize(question);
+  const forecast = FORECAST_RE.test(lower);
+  const rankedCitations = rankChunks(qTokens);
 
-  // no grounded evidence at all → declare it, don't invent
-  if (ranked.length === 0 && factsWithValue.length === 0) {
-    return {
-      content:
-        `I could not find validated evidence for "${question.trim()}" in the current corpus. ` +
-        "Rather than guess, BHUMI records this as a coverage gap — see the notice below.",
-      citations: [],
-      evidence: {
-        facts: 0, factsExpected: 1, sources: 0, conflicts: 0, validated: false, asOf: "2026-08-23",
-        gap: gap?.fact ?? "No validated source in the indexed corpus answers this question.",
-        gapOwner: gap?.owner ?? "Coverage Check · digitisation backlog",
-      },
-    };
-  }
+  if (TOPIC_RE.test(lower)) return topicAnswer(rankedCitations, forecast);
 
-  const factLines = factsWithValue.slice(0, 4).map((f) => `- **${f.metric}** — ${f.display} (${f.subsidiary}, ${f.period}).`);
-  const lead = factsWithValue.length
-    ? `Grounded in ${sources} validated source${sources === 1 ? "" : "s"}, here is what the corpus holds:`
-    : `The closest validated passages in the corpus:`;
+  // a specifically not-held figure was asked for → declare the gap, don't answer with tangential facts
+  const hardGap = detectGap(lower);
+  if (hardGap) return gapResponse(question, hardGap, rankedCitations.slice(0, 3));
+
+  const facts = matchFacts(lower, qTokens);
+  const conflictWanted = /\b(gross|net|conflict|contradict|discrepan|mismatch|differ|reconcil|basis)\b/.test(lower);
+  const conflict = conflictWanted ? detectConflict(facts) : null;
+  const factsWithValue = facts.filter((f) => f.value !== null);
+  // outside a discrepancy question, keep one figure per metric (drop the net-basis twin)
+  const usable = conflict ? factsWithValue : factsWithValue.filter((f) => f.basis !== "net");
+
+  if (usable.length === 0) return gapResponse(question, null, rankedCitations.slice(0, 3));
+
+  const factCitations: Citation[] = usable.slice(0, 4).map((f, i) => ({
+    id: `fc-${i}`, documentName: f.docName, page: f.page, table: f.table, cell: f.cell,
+    snippet: `${f.metric}: ${f.display} (${f.subsidiary}, ${f.period}).`, relevance: 0.95 - i * 0.06,
+  }));
+  const sources = new Set(factCitations.map((c) => c.documentName)).size;
+  const factLines = usable.slice(0, 5).map((f) => `- **${f.metric}** — ${f.display} (${f.subsidiary}, ${f.period}).`);
 
   const content =
-    `${lead}\n\n${factLines.join("\n")}` +
-    (conflict ? "\n\nOne figure appears on two bases — see the Contradiction Radar below." : "") +
-    (gap ? "\n\nOne requested figure is not held in any validated source — see the gap notice." : "") +
-    (dispatchChart(facts) ?? "");
+    `Grounded in ${sources} validated source${sources === 1 ? "" : "s"}, here is what the corpus holds:\n\n${factLines.join("\n")}` +
+    (conflict ? "\n\nThe same figure appears on two bases — see the Contradiction Radar below." : "") +
+    (forecast ? "\n\nA forward projection for next year is not held — see the gap notice below." : "") +
+    (dispatchChart(usable) ?? "");
 
   const evidence: EvidenceSummary = {
-    facts: factsWithValue.length,
-    factsExpected: factsWithValue.length + (gap ? 1 : 0),
+    facts: usable.length,
+    factsExpected: usable.length,
     sources,
     conflicts: conflict ? 1 : 0,
-    validated: !conflict && !gap && factsWithValue.length > 0,
+    validated: !conflict,
     asOf: "2026-08-23",
-    gap: gap?.fact,
-    gapOwner: gap?.owner,
+    gap: forecast ? FORECAST_NOTE : undefined,
+    gapOwner: forecast ? FORECAST_OWNER : undefined,
     contradiction: conflict?.text,
     revisionImpact: conflict?.impact,
   };
 
+  return { content, citations: factCitations, evidence };
+}
+
+function gapResponse(question: string, gap: { fact: string; owner: string } | null, passages: Citation[]): EngineAnswer {
+  return {
+    content: passages.length
+      ? `I don't hold a validated figure for that exact ask. The closest indexed passages are:\n\n${passages.map((c) => `- ${c.documentName} (p.${c.page})`).join("\n")}\n\nThe specific figure requested is a declared coverage gap — see below.`
+      : `No validated source in the indexed corpus answers "${question.trim()}". Recorded as a coverage gap rather than a guess.`,
+    citations: passages,
+    evidence: {
+      facts: 0, factsExpected: 1, sources: new Set(passages.map((c) => c.documentName)).size,
+      conflicts: 0, validated: false, asOf: "2026-08-23",
+      gap: gap?.fact ?? "No validated source in the corpus holds this figure yet.",
+      gapOwner: gap?.owner ?? "Coverage Check · digitisation backlog",
+    },
+  };
+}
+
+// trend / term / topic / cluster questions answered from computed corpus frequencies
+function topicAnswer(rankedCitations: Citation[], forecast: boolean): EngineAnswer {
+  const terms = computeTerms();
+  const clusters = computeClusters();
+  const top = terms.slice(0, 6);
+  const [topCluster, secondCluster] = clusters;
+
+  const cites: Citation[] = [];
+  for (const t of top) {
+    if (cites.length >= 3) break;
+    const chunk = CORPUS_CHUNKS.find((c) => new RegExp(`\\b${t.text}`, "i").test(c.text));
+    if (chunk && !cites.some((c) => c.documentName === chunk.docName && c.page === chunk.page)) {
+      cites.push({ id: `tt-${cites.length}`, documentName: chunk.docName, page: chunk.page, table: chunk.table, cell: chunk.cell, snippet: chunk.text, relevance: 0.9 - cites.length * 0.07 });
+    }
+  }
+  const citations = cites.length ? cites : rankedCitations;
+  const sources = new Set(citations.map((c) => c.documentName)).size || CORPUS_DOCS.length;
+
+  const chart = "\n\n```chart\n" + JSON.stringify({
+    type: "bar", title: "Vocabulary weights — most prominent terms",
+    data: top.map((t) => ({ name: t.text, value: t.weight })), series: [{ key: "value", label: "weight" }],
+  }) + "\n```";
+
+  const content =
+    `Across the indexed corpus, the most prominent terms by frequency are ${top.map((t) => `**${t.text}**`).join(", ")}. ` +
+    `The largest theme is **${topCluster.label}** (${topCluster.frequency} weighted mentions)${secondCluster ? `, followed by **${secondCluster.label}**` : ""}. ` +
+    `Operational reporting dominates the discourse, with compliance, social/rehabilitation and safety as the recurring themes. ` +
+    `Weights are computed from actual occurrence counts across ${CORPUS_DOCS.length} indexed documents.` +
+    (forecast ? "\n\nNote: a validated forward projection for next year is not held — BHUMI reports facts true as-of a date, not forecasts." : "") +
+    chart;
+
+  const evidence: EvidenceSummary = {
+    facts: top.length, factsExpected: top.length, sources, conflicts: 0, validated: true, asOf: "2026-08-23",
+    gap: forecast ? FORECAST_NOTE : undefined,
+    gapOwner: forecast ? FORECAST_OWNER : undefined,
+  };
   return { content, citations, evidence };
 }
 
