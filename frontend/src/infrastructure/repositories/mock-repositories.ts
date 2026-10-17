@@ -12,7 +12,7 @@ import type { ExtractedField, ValidationRecord } from "@/src/domain/entities/val
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type {
   Report, ReportTemplate, ReportVersion, ReportWizardConfig, ReportDraftRequest,
-  ReportDocument, ReportEvidence, TiptapContent, ShareLink, SharedReport,
+  ReportDocument, ReportEvidence, ShareLink, SharedReport,
 } from "@/src/domain/entities/report";
 import type { TopicCluster, TopicTerm } from "@/src/domain/entities/topic";
 import type { ParliamentaryQuery, QueryStage } from "@/src/domain/entities/parliamentary";
@@ -22,6 +22,7 @@ import type { Integration } from "@/src/domain/entities/integration";
 import type { AppNotification } from "@/src/domain/entities/notification";
 import type { FaqItem, HelpResource } from "@/src/domain/entities/help";
 import type { KnowledgeGraph } from "@/src/domain/entities/graph";
+import { answerQuestion, computeTerms, computeClusters, assembleReport } from "@/src/infrastructure/engine/knowledge-engine";
 
 const SESSION_KEY = "bhumi.session";
 const SUBS = ["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"];
@@ -187,62 +188,10 @@ export const validationRepository: ValidationRepository = {
   },
 };
 
-// ── Query / Topics chat ────────────────────────────────────────────────────────
-function assistantReply(question: string): ChatMessage {
-  const q = question.trim();
-  const lower = q.toLowerCase();
-  const chart =
-    "\n\n```chart\n" +
-    JSON.stringify({
-      type: "bar",
-      title: "Coal dispatch by subsidiary — FY 2025-26 (MT)",
-      data: [
-        { name: "SECL", value: 167 }, { name: "MCL", value: 152 }, { name: "NCL", value: 131 },
-        { name: "CCL", value: 79 }, { name: "WCL", value: 61 }, { name: "BCCL", value: 34 },
-      ],
-      series: [{ key: "value", label: "MT" }],
-    }) +
-    "\n```";
-
-  const isGap = /\b(borehole|2027|forecast|next year|drilling log|seam thickness|projection)\b/.test(lower);
-  const isConflict = /\b(conflict|contradict|discrepan|mismatch|differ|gross|net)\b/.test(lower);
-
-  const evidence: NonNullable<ChatMessage["evidence"]> = {
-    facts: isGap ? 3 : 4,
-    factsExpected: 4,
-    sources: 3,
-    conflicts: isConflict ? 1 : 0,
-    validated: !isGap,
-    asOf: "2026-08-23",
-    ...(isGap
-      ? { gap: "Seam-thickness for the requested block is not held in any validated source. BHUMI will not guess it.", gapOwner: "CMPDI Exploration · borehole digitisation" }
-      : {}),
-    ...(isConflict
-      ? { contradiction: "CIL Annual Report FY25 (p.42) states 167.2 MT gross for Gevra; the Provisional Statistics Excel lists 161.4 MT net. Gross/net basis differs — flagged, not silently merged." }
-      : {}),
-    revisionImpact: isConflict
-      ? ["PQ LS-2390 reply (Aug 2026)", "Executive Policy Brief — Dispatch Trends v5"]
-      : undefined,
-  };
-
-  return {
-    id: nextId("msg"),
-    role: "assistant",
-    content:
-      `Across the indexed corpus, the strongest signal for "${q}" comes from the FY 2025-26 ` +
-      "production returns. Dispatch is led by SECL and MCL, together contributing roughly 45% of national coal " +
-      "movement, with NCL close behind. Environmental-clearance compliance is current for all opencast blocks " +
-      "reviewed, and rehabilitation targets are tracking at 92% of plan." +
-      (isGap ? "\n\nOne requested figure could not be proven from a validated source — see the gap notice below." : "") +
-      chart,
-    createdAt: iso(0),
-    evidence,
-    citations: [
-      { id: "c-1", documentName: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch Summary", cell: "Row 4 · Col C", snippet: "Annual dispatch for the Gevra block stood at 167.2 MT against a target of 170 MT…", relevance: 0.96 },
-      { id: "c-2", documentName: "MCL-Talcher-Env-Clearance-2024.pdf", page: 12, table: "Clearance Register", cell: "EC No. field", snippet: "Environmental clearance J-11015/22/2019 remains valid through 2027 subject to quarterly monitoring…", relevance: 0.91 },
-      { id: "c-3", documentName: "BCCL-Rehabilitation-Progress.docx", page: 4, table: "Table 6 — Beneficiaries", cell: "Total row", snippet: "Rehabilitation reached 1,842 beneficiaries, 92% of the FY target…", relevance: 0.84 },
-    ],
-  };
+// ── Query / Topics chat (answers computed by the knowledge engine) ─────────────
+function buildReply(question: string): ChatMessage {
+  const a = answerQuestion(question);
+  return { id: nextId("msg"), role: "assistant", content: a.content, createdAt: iso(0), citations: a.citations, evidence: a.evidence };
 }
 
 let queryThreads: ChatThread[] = [
@@ -250,7 +199,7 @@ let queryThreads: ChatThread[] = [
     id: "qt-1", title: "Dispatch vs targets, FY26", updatedAt: iso(-120),
     messages: [
       { id: "m-1", role: "user", content: "How is coal dispatch tracking against targets this year?", createdAt: iso(-125), citations: [] },
-      assistantReply("dispatch vs targets"),
+      buildReply("How is coal dispatch tracking against targets this year?"),
     ],
   },
   { id: "qt-2", title: "Environmental clearances status", updatedAt: iso(-900), messages: [] },
@@ -269,7 +218,7 @@ function chatRepo(store: () => ChatThread[], set: (t: ChatThread[]) => void) {
       return ok(thread);
     },
     ask: (threadId: string, question: string) => {
-      const reply = assistantReply(question);
+      const reply = buildReply(question);
       set(
         store().map((t) =>
           t.id === threadId
@@ -296,55 +245,36 @@ export const queryRepository: QueryRepository = {
   ask: queryChat.ask,
 };
 
-// ── Topics ──────────────────────────────────────────────────────────────────
-const topicTerms: TopicTerm[] = [
-  { text: "production", weight: 100, documentCount: 412, category: "Operations" },
-  { text: "environmental clearance", weight: 88, documentCount: 271, category: "Compliance" },
-  { text: "rehabilitation", weight: 76, documentCount: 233, category: "Social" },
-  { text: "safety audit", weight: 71, documentCount: 198, category: "Safety" },
-  { text: "overburden", weight: 64, documentCount: 176, category: "Operations" },
-  { text: "dispatch", weight: 60, documentCount: 165, category: "Logistics" },
-  { text: "stripping ratio", weight: 52, documentCount: 140, category: "Operations" },
-  { text: "land acquisition", weight: 48, documentCount: 129, category: "Social" },
-  { text: "washery", weight: 41, documentCount: 98, category: "Processing" },
-  { text: "grade slippage", weight: 37, documentCount: 84, category: "Quality" },
-  { text: "mine closure", weight: 33, documentCount: 77, category: "Compliance" },
-  { text: "evacuation", weight: 29, documentCount: 63, category: "Logistics" },
-];
-
-const topicClusters: TopicCluster[] = [
-  { id: "tc-1", label: "Production & Dispatch", frequency: 412, sentiment: 0.42, terms: ["production", "dispatch", "stripping ratio", "evacuation"] },
-  { id: "tc-2", label: "Environmental Compliance", frequency: 271, sentiment: -0.12, terms: ["environmental clearance", "mine closure", "overburden"] },
-  { id: "tc-3", label: "Social & Rehabilitation", frequency: 233, sentiment: 0.18, terms: ["rehabilitation", "land acquisition"] },
-  { id: "tc-4", label: "Safety", frequency: 198, sentiment: -0.05, terms: ["safety audit"] },
-  { id: "tc-5", label: "Coal Quality", frequency: 182, sentiment: 0.09, terms: ["grade slippage", "washery"] },
-];
+// ── Topics (word cloud + clusters computed from the corpus) ────────────────────
+const TERMS: TopicTerm[] = computeTerms();
+const CLUSTERS: TopicCluster[] = computeClusters();
 
 export const topicRepository: TopicRepository = {
-  terms: () => ok([...topicTerms]),
-  clusters: () => ok([...topicClusters]),
+  terms: () => ok([...TERMS]),
+  clusters: () => ok([...CLUSTERS]),
   threads: topicChat.threads,
   createThread: topicChat.createThread,
   ask: topicChat.ask,
 };
 
-// ── Reports ──────────────────────────────────────────────────────────────────
-function sampleDoc(title: string): TiptapContent {
+// ── Reports (documents assembled from the corpus by the engine) ────────────────
+function approvalForStatus(status: Report["status"]): ReportEvidence["approval"] {
+  if (status === "published") return { state: "frozen", officer: "Meera Nair", at: iso(-1500) };
+  if (status === "archived") return { state: "frozen", officer: "Rajesh Kumar", at: iso(-6200) };
+  return { state: "draft" };
+}
+
+function buildDoc(reportId: string, prompt: string, subsidiary: string, period: string, title: string): ReportDocument {
+  const { content, evidence } = assembleReport(prompt, subsidiary, period, title);
+  return { reportId, prompt, content, updatedAt: iso(0), evidence };
+}
+
+function seedDoc(report: Report): ReportDocument {
+  const doc = buildDoc(report.id, report.title, report.subsidiary, "FY 2025-26", report.title);
+  const approval = approvalForStatus(report.status);
   return {
-    type: "doc",
-    content: [
-      { type: "heading", attrs: { level: 2 }, content: [{ type: "text", text: title }] },
-      { type: "paragraph", content: [{ type: "text", text: "Prepared for the Ministry of Coal under the Coal India Limited reporting framework, FY 2025-26. All figures are traceable to validated source filings." }] },
-      { type: "heading", attrs: { level: 3 }, content: [{ type: "text", text: "1. Executive Summary" }] },
-      { type: "paragraph", content: [{ type: "text", text: "National coal production remained on trajectory, with SECL and MCL leading dispatch. Environmental-clearance compliance is current across reviewed opencast blocks, and rehabilitation reached 92% of the annual target." }] },
-      { type: "heading", attrs: { level: 3 }, content: [{ type: "text", text: "2. Production Performance" }] },
-      { type: "bulletList", content: [
-        { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "SECL — 167.2 MT dispatched against a 170 MT target (98.4%)." }] }] },
-        { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "MCL — 152.0 MT, up 6.1% year on year." }] }] },
-        { type: "listItem", content: [{ type: "paragraph", content: [{ type: "text", text: "NCL — 131.4 MT, constrained by monsoon evacuation." }] }] },
-      ] },
-      { type: "paragraph", content: [{ type: "text", text: "Detailed subsidiary tables and annexures follow in Section 4." }] },
-    ],
+    ...doc,
+    evidence: doc.evidence ? { ...doc.evidence, approval, assayGatesPassed: approval.state === "draft" ? 6 : 7 } : undefined,
   };
 }
 
@@ -377,36 +307,7 @@ let reports: Report[] = [
   { id: "rpt-4", title: "Executive Policy Brief — Dispatch Trends", templateId: "tpl-4", templateName: "Executive Policy Brief", status: "archived", version: 5, subsidiary: "All subsidiaries", createdBy: "Rajesh Kumar", createdAt: iso(-9000), updatedAt: iso(-6200), pageCount: 3, formats: ["PDF", "DOCX"], shareUrl: null, shareExpiresAt: null },
 ];
 
-function sampleEvidence(state: "draft" | "approved" | "frozen"): ReportEvidence {
-  return {
-    assayGatesPassed: state === "draft" ? 6 : 7,
-    assayGatesTotal: 7,
-    approval:
-      state === "frozen"
-        ? { state: "frozen", officer: "Meera Nair", at: iso(-1500) }
-        : state === "approved"
-          ? { state: "approved", officer: "Meera Nair", at: iso(-120) }
-          : { state: "draft" },
-    figures: [
-      { label: "Annual dispatch (Gevra)", value: "167.2 MT", formula: "SUM(monthly_dispatch)", source: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch", cell: "R4·C3", status: "computed" },
-      { label: "Target attainment", value: "98.4%", formula: "dispatch ÷ target × 100", source: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch", cell: "R4·C5", status: "computed" },
-      { label: "Rehabilitation beneficiaries", value: "1,842", formula: "COUNT(beneficiary_id)", source: "BCCL-Rehabilitation-Progress.docx", page: 4, table: "Table 6", cell: "Total", status: "computed" },
-      { label: "Env clearance validity", value: "till 2027", formula: "lookup(EC_register)", source: "MCL-Talcher-Env-Clearance-2024.pdf", page: 12, table: "Clearance Register", cell: "EC field", status: "computed" },
-      { label: "Overburden removal (Amlohri)", value: "not available", formula: "—", source: "pending digitisation", page: 0, table: "—", cell: "—", status: "gap" },
-    ],
-    gaps: [
-      { fact: "Overburden removal volume — NCL Amlohri, FY26", owner: "CMPDI · scan queue (doc-3)", priority: "high", dueAt: iso(2880) },
-    ],
-    revisionImpact: state === "frozen" ? ["PQ LS-2390 reply", "Coal Directory FY25 extract"] : undefined,
-  };
-}
-
-const reportDocs = new Map<string, ReportDocument>([
-  ["rpt-1", { reportId: "rpt-1", prompt: "Monthly production return across all subsidiaries", content: sampleDoc("Coal Production Return — August 2026"), updatedAt: iso(-1500), evidence: sampleEvidence("frozen") }],
-  ["rpt-2", { reportId: "rpt-2", prompt: "Draft a PQ response on Jharia rehabilitation", content: sampleDoc("PQ 2418 — Rehabilitation Progress in Jharia"), updatedAt: iso(-900), evidence: sampleEvidence("approved") }],
-  ["rpt-3", { reportId: "rpt-3", prompt: "Q1 environmental compliance digest for MCL", content: sampleDoc("Environmental Compliance Digest — Q1 FY26"), updatedAt: iso(-30), evidence: sampleEvidence("draft") }],
-  ["rpt-4", { reportId: "rpt-4", prompt: "Executive brief on dispatch trends", content: sampleDoc("Executive Policy Brief — Dispatch Trends"), updatedAt: iso(-6200), evidence: sampleEvidence("frozen") }],
-]);
+const reportDocs = new Map<string, ReportDocument>(reports.map((r) => [r.id, seedDoc(r)]));
 
 const sharedReports = new Map<string, SharedReport>();
 
@@ -429,7 +330,7 @@ function createReport(title: string, templateId: string, subsidiary: string, pro
     shareUrl: null, shareExpiresAt: null,
   };
   reports = [report, ...reports];
-  reportDocs.set(report.id, { reportId: report.id, prompt, content: sampleDoc(title), updatedAt: iso(0), evidence: sampleEvidence("draft") });
+  reportDocs.set(report.id, buildDoc(report.id, prompt, subsidiary, "FY 2025-26", title));
   return report;
 }
 
@@ -449,7 +350,7 @@ export const reportRepository: ReportRepository = {
   versions: (reportId) => ok(versionsFor(reportId)),
   generate: (config: ReportWizardConfig) => ok(createReport(config.title || "Untitled Report", config.templateId, config.subsidiary, config.title)),
   draft: (request: ReportDraftRequest) => ok(createReport(request.prompt.slice(0, 60) || "AI Draft Report", request.templateId, request.subsidiary, request.prompt)),
-  getDocument: (reportId) => ok(reportDocs.get(reportId) ?? { reportId, prompt: "", content: sampleDoc("Report"), updatedAt: iso(0), evidence: sampleEvidence("draft") }),
+  getDocument: (reportId) => ok(reportDocs.get(reportId) ?? buildDoc(reportId, "", "All subsidiaries", "FY 2025-26", "Report")),
   saveDocument: (reportId, content) => {
     const prev = reportDocs.get(reportId);
     const doc: ReportDocument = { reportId, prompt: prev?.prompt ?? "", content, updatedAt: iso(0), evidence: prev?.evidence };
@@ -469,7 +370,7 @@ export const reportRepository: ReportRepository = {
     const expiresAt = iso(expiresInDays * 24 * 60);
     const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/shared/reports/${token}` : `/shared/reports/${token}`;
     if (report) {
-      sharedReports.set(token, { title: report.title, templateName: report.templateName, subsidiary: report.subsidiary, createdBy: report.createdBy, updatedAt: iso(0), content: doc?.content ?? sampleDoc(report.title) });
+      sharedReports.set(token, { title: report.title, templateName: report.templateName, subsidiary: report.subsidiary, createdBy: report.createdBy, updatedAt: iso(0), content: doc?.content ?? buildDoc(reportId, report.title, report.subsidiary, "FY 2025-26", report.title).content });
       reports = reports.map((r) => (r.id === reportId ? { ...r, shareUrl, shareExpiresAt: expiresAt } : r));
     }
     return ok({ shareUrl, expiresAt });
@@ -482,7 +383,7 @@ export const reportRepository: ReportRepository = {
     ok(
       sharedReports.get(token) ?? {
         title: "Coal Production Return — August 2026", templateName: "Monthly Production Return", subsidiary: "All subsidiaries",
-        createdBy: "Rajesh Kumar", updatedAt: iso(-1500), content: sampleDoc("Coal Production Return — August 2026"),
+        createdBy: "Rajesh Kumar", updatedAt: iso(-1500), content: buildDoc("rpt-1", "Coal Production Return", "All subsidiaries", "FY 2025-26", "Coal Production Return — August 2026").content,
       },
     ),
 };
@@ -587,7 +488,7 @@ const dashboard: DashboardSnapshot = {
     { id: "d-3", referenceNo: "LS-2455", subject: "Environmental clearances status", dueAt: iso(11520), priority: "normal", assignedTo: "Meera Nair" },
   ],
   health: { ocrQueueDepth: 2, avgLatencyMs: 1800, uptimePercent: 99.95, indexFreshnessMin: 7, activeUsers: 34, storageUsedGb: 685.8, storageTotalGb: 2048 },
-  topTerms: topicTerms.map((t) => ({ text: t.text, weight: t.weight })),
+  topTerms: TERMS.map((t) => ({ text: t.text, weight: t.weight })),
 };
 
 export const analyticsRepository: AnalyticsRepository = {
