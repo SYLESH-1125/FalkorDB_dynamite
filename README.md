@@ -1,115 +1,200 @@
-# BHUMI
+# BHUMI Company Brain
 
-**Bharat Hub for Unified Mining Intelligence**
+**Graph Hacks: Context for AI Agents** · [WeMakeDevs × FalkorDB](https://www.wemakedevs.org/hackathons/falkordb)
 
-Ministry of Coal · Smart India Hackathon 2026 · Problem Statement 23
+**Track:** Company Brain
 
-BHUMI is a document-digitisation, AI-assisted query, and automated-reporting platform. It ingests
-mining-sector documents (PDF, DOCX, spreadsheets, scanned images), extracts and embeds their
-content, builds a knowledge graph, and lets officials query the corpus and generate reports in
-multiple Indian languages.
+BHUMI is the company brain for a coal-ministry desk. People, teams, projects, documents, decisions, tickets, and chats live in one **FalkorDB** graph. The agent answers by traversing that graph, shows the path it walked, and cites the nodes. A new decision is merged into the same graph, so the next session sees it.
+
+The organisation in the seed is synthetic. Names are fictional. Nothing private, paywalled, or login-protected is loaded.
+
+**AI coding assistant:** Cursor (Grok) was used while building this. The graph model, the Cypher, and the product decisions are documented here so they can be explained without the assistant.
+
+If FalkorDB is stopped, `GET /health` reports the graph down and `/api/brain/ask` returns 503. The answers do not fall back to another database.
+
+---
+
+## Graph data model
+
+Graph name: `bhumi_company_brain`
+
+| Label | What it is | Key properties |
+| --- | --- | --- |
+| `Person` | A colleague on the desk | `id`, `name`, `role` |
+| `Team` | A unit that owns work | `id`, `name`, `mandate` |
+| `Project` | A piece of work | `id`, `name`, `status` |
+| `Document` | A note, SOP, annexure, or uploaded file | `id`, `name`, `kind` |
+| `Decision` | A choice the desk can defend | `id`, `title`, `summary`, `decidedOn` |
+| `Ticket` | An open work item | `id`, `title`, `status` |
+| `Chat` | A desk thread | `id`, `name`, `excerpt`, `channel` |
+| `Mine` | A mine the work depends on | `id`, `name` |
+| `Subsidiary` | A coal subsidiary | `id`, `name`, `code` |
+| `Organization` | Synthetic ministry desk (root org) | `id`, `name` |
+| `Fact` | Evidence extracted from a document | `id`, `statement`, `confidence`, `pageRef`, `extractedAt` |
+| `Topic` | Thematic tag on documents | `id`, `name` |
+| `Issue` | Open operational / parliamentary issue | `id`, `title`, `status` |
+| `Memory` | A question the agent already answered | `id`, `question`, `answer`, `askedAt` |
+
+Relationships the agent follows:
+
+`HAS_SUBSIDIARY`, `MEMBER_OF`, `OWNS`, `RESPONSIBLE_FOR`, `KNOWS_ABOUT`, `WORKED_ON`, `AUTHORED`, `ABOUT`, `DECIDED_BY`, `BASED_ON`, `AFFECTS`, `DEPENDS_ON`, `BELONGS_TO`, `REFERENCES`, `RAISED_BY`, `MENTIONS`, `EXTRACTED_FROM`, `ASKED_BY`
+
+`Ticket` and `Chat` remain in the seed for impact analysis; `Issue` is what the agent uses for ownership + evidence questions.
+
+Uploaded documents are merged into this same graph when a validation is approved, linked to their subsidiary and mine.
+
+---
+
+## Cypher the product runs
+
+The queries are in [`backend/cypher/company_brain.cypher`](backend/cypher/company_brain.cypher) and in `backend/app/infrastructure/graph/company_brain.py`. They cover:
+
+- who owns a project or mine
+- who knows, worked on, or authored something
+- the path from a decision back to the person and the source document
+- what breaks when a mine or project stops (`DEPENDS_ON`, `AFFECTS`, tickets, documents, chats)
+- `shortestPath` between two nodes
+- PageRank on `(:Person)-[:KNOWS_ABOUT]->()`, with degree centrality if PageRank is unavailable
+- session memory: `(:Memory)-[:ABOUT]->(node)`
+- **issue investigation** (`issue_investigation`): `Issue` → `Project` / `Subsidiary`, responsible `Person`, supporting `Decision` → `Document` → `Fact`
+- **evidence_from_project**: decisions and facts tied to a project
+- **related_projects**: shared mines, teams, or decisions
+- **knowledge_gaps**: projects missing an owner, decision, or fact
+- **entity_aliases**: `alias` properties and exact duplicate names (names are never merged silently)
+- **upsert_fact**: merge facts with `EXTRACTED_FROM` provenance
+
+Try these on the Company Brain page:
+
+- Who owns the ECL offtake variance issue and what decision supports the response?
+- Who owns the Jharia Fire Monitoring project?
+- What knowledge gaps exist in the company graph?
+- Who knows about Jharia?
+- Trace the decision to adopt human-in-loop validation
+- What breaks if Gevra goes down?
+- How is Meera Iyer connected to the Validation SOP?
+- What did we ask last time?
 
 ---
 
 ## Architecture
 
-BHUMI is a two-tier application. The two tiers deploy to **different** platforms:
-
 | Tier | Stack | Deploys to |
 | --- | --- | --- |
-| **Frontend** (`frontend/`) | Next.js 16 · React 19 · TypeScript · Tailwind CSS 4 | **Vercel** |
-| **Backend** (`backend/`) | FastAPI · PostgreSQL + pgvector · Neo4j · MinIO/S3 · PyTorch + sentence-transformers | **A container host** (Render, Railway, Fly.io, a VPS, …) |
+| Frontend (`frontend/`) | Next.js · React · TypeScript · Tailwind | **Vercel** (free) |
+| API + FalkorDB (`backend/Dockerfile.free`) | FastAPI, FalkorDB in the same container | **Render** free web service |
+| Postgres | Supabase free project, with `vector` enabled | **Supabase** |
 
-> **Why the backend is not on Vercel.** Vercel runs stateless serverless functions with a small
-> bundle limit and no persistent services. The backend loads a PyTorch embedding model into memory
-> and depends on long-running PostgreSQL, Neo4j, and object storage. That does not fit the
-> serverless model, so the backend is containerised and hosted separately. The frontend talks to it
-> over HTTPS via the `NEXT_PUBLIC_API_URL` environment variable.
-
-Both tiers follow clean-architecture boundaries (`domain` → `application` → `infrastructure` →
-`presentation`), documented in [`CLAUDE.md`](./CLAUDE.md).
+Local development still uses Docker Compose: Postgres, MinIO, FalkorDB, and the API. FalkorDB Browser is on [http://localhost:3000](http://localhost:3000) when Compose is up (move the Next.js app to another port, or skip publishing `3000:3000` if it clashes).
 
 ---
 
-## Local development
+## Local setup
 
-Prerequisites: Docker + Docker Compose, Node.js 20+.
+Prerequisites: Docker, Node.js 20+.
 
 ```bash
-# 1. Backend + datastores (Postgres, Neo4j, MinIO) via Docker
-cp .env.example .env                       # fill in JWT_SECRET and, optionally, API keys
-python -c "import secrets; print(secrets.token_hex(32))"   # value for JWT_SECRET
-docker compose up --build                  # backend on http://localhost:8000
+cp .env.example .env
+python -c "import secrets; print(secrets.token_hex(32))"   # JWT_SECRET
+docker compose up --build                  # API on http://localhost:8000
 
-# 2. Frontend (separate terminal)
 cd frontend
-cp .env.example .env.local                 # NEXT_PUBLIC_API_URL=http://localhost:8000
+cp .env.example .env.local
+# NEXT_PUBLIC_API_URL=http://localhost:8000
 npm install
-npm run dev                                 # http://localhost:3000
+npm run dev                                # http://localhost:3000
 ```
+
+`GET http://localhost:8000/health` returns `{"status":"ok","graph":"falkordb"}` once the graph is up.
+
+Sign in with the demo account from `DEMO_ADMIN_EMPLOYEE_ID` / `DEMO_ADMIN_PASSWORD`, then open **Company Brain**.
 
 ---
 
-## Production deployment
+## Deploy for free
 
-### Frontend → Vercel
+### 1. Supabase (Postgres)
 
-1. Push this repository to GitHub and import it in Vercel (**New Project**).
-2. **Set the project _Root Directory_ to `frontend`.** This is required — the repo is a monorepo
-   and Vercel must build from the Next.js app folder. Vercel then auto-detects Next.js
-   (see [`frontend/vercel.json`](./frontend/vercel.json)).
-3. Add the environment variable:
+Create a free project. In the SQL editor, run `create extension if not exists vector;`. Copy the **direct** connection string (host `db.<ref>.supabase.co`, port **5432**, not the pooler).
 
-   | Name | Value |
-   | --- | --- |
-   | `NEXT_PUBLIC_API_URL` | Public HTTPS URL of your deployed backend, e.g. `https://api.bhumi.example.com` |
+### 2. Render (API + FalkorDB)
 
-4. Deploy. Security headers (HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
-   `Permissions-Policy`) are applied from [`frontend/next.config.ts`](./frontend/next.config.ts).
+Dashboard → New → Blueprint → this repo. `render.yaml` creates one free web service from `backend/Dockerfile.free`. FalkorDB starts on `127.0.0.1:6379` inside that container. Set:
 
-### Backend → container host
+| Name | Value |
+| --- | --- |
+| `DATABASE_URL` | Supabase direct URI |
+| `DATABASE_SSL` | `true` (already set in the blueprint) |
+| `CORS_ORIGINS` | Your Vercel origin, e.g. `https://your-app.vercel.app` |
+| `BOOTSTRAP_ADMIN_EMPLOYEE_ID` / `BOOTSTRAP_ADMIN_PASSWORD` | First administrator |
+| `DEMO_*` | Optional role accounts |
 
-The backend ships a production [`Dockerfile`](./backend/Dockerfile) that runs as a non-root user,
-honours the platform-provided `$PORT`, exposes a `/health` check, and applies database migrations
-on start.
+The free service has an ephemeral disk. The company graph is re-seeded on boot. Session memories reset when the container restarts. Document upload needs object storage, which the free tier does not include; Company Brain does not need it.
 
-**Option A — self-host the full stack (VPS):**
+### 3. Vercel (frontend)
 
-```bash
-cp .env.example .env    # set JWT_SECRET, POSTGRES_PASSWORD, NEO4J_PASSWORD,
-                        # S3_ACCESS_KEY/S3_SECRET_KEY, CORS_ORIGINS=<your Vercel URL>
-docker compose -f docker-compose.prod.yml up -d --build
-```
+Import the repo. **Root Directory: `frontend`.**
 
-Datastore ports bind to `127.0.0.1` only; put the API behind a TLS reverse proxy (Caddy / Nginx /
-Traefik) and point `NEXT_PUBLIC_API_URL` at that HTTPS endpoint.
+| Name | Value |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | The Render URL, e.g. `https://bhumi-company-brain.onrender.com` |
+| `NEXT_PUBLIC_DEMO_MODE` | `false` |
 
-**Option B — managed PaaS (Render / Railway / Fly.io):** deploy `backend/` from the Dockerfile and
-attach managed PostgreSQL (with the `pgvector` extension), Neo4j (Aura), and an S3-compatible bucket
-(AWS S3 / Cloudflare R2). Set the environment variables below.
-
-> **CORS:** set `CORS_ORIGINS` to your exact Vercel URL (comma-separated for multiple), e.g.
-> `https://bhumi.vercel.app`.
+`NEXT_PUBLIC_API_URL` alone is enough for Company Brain. The rest of the workspace uses the live API only when demo mode is `false`.
 
 ---
 
 ## Environment variables
 
-**Frontend** — see [`frontend/.env.example`](./frontend/.env.example):
+Frontend: [`frontend/.env.example`](frontend/.env.example).
 
-| Name | Purpose |
-| --- | --- |
-| `NEXT_PUBLIC_API_URL` | Base URL of the backend API (browser-reachable). |
-
-**Backend** — see [`backend/.env.example`](./backend/.env.example): `DATABASE_URL`, `NEO4J_*`,
-`S3_*`, `CORS_ORIGINS`, `JWT_SECRET` (required), `OPENROUTER_API_KEY`, `SARVAM_API_KEY`,
-`WEB_CONCURRENCY`, and the bootstrap/demo account pairs.
+Backend: [`backend/.env.example`](backend/.env.example). Required: `DATABASE_URL`, `JWT_SECRET`, `FALKORDB_HOST`. `EMBEDDINGS_ENABLED=0` on the free tier so the embedding model is not loaded.
 
 ---
 
-## Health & operations
+## Demo video
 
-- **Health check:** `GET /health` → `{"status": "ok"}`.
-- **Migrations:** run automatically on backend container start (`alembic upgrade head`).
-- **First admin:** set `BOOTSTRAP_ADMIN_EMPLOYEE_ID` / `BOOTSTRAP_ADMIN_PASSWORD` once, then clear
-  them after the first boot.
+Record a two-minute walkthrough:
+
+1. `GET /health` showing `"graph": "falkordb"`.
+2. Company Brain: “Who owns the Jharia Fire Monitoring project?” with the path and the Cypher.
+3. “Trace the decision to adopt human-in-loop validation” and point at `BASED_ON` → Validation SOP 2026.
+4. Record a new decision, ask again, and show the new node.
+5. Open Knowledge Graph and click a person, a decision, and a document.
+6. Stop FalkorDB and show `/api/brain/ask` fail.
+
+---
+
+## Example investigation (graph path)
+
+**Question:** Who owns the ECL offtake variance issue and what decision supports the response?
+
+| Step | Relationship | Node |
+| --- | --- | --- |
+| 1 | `AFFECTS` | Issue → House Question Turnaround (project) |
+| 2 | `AFFECTS` | Issue → ECL (subsidiary) |
+| 3 | `RESPONSIBLE_FOR` | Vikram Sethi → project |
+| 4 | `AFFECTS` | Decision “Answer ECL offtake variance from validated PQ log only” → project |
+| 5 | `BASED_ON` | Decision → Parliamentary Question Log |
+| 6 | `EXTRACTED_FROM` | Fact “ECL offtake trailed plan…” → Parliamentary Question Log |
+
+The answer is assembled only from these edges. If step 4 were missing, the agent would report missing decision evidence instead of inventing one.
+
+## Tests
+
+From `backend/` with FalkorDB running (`docker compose up falkordb`):
+
+```bash
+cd backend
+pip install -r requirements.txt
+set JWT_SECRET=dev-secret
+set FALKORDB_HOST=localhost
+pytest -q
+```
+
+**Last run (local, Docker not available on CI agent machine):** integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_bad_host` verifies the API layer fails closed without the graph.
+
+## Health
+
+- `GET /health` → `{"status":"ok","graph":"falkordb"}` or `"graph":"down"`.
+- Migrations run on container start (`alembic upgrade head`).
+- Clear `BOOTSTRAP_ADMIN_*` after the first boot.
