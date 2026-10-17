@@ -13,11 +13,11 @@ ENV DEBIAN_FRONTEND=noninteractive \
     FALKORDB_GRAPH=bhumi_company_brain \
     EMBEDDINGS_ENABLED=0
 
+# No tesseract on the free image — it breaks apt on the FalkorDB base; OCR stays in local Docker only.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     python3-pip \
     python3-venv \
-    tesseract-ocr \
     curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
