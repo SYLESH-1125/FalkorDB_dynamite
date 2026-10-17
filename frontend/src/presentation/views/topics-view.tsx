@@ -168,12 +168,17 @@ export function TopicsView() {
     setInput("");
     setThinking(true);
 
-    const answer = await repositories.topics.ask(threadId, trimmed);
-    const freshThreads = await repositories.topics.threads();
-    setThreads(freshThreads);
-    setPendingUserMessage(null);
-    setThinking(false);
-    return answer;
+    try {
+      const answer = await repositories.topics.ask(threadId, trimmed);
+      const freshThreads = await repositories.topics.threads();
+      setThreads(freshThreads);
+      return answer;
+    } catch {
+      return null;
+    } finally {
+      setPendingUserMessage(null);
+      setThinking(false);
+    }
   }
 
   function onSubmit(event: FormEvent) {

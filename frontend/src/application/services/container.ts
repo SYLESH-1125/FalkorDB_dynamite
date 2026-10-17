@@ -1,11 +1,11 @@
 import * as api from "@/src/infrastructure/repositories/api-repositories";
 import * as mock from "@/src/infrastructure/repositories/mock-repositories";
 
-// Demo mode runs the app against an in-browser backend so it is fully usable with no server.
-// On by default when no API URL is configured (e.g. a standalone Vercel deploy); force it with
-// NEXT_PUBLIC_DEMO_MODE=true, or opt back into the live API by setting NEXT_PUBLIC_API_URL.
-const DEMO = process.env.NEXT_PUBLIC_DEMO_MODE === "true" || !process.env.NEXT_PUBLIC_API_URL;
-const impl = DEMO ? mock : api;
+// The in-browser engine is the DEFAULT so the frontend is fully usable with no server —
+// a standalone deploy never calls a backend that isn't there. To point at a live backend,
+// set BOTH NEXT_PUBLIC_DEMO_MODE=false AND NEXT_PUBLIC_API_URL.
+const USE_LIVE_API = process.env.NEXT_PUBLIC_DEMO_MODE === "false" && !!process.env.NEXT_PUBLIC_API_URL;
+const impl = USE_LIVE_API ? api : mock;
 
 // single composition root — swap these bindings to move off the live API
 export const repositories = {

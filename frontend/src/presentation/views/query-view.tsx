@@ -13,8 +13,10 @@ import { useAsync } from "@/src/application/hooks/use-async";
 import { useSarvamVoice } from "@/src/application/hooks/use-sarvam-voice";
 import type { ChatMessage, Citation } from "@/src/domain/entities/query";
 import { getQueryStrings, QUERY_UI_LANGUAGES } from "@/src/domain/entities/query-i18n";
+import { extractAnalysisChart } from "@/src/domain/entities/analysis-chart";
 import { VoiceAssistantModal } from "../components/shared/voice-assistant-modal";
 import { MarkdownMessage } from "../components/shared/markdown-message";
+import { AnalysisChartCard } from "../components/shared/analysis-chart-card";
 import { EvidencePanel } from "../components/shared/evidence-panel";
 import { cn } from "../components/ui/cn";
 
@@ -202,12 +204,17 @@ export function QueryView() {
     setInput("");
     setThinking(true);
 
-    const answer = await repositories.query.ask(threadId, trimmed);
-    const freshThreads = await repositories.query.threads();
-    setThreads(freshThreads);
-    setPendingUserMessage(null);
-    setThinking(false);
-    return answer;
+    try {
+      const answer = await repositories.query.ask(threadId, trimmed);
+      const freshThreads = await repositories.query.threads();
+      setThreads(freshThreads);
+      return answer;
+    } catch {
+      return null;
+    } finally {
+      setPendingUserMessage(null);
+      setThinking(false);
+    }
   }
 
   function onSubmit(event: FormEvent) {
@@ -285,9 +292,17 @@ export function QueryView() {
                     </p>
 
                     {message.role === "assistant" ? (
-                      <div className="mt-1.5 rounded-2xl border border-hairline bg-surface-card px-4 py-3.5 text-[14.5px] text-body-strong shadow-sm">
-                        <MarkdownMessage content={message.content} />
-                      </div>
+                      (() => {
+                        const { text, chart } = extractAnalysisChart(message.content);
+                        return (
+                          <div className="mt-1.5 space-y-3">
+                            <div className="rounded-2xl border border-hairline bg-surface-card px-4 py-3.5 text-[14.5px] text-body-strong shadow-sm">
+                              <MarkdownMessage content={text} />
+                            </div>
+                            {chart ? <AnalysisChartCard chart={chart} /> : null}
+                          </div>
+                        );
+                      })()
                     ) : (
                       <div className="mt-1.5 rounded-2xl bg-primary-50 px-4 py-3 text-[15px] leading-relaxed whitespace-pre-line text-body-strong">
                         {message.content}
