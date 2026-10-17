@@ -103,10 +103,11 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-      - hf_cache:/root/.cache/huggingface
-    command: >
-      sh -c "alembic upgrade head &&
-             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+      - hf_cache:/home/appuser/.cache/huggingface
+    # dev overrides the production entrypoint to get hot-reload against the bind-mounted source
+    user: root
+    entrypoint: ["/bin/sh", "-c"]
+    command: "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
 
 volumes:
   pgdata:
