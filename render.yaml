@@ -18,11 +18,11 @@ services:
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        sync: false # Supabase Session pooler URI (not db.*.supabase.co direct — Render cannot reach IPv6 direct).
+        sync: false # Session pooler: postgresql://postgres.<ref>@aws-0-....pooler.supabase.com:5432/postgres
       - key: DATABASE_SSL
         value: "true"
-      - key: DATABASE_PGBOUNCER
-        value: "false"
+      - key: ALLOW_PUBLIC_SIGNUP
+        value: "true"
       - key: EMBEDDINGS_ENABLED
         value: "0"
       - key: FALKORDB_HOST

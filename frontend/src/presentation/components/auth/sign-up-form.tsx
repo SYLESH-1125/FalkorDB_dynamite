@@ -32,8 +32,13 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
 
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!employeeId.trim() || !name.trim() || !email.trim() || password.length < 8) {
+    const mail = email.trim();
+    if (!employeeId.trim() || !name.trim() || !mail || password.length < 8) {
       setError("Fill all fields. Password must be at least 8 characters.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+      setError("Enter a valid work email address.");
       return;
     }
     setSubmitting(true);

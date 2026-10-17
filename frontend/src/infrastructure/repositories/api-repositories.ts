@@ -4,7 +4,7 @@ import type {
   UserRepository, AuditRepository, IntegrationRepository, NotificationRepository,
   HelpRepository, GraphRepository, BrainRepository, VoiceRepository, Transcription,
 } from "@/src/domain/repositories";
-import { apiClient, LLM_TIMEOUT_MS } from "../http/api-client";
+import { apiClient, AUTH_REQUEST_TIMEOUT_MS, LLM_TIMEOUT_MS, wakeBackend } from "../http/api-client";
 import type { Session } from "@/src/domain/entities/user";
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type { DashboardSnapshot } from "@/src/domain/entities/analytics";
@@ -27,11 +27,14 @@ function clearSession(): void {
   }
 }
 
+async function authPost<T>(path: string, body: unknown): Promise<T> {
+  await wakeBackend();
+  return apiClient.post<T>(path, body, AUTH_REQUEST_TIMEOUT_MS);
+}
+
 export const authRepository: AuthRepository = {
-  signIn: (credentials) =>
-    apiClient.post<Session>("/api/auth/sign-in", credentials).then(writeSession),
-  signUp: (input) =>
-    apiClient.post<Session>("/api/auth/sign-up", input).then(writeSession),
+  signIn: (credentials) => authPost<Session>("/api/auth/sign-in", credentials).then(writeSession),
+  signUp: (input) => authPost<Session>("/api/auth/sign-up", input).then(writeSession),
   signOut: () => apiClient.post<void>("/api/auth/sign-out").finally(clearSession),
   currentSession: () =>
     apiClient.get<Session>("/api/auth/session").catch(() => null),

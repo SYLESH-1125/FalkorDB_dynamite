@@ -1,8 +1,8 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const SESSION_KEY = "bhumi.session";
 const REQUEST_TIMEOUT_MS = 15_000;
-// LLM-backed analysis calls (trend/prediction reasoning over the full corpus) run meaningfully
-// longer than a lookup — give them room instead of aborting a request the backend would've finished
+// Render free tier cold start can exceed 15s; auth must wait for wake + DB.
+export const AUTH_REQUEST_TIMEOUT_MS = 120_000;
 const LLM_REQUEST_TIMEOUT_MS = 60_000;
 
 function authHeader(): Record<string, string> {
@@ -26,6 +26,11 @@ async function handle<T>(res: Response): Promise<T> {
       if (typeof parsed.detail === "string") detail = parsed.detail;
     } catch {
       // body wasn't JSON — fall back to the raw text
+    }
+    if (res.status === 404 && res.url.includes("/api/auth/sign-up")) {
+      throw new Error(
+        "Sign-up is not on this API yet. Redeploy the Render backend from the latest repo commit, then try again.",
+      );
     }
     throw new Error(detail || `Request failed with status ${res.status}`);
   }
@@ -56,9 +61,13 @@ async function request<T>(path: string, init: RequestInit, timeoutMs = REQUEST_T
 
 export const LLM_TIMEOUT_MS = LLM_REQUEST_TIMEOUT_MS;
 
+export async function wakeBackend(): Promise<void> {
+  await request<{ status: string }>("/health", { headers: {} }, AUTH_REQUEST_TIMEOUT_MS).catch(() => {});
+}
+
 export const apiClient = {
-  get<T>(path: string): Promise<T> {
-    return request<T>(path, { headers: { ...authHeader() } });
+  get<T>(path: string, timeoutMs = REQUEST_TIMEOUT_MS): Promise<T> {
+    return request<T>(path, { headers: { ...authHeader() } }, timeoutMs);
   },
   post<T>(path: string, body?: unknown, timeoutMs?: number): Promise<T> {
     return request<T>(path, {
