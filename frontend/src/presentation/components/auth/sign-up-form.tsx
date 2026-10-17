@@ -148,7 +148,7 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
         {submitting ? (
           <>
             <Loader2 className="size-4 animate-spin" aria-hidden />
-            Creating account…
+            Connecting to server… (may take up to 2 min on free hosting)
           </>
         ) : (
           "Create account"
