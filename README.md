@@ -118,8 +118,6 @@ If FalkorDB is down, `GET /health` reports `"graph":"down"` and `POST /api/brain
 4. UI shows **tool name**, **relationship path**, **sources**, and **query text**.
 5. New **decisions** merge into the same graph for the next session.
 
-**AI-assisted development:** Cursor was used for implementation speed; graph schema, Cypher, and tool boundaries are documented here for review and demo.
-
 ---
 
 ## Graph schema (`bhumi_company_brain`)

@@ -177,4 +177,7 @@ credentials/
 .history/
 .cursor/
 .claude/
+CLAUDE.md
 CLAUDE.local.md
+claude.md
+**/AGENTS.md
