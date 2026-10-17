@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import settings
 from app.infrastructure.db.models import Document, DocumentChunk, ExtractedField, ValidationRecord
 from app.services.embeddings import embed_async
 from app.services.llm import LlmNotConfigured, generate_answer, generate_general_knowledge_answer
@@ -41,9 +42,40 @@ async def _search_fields(db: AsyncSession, query_vector: list[float]) -> list[tu
     return [(row[0], row[1]) for row in result.all()]
 
 
-async def answer_question(db: AsyncSession, question: str) -> tuple[str, list[dict]]:
-    """Semantic retrieval over embedded document chunks + extracted fields (pgvector cosine
-    similarity), then a grounded answer synthesized by an LLM over the retrieved evidence."""
+async def answer_question(
+    db: AsyncSession, question: str, actor_id: str = "anonymous", actor_name: str = "Colleague",
+) -> tuple[str, list[dict]]:
+    """Company-graph questions are answered only from FalkorDB. Document RAG runs when the
+    question does not name anything in the graph."""
+    from app.infrastructure.graph.falkordb_client import GraphUnavailable
+    from app.services.brain_agent import answer as answer_from_graph
+
+    try:
+        graph_answer = await answer_from_graph(question, actor_id=actor_id, actor_name=actor_name)
+    except GraphUnavailable:
+        return (
+            "Company Brain is offline. FalkorDB has to be running before this question can be answered.",
+            [],
+        )
+
+    if graph_answer is not None:
+        citations = [
+            {
+                "document_name": source["label"],
+                "page": 0,
+                "snippet": f"{source['kind']}: {source['detail']}",
+                "relevance": 1.0,
+            }
+            for source in graph_answer["sources"][:6]
+        ]
+        return graph_answer["answer"], citations
+
+    if not settings.embeddings_enabled:
+        return (
+            "That question is not in the company graph. Turn embeddings on to search uploaded documents.",
+            [],
+        )
+
     query_vector = await embed_async(question)
 
     chunks = await _search_chunks(db, query_vector)

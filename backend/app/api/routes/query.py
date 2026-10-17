@@ -51,7 +51,9 @@ async def ask(
 
     db.add(ChatMessage(thread_id=thread.id, role="user", content=payload.question, created_at=datetime.now(timezone.utc)))
 
-    body, citations = await answer_question(db, payload.question)
+    body, citations = await answer_question(
+        db, payload.question, actor_id=user.id, actor_name=user.name,
+    )
 
     answer = ChatMessage(
         thread_id=thread.id, role="assistant", content=body, created_at=datetime.now(timezone.utc),

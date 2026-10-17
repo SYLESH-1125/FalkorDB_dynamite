@@ -459,3 +459,53 @@ class GraphEdgeOut(CamelModel):
 class KnowledgeGraphOut(CamelModel):
     nodes: list[GraphNodeOut]
     edges: list[GraphEdgeOut]
+
+
+class BrainPathStep(CamelModel):
+    from_label: str
+    relationship: str
+    to_label: str
+
+
+class BrainSource(CamelModel):
+    label: str
+    kind: str
+    node_id: str
+    detail: str
+
+
+class BrainAnswer(CamelModel):
+    answer: str
+    intent: str
+    tool: str = ""
+    path: list[BrainPathStep]
+    sources: list[BrainSource]
+    cypher: str
+    remembered: list[str]
+
+
+class BrainPerson(CamelModel):
+    name: str
+    role: str
+    connections: int
+
+
+class BrainDecision(CamelModel):
+    title: str
+    decided_on: str
+    summary: str
+
+
+class BrainBrief(CamelModel):
+    graph: str
+    counts: dict[str, int]
+    central_people: list[BrainPerson]
+    recent_decisions: list[BrainDecision]
+
+
+class BrainFactIn(CamelModel):
+    title: str
+    summary: str
+    decided_by: str
+    based_on: str
+    affects: str

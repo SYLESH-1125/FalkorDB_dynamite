@@ -1,21 +1,24 @@
 import asyncio
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
-    analytics, audit, auth, documents, graph, help, integrations, notifications, parliamentary,
+    analytics, audit, auth, brain, documents, graph, help, integrations, notifications, parliamentary,
     query, reports, topics, users, validations, voice,
 )
 from app.config import settings
 from app.infrastructure.db.base import SessionLocal
 from app.infrastructure.db.seed import seed
-from app.infrastructure.graph.neo4j_client import close_driver, get_driver
+from app.infrastructure.graph.falkordb_client import close_graph, ping
 from app.infrastructure.graph.publisher import seed_subsidiaries
 from app.infrastructure.db.seed import SUBSIDIARIES
 from app.infrastructure.storage.s3_client import ensure_bucket
 from app.services.embeddings import embed
+
+log = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -25,18 +28,18 @@ async def lifespan(app: FastAPI):
     try:
         await seed_subsidiaries(SUBSIDIARIES)
     except Exception:
-        pass  # Neo4j may not be reachable in a partial dev environment; API still boots
+        log.exception("Company Brain seed failed")
 
     try:
         ensure_bucket()
     except Exception:
         pass  # object store may not be reachable yet; uploads will surface the error later
 
-    # warm the embedding model in the background so the first real upload isn't slow
-    asyncio.get_event_loop().run_in_executor(None, lambda: embed("warmup"))
+    if settings.embeddings_enabled:
+        asyncio.get_event_loop().run_in_executor(None, lambda: embed("warmup"))
 
     yield
-    await close_driver()
+    close_graph()
 
 
 app = FastAPI(title="BHUMI API", lifespan=lifespan)
@@ -63,9 +66,11 @@ app.include_router(integrations.router)
 app.include_router(notifications.router)
 app.include_router(help.router)
 app.include_router(graph.router)
+app.include_router(brain.router)
 app.include_router(voice.router)
 
 
 @app.get("/health")
 async def health():
-    return {"status": "ok"}
+    graph_up = await ping()
+    return {"status": "ok" if graph_up else "degraded", "graph": "falkordb" if graph_up else "down"}
