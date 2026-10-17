@@ -2,14 +2,16 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Download, Share2, Loader2, FileText, FileType } from "lucide-react";
+import { ArrowLeft, Download, Share2, Loader2, FileText, FileType, ShieldCheck } from "lucide-react";
 import { repositories } from "@/src/application/services/container";
 import { useAsync } from "@/src/application/hooks/use-async";
 import type { TiptapContent } from "@/src/domain/entities/report";
 import { ReportEditor, useAutosave, AutosaveIndicator } from "../components/shared/report-editor";
+import { ReportEvidencePanel } from "../components/shared/report-evidence-panel";
 import { ShareReportModal } from "../components/shared/share-report-modal";
 import { Button } from "../components/ui/button";
 import { useToast } from "../components/ui/toast";
+import { cn } from "../components/ui/cn";
 
 function useReportDocument(reportId: string) {
   return useAsync(() => repositories.reports.getDocument(reportId), [reportId]);
@@ -25,6 +27,7 @@ export function ReportEditorView({ reportId }: { reportId: string }) {
   const [shareOpen, setShareOpen] = useState(false);
   const [exporting, setExporting] = useState<"pdf" | "docx" | null>(null);
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+  const [evidenceOpen, setEvidenceOpen] = useState(true);
 
   const save = useCallback(
     async (content: TiptapContent) => {
@@ -98,6 +101,18 @@ export function ReportEditorView({ reportId }: { reportId: string }) {
 
         <AutosaveIndicator status={status} />
 
+        {document.data.evidence ? (
+          <Button
+            variant={evidenceOpen ? "primary" : "secondary"}
+            size="sm"
+            onClick={() => setEvidenceOpen((v) => !v)}
+            className="hidden lg:inline-flex"
+          >
+            <ShieldCheck className="size-3.5" aria-hidden />
+            Evidence
+          </Button>
+        ) : null}
+
         <div className="relative">
           <Button
             variant="secondary" size="sm"
@@ -138,8 +153,15 @@ export function ReportEditorView({ reportId }: { reportId: string }) {
         </Button>
       </header>
 
-      <div className="min-h-0 flex-1">
-        <ReportEditor content={document.data.content} onChange={schedule} />
+      <div className="flex min-h-0 flex-1">
+        <div className="min-w-0 flex-1">
+          <ReportEditor content={document.data.content} onChange={schedule} />
+        </div>
+        {document.data.evidence ? (
+          <div className={cn("hidden w-80 shrink-0 lg:block", !evidenceOpen && "lg:hidden")}>
+            <ReportEvidencePanel evidence={document.data.evidence} />
+          </div>
+        ) : null}
       </div>
 
       <ShareReportModal

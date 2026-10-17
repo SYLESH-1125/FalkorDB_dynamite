@@ -6,6 +6,23 @@ export interface Citation {
   page: number;
   snippet: string;
   relevance: number;
+  // provenance trace — report → page → table → cell
+  table?: string;
+  cell?: string;
+}
+
+// evidence framing shown above an answer: proof over promises
+export interface EvidenceSummary {
+  facts: number;
+  factsExpected: number;
+  sources: number;
+  conflicts: number;
+  validated: boolean;
+  asOf?: string;
+  gap?: string;
+  gapOwner?: string;
+  contradiction?: string;
+  revisionImpact?: string[];
 }
 
 export interface ChatMessage {
@@ -14,6 +31,7 @@ export interface ChatMessage {
   content: string;
   createdAt: string;
   citations: Citation[];
+  evidence?: EvidenceSummary;
   pending?: boolean;
 }
 

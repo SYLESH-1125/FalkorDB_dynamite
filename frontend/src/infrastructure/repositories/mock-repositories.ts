@@ -12,7 +12,7 @@ import type { ExtractedField, ValidationRecord } from "@/src/domain/entities/val
 import type { ChatMessage, ChatThread } from "@/src/domain/entities/query";
 import type {
   Report, ReportTemplate, ReportVersion, ReportWizardConfig, ReportDraftRequest,
-  ReportDocument, TiptapContent, ShareLink, SharedReport,
+  ReportDocument, ReportEvidence, TiptapContent, ShareLink, SharedReport,
 } from "@/src/domain/entities/report";
 import type { TopicCluster, TopicTerm } from "@/src/domain/entities/topic";
 import type { ParliamentaryQuery, QueryStage } from "@/src/domain/entities/parliamentary";
@@ -189,6 +189,8 @@ export const validationRepository: ValidationRepository = {
 
 // ── Query / Topics chat ────────────────────────────────────────────────────────
 function assistantReply(question: string): ChatMessage {
+  const q = question.trim();
+  const lower = q.toLowerCase();
   const chart =
     "\n\n```chart\n" +
     JSON.stringify({
@@ -201,20 +203,44 @@ function assistantReply(question: string): ChatMessage {
       series: [{ key: "value", label: "MT" }],
     }) +
     "\n```";
+
+  const isGap = /\b(borehole|2027|forecast|next year|drilling log|seam thickness|projection)\b/.test(lower);
+  const isConflict = /\b(conflict|contradict|discrepan|mismatch|differ|gross|net)\b/.test(lower);
+
+  const evidence: NonNullable<ChatMessage["evidence"]> = {
+    facts: isGap ? 3 : 4,
+    factsExpected: 4,
+    sources: 3,
+    conflicts: isConflict ? 1 : 0,
+    validated: !isGap,
+    asOf: "2026-08-23",
+    ...(isGap
+      ? { gap: "Seam-thickness for the requested block is not held in any validated source. BHUMI will not guess it.", gapOwner: "CMPDI Exploration · borehole digitisation" }
+      : {}),
+    ...(isConflict
+      ? { contradiction: "CIL Annual Report FY25 (p.42) states 167.2 MT gross for Gevra; the Provisional Statistics Excel lists 161.4 MT net. Gross/net basis differs — flagged, not silently merged." }
+      : {}),
+    revisionImpact: isConflict
+      ? ["PQ LS-2390 reply (Aug 2026)", "Executive Policy Brief — Dispatch Trends v5"]
+      : undefined,
+  };
+
   return {
     id: nextId("msg"),
     role: "assistant",
     content:
-      `Across the indexed corpus, the strongest signal for "${question.trim()}" comes from the FY 2025-26 ` +
+      `Across the indexed corpus, the strongest signal for "${q}" comes from the FY 2025-26 ` +
       "production returns. Dispatch is led by SECL and MCL, together contributing roughly 45% of national coal " +
       "movement, with NCL close behind. Environmental-clearance compliance is current for all opencast blocks " +
       "reviewed, and rehabilitation targets are tracking at 92% of plan." +
+      (isGap ? "\n\nOne requested figure could not be proven from a validated source — see the gap notice below." : "") +
       chart,
     createdAt: iso(0),
+    evidence,
     citations: [
-      { id: "c-1", documentName: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, snippet: "Annual dispatch for the Gevra block stood at 167.2 MT against a target of 170 MT…", relevance: 0.96 },
-      { id: "c-2", documentName: "MCL-Talcher-Env-Clearance-2024.pdf", page: 12, snippet: "Environmental clearance J-11015/22/2019 remains valid through 2027 subject to quarterly monitoring…", relevance: 0.91 },
-      { id: "c-3", documentName: "BCCL-Rehabilitation-Progress.docx", page: 4, snippet: "Rehabilitation reached 1,842 beneficiaries, 92% of the FY target…", relevance: 0.84 },
+      { id: "c-1", documentName: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch Summary", cell: "Row 4 · Col C", snippet: "Annual dispatch for the Gevra block stood at 167.2 MT against a target of 170 MT…", relevance: 0.96 },
+      { id: "c-2", documentName: "MCL-Talcher-Env-Clearance-2024.pdf", page: 12, table: "Clearance Register", cell: "EC No. field", snippet: "Environmental clearance J-11015/22/2019 remains valid through 2027 subject to quarterly monitoring…", relevance: 0.91 },
+      { id: "c-3", documentName: "BCCL-Rehabilitation-Progress.docx", page: 4, table: "Table 6 — Beneficiaries", cell: "Total row", snippet: "Rehabilitation reached 1,842 beneficiaries, 92% of the FY target…", relevance: 0.84 },
     ],
   };
 }
@@ -351,11 +377,35 @@ let reports: Report[] = [
   { id: "rpt-4", title: "Executive Policy Brief — Dispatch Trends", templateId: "tpl-4", templateName: "Executive Policy Brief", status: "archived", version: 5, subsidiary: "All subsidiaries", createdBy: "Rajesh Kumar", createdAt: iso(-9000), updatedAt: iso(-6200), pageCount: 3, formats: ["PDF", "DOCX"], shareUrl: null, shareExpiresAt: null },
 ];
 
+function sampleEvidence(state: "draft" | "approved" | "frozen"): ReportEvidence {
+  return {
+    assayGatesPassed: state === "draft" ? 6 : 7,
+    assayGatesTotal: 7,
+    approval:
+      state === "frozen"
+        ? { state: "frozen", officer: "Meera Nair", at: iso(-1500) }
+        : state === "approved"
+          ? { state: "approved", officer: "Meera Nair", at: iso(-120) }
+          : { state: "draft" },
+    figures: [
+      { label: "Annual dispatch (Gevra)", value: "167.2 MT", formula: "SUM(monthly_dispatch)", source: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch", cell: "R4·C3", status: "computed" },
+      { label: "Target attainment", value: "98.4%", formula: "dispatch ÷ target × 100", source: "SECL-Gevra-Production-Return-FY25.pdf", page: 5, table: "Table 2 — Dispatch", cell: "R4·C5", status: "computed" },
+      { label: "Rehabilitation beneficiaries", value: "1,842", formula: "COUNT(beneficiary_id)", source: "BCCL-Rehabilitation-Progress.docx", page: 4, table: "Table 6", cell: "Total", status: "computed" },
+      { label: "Env clearance validity", value: "till 2027", formula: "lookup(EC_register)", source: "MCL-Talcher-Env-Clearance-2024.pdf", page: 12, table: "Clearance Register", cell: "EC field", status: "computed" },
+      { label: "Overburden removal (Amlohri)", value: "not available", formula: "—", source: "pending digitisation", page: 0, table: "—", cell: "—", status: "gap" },
+    ],
+    gaps: [
+      { fact: "Overburden removal volume — NCL Amlohri, FY26", owner: "CMPDI · scan queue (doc-3)", priority: "high", dueAt: iso(2880) },
+    ],
+    revisionImpact: state === "frozen" ? ["PQ LS-2390 reply", "Coal Directory FY25 extract"] : undefined,
+  };
+}
+
 const reportDocs = new Map<string, ReportDocument>([
-  ["rpt-1", { reportId: "rpt-1", prompt: "Monthly production return across all subsidiaries", content: sampleDoc("Coal Production Return — August 2026"), updatedAt: iso(-1500) }],
-  ["rpt-2", { reportId: "rpt-2", prompt: "Draft a PQ response on Jharia rehabilitation", content: sampleDoc("PQ 2418 — Rehabilitation Progress in Jharia"), updatedAt: iso(-900) }],
-  ["rpt-3", { reportId: "rpt-3", prompt: "Q1 environmental compliance digest for MCL", content: sampleDoc("Environmental Compliance Digest — Q1 FY26"), updatedAt: iso(-30) }],
-  ["rpt-4", { reportId: "rpt-4", prompt: "Executive brief on dispatch trends", content: sampleDoc("Executive Policy Brief — Dispatch Trends"), updatedAt: iso(-6200) }],
+  ["rpt-1", { reportId: "rpt-1", prompt: "Monthly production return across all subsidiaries", content: sampleDoc("Coal Production Return — August 2026"), updatedAt: iso(-1500), evidence: sampleEvidence("frozen") }],
+  ["rpt-2", { reportId: "rpt-2", prompt: "Draft a PQ response on Jharia rehabilitation", content: sampleDoc("PQ 2418 — Rehabilitation Progress in Jharia"), updatedAt: iso(-900), evidence: sampleEvidence("approved") }],
+  ["rpt-3", { reportId: "rpt-3", prompt: "Q1 environmental compliance digest for MCL", content: sampleDoc("Environmental Compliance Digest — Q1 FY26"), updatedAt: iso(-30), evidence: sampleEvidence("draft") }],
+  ["rpt-4", { reportId: "rpt-4", prompt: "Executive brief on dispatch trends", content: sampleDoc("Executive Policy Brief — Dispatch Trends"), updatedAt: iso(-6200), evidence: sampleEvidence("frozen") }],
 ]);
 
 const sharedReports = new Map<string, SharedReport>();
@@ -379,7 +429,7 @@ function createReport(title: string, templateId: string, subsidiary: string, pro
     shareUrl: null, shareExpiresAt: null,
   };
   reports = [report, ...reports];
-  reportDocs.set(report.id, { reportId: report.id, prompt, content: sampleDoc(title), updatedAt: iso(0) });
+  reportDocs.set(report.id, { reportId: report.id, prompt, content: sampleDoc(title), updatedAt: iso(0), evidence: sampleEvidence("draft") });
   return report;
 }
 
@@ -399,9 +449,10 @@ export const reportRepository: ReportRepository = {
   versions: (reportId) => ok(versionsFor(reportId)),
   generate: (config: ReportWizardConfig) => ok(createReport(config.title || "Untitled Report", config.templateId, config.subsidiary, config.title)),
   draft: (request: ReportDraftRequest) => ok(createReport(request.prompt.slice(0, 60) || "AI Draft Report", request.templateId, request.subsidiary, request.prompt)),
-  getDocument: (reportId) => ok(reportDocs.get(reportId) ?? { reportId, prompt: "", content: sampleDoc("Report"), updatedAt: iso(0) }),
+  getDocument: (reportId) => ok(reportDocs.get(reportId) ?? { reportId, prompt: "", content: sampleDoc("Report"), updatedAt: iso(0), evidence: sampleEvidence("draft") }),
   saveDocument: (reportId, content) => {
-    const doc: ReportDocument = { reportId, prompt: reportDocs.get(reportId)?.prompt ?? "", content, updatedAt: iso(0) };
+    const prev = reportDocs.get(reportId);
+    const doc: ReportDocument = { reportId, prompt: prev?.prompt ?? "", content, updatedAt: iso(0), evidence: prev?.evidence };
     reportDocs.set(reportId, doc);
     reports = reports.map((r) => (r.id === reportId ? { ...r, updatedAt: iso(0) } : r));
     return ok(doc);

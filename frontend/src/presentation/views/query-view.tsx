@@ -15,6 +15,7 @@ import type { ChatMessage, Citation } from "@/src/domain/entities/query";
 import { getQueryStrings, QUERY_UI_LANGUAGES } from "@/src/domain/entities/query-i18n";
 import { VoiceAssistantModal } from "../components/shared/voice-assistant-modal";
 import { MarkdownMessage } from "../components/shared/markdown-message";
+import { EvidencePanel } from "../components/shared/evidence-panel";
 import { cn } from "../components/ui/cn";
 
 function PageLanguagePicker({ value, onChange, label }: { value: string; onChange: (code: string) => void; label: string }) {
@@ -92,6 +93,14 @@ function CitationCard({ citation, sourcesLabel }: { citation: Citation; sourcesL
             <Quote className="mt-0.5 size-3 shrink-0 text-muted-soft" aria-hidden />
             {citation.snippet}
           </p>
+          {citation.table || citation.cell ? (
+            <p className="mt-2 flex flex-wrap items-center gap-1 text-[10.5px] font-medium text-muted-soft not-italic">
+              <span className="text-primary-600">Trace</span>
+              <span aria-hidden>›</span> p.{citation.page}
+              {citation.table ? <><span aria-hidden>›</span> {citation.table}</> : null}
+              {citation.cell ? <><span aria-hidden>›</span> {citation.cell}</> : null}
+            </p>
+          ) : null}
         </blockquote>
       ) : null}
     </div>
@@ -284,6 +293,8 @@ export function QueryView() {
                         {message.content}
                       </div>
                     )}
+
+                    {message.evidence ? <EvidencePanel evidence={message.evidence} /> : null}
 
                     {message.citations.length > 0 ? (
                       message.citations[0].page === 0 ? (

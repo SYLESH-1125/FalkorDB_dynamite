@@ -73,11 +73,42 @@ export interface ReportDraftRequest {
 // only as far as the editor and renderers need to walk it.
 export type TiptapContent = { type: "doc"; content: unknown[] };
 
+// a figure the Report Engine computed from an approved formula, traced to its source cell
+export interface ReportFigure {
+  label: string;
+  value: string;
+  formula: string;
+  source: string;
+  page: number;
+  table: string;
+  cell: string;
+  status: "computed" | "gap";
+}
+
+export interface ReportGap {
+  fact: string;
+  owner: string;
+  priority: "critical" | "high" | "normal";
+  dueAt: string;
+}
+
+export type ApprovalState = "draft" | "approved" | "frozen";
+
+export interface ReportEvidence {
+  figures: ReportFigure[];
+  gaps: ReportGap[];
+  assayGatesPassed: number;
+  assayGatesTotal: number;
+  approval: { state: ApprovalState; officer?: string; at?: string };
+  revisionImpact?: string[];
+}
+
 export interface ReportDocument {
   reportId: string;
   prompt: string;
   content: TiptapContent;
   updatedAt: string;
+  evidence?: ReportEvidence;
 }
 
 export interface ShareLink {
