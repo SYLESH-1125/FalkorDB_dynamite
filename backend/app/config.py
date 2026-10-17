@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     embeddings_enabled: bool = True
     database_ssl: bool = False
     database_ssl_insecure: bool = False
+    # Set true when using Supabase transaction pooler (port 6543).
+    database_pgbouncer: bool = False
     cors_origins: str = "http://localhost:3000"
     openrouter_api_key: str = ""
     openrouter_model: str = "anthropic/claude-sonnet-4.5"
@@ -35,7 +37,6 @@ class Settings(BaseSettings):
     demo_domain_officer_password: str = ""
     demo_admin_employee_id: str = ""
     demo_admin_password: str = ""
-    allow_public_signup: bool = True
 
     @field_validator("database_url")
     @classmethod
