@@ -86,18 +86,6 @@ export function HeroParallax() {
 
             <div className="ml-auto flex shrink-0 items-center gap-2">
               <Link
-                href="/login"
-                className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
-              >
-                Sign in
-              </Link>
-              <Link
-                href="/sign-up"
-                className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
-              >
-                Sign up
-              </Link>
-              <Link
                 href="/help"
                 className="bubble-glass hidden h-9 items-center text-[13.5px] font-medium text-white/85 sm:inline-flex"
               >

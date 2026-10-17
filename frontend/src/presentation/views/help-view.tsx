@@ -55,6 +55,37 @@ export function HelpView() {
       />
 
       <div className="space-y-5 p-4 sm:p-6 lg:p-8">
+        <Card>
+          <CardHeader title="About this deployment" description="Graph Hacks · Company Brain · FalkorDB" />
+          <CardBody className="space-y-2 text-[13.5px] text-body">
+            <p>
+              <span className="font-semibold text-ink-0">Web app:</span>{" "}
+              <a
+                href="https://falkordb-bhumi-dynamite.vercel.app/"
+                className="text-primary-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                falkordb-bhumi-dynamite.vercel.app
+              </a>
+            </p>
+            <p>
+              <span className="font-semibold text-ink-0">API:</span>{" "}
+              <a
+                href="https://bhumi-company-brain.onrender.com"
+                className="text-primary-600 hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                bhumi-company-brain.onrender.com
+              </a>
+            </p>
+            <p className="text-[12.5px] text-muted">
+              From the home page, use <strong className="text-body-strong">Get started</strong> to choose a role and enter the platform.
+            </p>
+          </CardBody>
+        </Card>
+
         <div className="rounded-xl border border-hairline bg-surface-soft p-8 text-center sm:p-14">
           <h2 className="display-sm text-ink-0 sm:text-[28px]">
             How can we help?

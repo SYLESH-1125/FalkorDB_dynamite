@@ -8,6 +8,8 @@
 | **Repository** | [github.com/SYLESH-1125/FalkorDB_dynamite](https://github.com/SYLESH-1125/FalkorDB_dynamite) |
 | **Graph database** | [FalkorDB](https://www.falkordb.com/) (`bhumi_company_brain`) |
 | **Demo data** | Synthetic coal-ministry desk — no private or paywalled records |
+| **Live app** | [falkordb-bhumi-dynamite.vercel.app](https://falkordb-bhumi-dynamite.vercel.app/) |
+| **Live API** | [bhumi-company-brain.onrender.com](https://bhumi-company-brain.onrender.com) (`GET /health`) |
 
 ![BHUMI Company Brain — FalkorDB as the relation graph for AI agents](docs/images/bhumi-falkordb-graph-context.jpg)
 
@@ -222,12 +224,25 @@ BHUMI’s roadmap aligns with document AI, RAG evaluation, and mining-domain tex
 
 ---
 
+## About — live deployment
+
+| Service | URL |
+| --- | --- |
+| **Web app (Vercel)** | https://falkordb-bhumi-dynamite.vercel.app/ |
+| **API + FalkorDB (Render)** | https://bhumi-company-brain.onrender.com |
+| **Health check** | https://bhumi-company-brain.onrender.com/health |
+| **API docs** | https://bhumi-company-brain.onrender.com/docs |
+
+Use **Get started** on the home page → pick a role → sign in or create an account.
+
+---
+
 ## System architecture (deploy)
 
 | Tier | Stack | Deploy |
 | --- | --- | --- |
-| Frontend | Next.js, TypeScript, Tailwind | Vercel |
-| API + FalkorDB | FastAPI, `falkordb` Python client | Render (`Dockerfile.free`) |
+| Frontend | Next.js, TypeScript, Tailwind | [Vercel](https://falkordb-bhumi-dynamite.vercel.app/) |
+| API + FalkorDB | FastAPI, `falkordb` Python client | [Render](https://bhumi-company-brain.onrender.com) (`Dockerfile.free`) |
 | Relational / vectors | Postgres + pgvector | Supabase |
 
 Local: Docker Compose — Postgres, MinIO, **FalkorDB**, API. FalkorDB Browser may use port `3000`; run Next.js on another port if needed.

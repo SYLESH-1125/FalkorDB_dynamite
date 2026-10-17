@@ -19,11 +19,12 @@ export default function SelectRolePage() {
           <Link href="/" className="inline-flex items-center gap-2">
             <Image src={bhumiLogo} alt="BHUMI" className="h-7 w-auto" priority />
           </Link>
-          <p className="text-[12.5px] text-muted">
-            <Link href="/login" className="font-semibold text-primary-600 hover:underline">Sign in</Link>
-            {" · "}
-            <Link href="/sign-up" className="font-semibold text-primary-600 hover:underline">Sign up</Link>
-          </p>
+          <Link
+            href="/"
+            className="text-[12.5px] font-semibold text-primary-600 hover:underline"
+          >
+            Back to home
+          </Link>
         </div>
       </header>
 

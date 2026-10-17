@@ -380,8 +380,7 @@ export default function LandingPage() {
             <div>
               <p className="text-[11px] font-semibold tracking-wide text-muted-soft uppercase">Access</p>
               <ul className="mt-4 space-y-2.5 text-[13px] text-body">
-                <li><Link href="/login" className="transition-colors hover:text-primary-600">Sign in</Link></li>
-                <li><Link href="/sign-up" className="transition-colors hover:text-primary-600">Sign up</Link></li>
+                <li><Link href="/select-role" className="transition-colors hover:text-primary-600">Get started</Link></li>
                 <li><Link href="/help" className="transition-colors hover:text-primary-600">Help &amp; Training</Link></li>
               </ul>
             </div>
