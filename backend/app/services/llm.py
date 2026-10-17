@@ -44,6 +44,8 @@ async def call_openrouter(system_prompt: str, user_prompt: str) -> str:
                 "temperature": 0.2,
             },
         )
+        if response.status_code in (401, 403, 402):
+            raise LlmNotConfigured("OPENROUTER_API_KEY is missing or not authorized")
         response.raise_for_status()
         data = response.json()
         return data["choices"][0]["message"]["content"]

@@ -53,7 +53,7 @@ export function SignUpForm({ defaultRole }: { defaultRole?: AppRole }) {
         subsidiary,
         designation: designation.trim() || undefined,
       });
-      router.push(ROLE_LANDING_ROUTE[session.user.appRole] ?? "/dashboard");
+      router.push(ROLE_LANDING_ROUTE[session.user.appRole] ?? "/brain");
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : "Sign up failed. Try a different employee ID.");
       setSubmitting(false);

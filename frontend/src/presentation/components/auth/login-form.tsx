@@ -38,7 +38,7 @@ export function LoginForm({
     try {
       const session = await repositories.auth.signIn({ employeeId: employeeId.trim(), password, appRole });
       const safeNext = nextPath?.startsWith("/") && !nextPath.startsWith("//") ? nextPath : null;
-      router.push(safeNext ?? ROLE_LANDING_ROUTE[session.user.appRole] ?? "/dashboard");
+      router.push(safeNext ?? ROLE_LANDING_ROUTE[session.user.appRole] ?? "/brain");
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : "Login failed. Check your credentials and try again.");
       setSubmitting(false);

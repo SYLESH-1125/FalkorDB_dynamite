@@ -47,7 +47,10 @@ export const PARLIAMENTARY_ALLOWED_PATHS = new Set(["/brain", "/query", "/query/
 export const PARLIAMENTARY_ONLY_PATHS = new Set(["/problem"]);
 
 // CMPDI / CIL Domain Officers only need the Word Cloud & Topics intelligence feature
-export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set(["/brain", "/topics", "/topics/conversations"]);
+export const DOMAIN_OFFICER_ALLOWED_PATHS = new Set([
+  "/brain", "/dashboard", "/graph", "/validation", "/query", "/query/conversations",
+  "/topics", "/topics/conversations", "/analytics", "/help", "/notifications",
+]);
 
 // visible only to CMPDI / CIL Domain Officers — hidden from every other role's sidebar
 export const DOMAIN_OFFICER_ONLY_PATHS = new Set(["/topics/conversations"]);

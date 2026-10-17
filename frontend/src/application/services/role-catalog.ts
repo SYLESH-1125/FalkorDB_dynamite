@@ -1,9 +1,9 @@
 import type { AppRole } from "@/src/domain/entities/user";
 
 export const ROLE_LANDING_ROUTE: Record<AppRole, string> = {
-  parliamentary: "/problem",
+  parliamentary: "/query",
   ministry: "/reports",
-  "domain-officer": "/topics",
+  "domain-officer": "/brain",
   admin: "/dashboard",
 };
 

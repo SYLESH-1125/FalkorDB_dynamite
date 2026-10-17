@@ -50,7 +50,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       return;
     }
     if (isDomainOfficer && !isAllowedPath(pathname, DOMAIN_OFFICER_ALLOWED_PATHS)) {
-      router.replace("/topics");
+      router.replace("/brain");
       return;
     }
     if (isMinistry && !isAllowedPath(pathname, MINISTRY_ALLOWED_PATHS)) {
