@@ -15,21 +15,13 @@
 
 Hackathon **Track 03 (Company Brain)**: governed documents → **FalkorDB** relation graph → agent answers with **path, sources, and Cypher**. The recording walks role selection, sign-in, Company Brain, and the graph-backed reply flow.
 
-### ▶ Play the video
-
-[![Play: project selection and FalkorDB graph solution — click to open the MP4 on GitHub](docs/images/readme-video-poster.jpg)](https://github.com/SYLESH-1125/FalkorDB_dynamite/blob/main/docs/demo/project-selection-graph-solution.mp4)
-
-**Click the image above** — GitHub opens [`project-selection-graph-solution.mp4`](docs/demo/project-selection-graph-solution.mp4) with the built-in video player.
-
-Direct link: [watch on GitHub](https://github.com/SYLESH-1125/FalkorDB_dynamite/blob/main/docs/demo/project-selection-graph-solution.mp4) · [raw MP4](https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4)
-
-Want the player **embedded in this README** (no click)? Edit this file on github.com, drag `docs/demo/project-selection-graph-solution.mp4` into the editor, and commit — see [docs/demo/VIDEO-IN-README.md](docs/demo/VIDEO-IN-README.md).
+https://cdn.jsdelivr.net/gh/SYLESH-1125/FalkorDB_dynamite@main/docs/demo/project-selection-graph-solution-readme.mp4
 
 ---
 
 ### Graph solution (`bhumi_company_brain`)
 
-Same story as the video — native graph store for relationships and agent context:
+Native graph store for relationships and agent context (same story as the video):
 
 <img
   src="docs/images/readme-falkordb-graph-topology.jpg"
@@ -476,7 +468,7 @@ Integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_
 5. Knowledge Graph explorer — person, decision, document.
 6. Stop FalkorDB — `/api/brain/ask` returns 503.
 
-**Demo video:** [project-selection-graph-solution.mp4](docs/demo/project-selection-graph-solution.mp4) (embedded under **Project selection & solution — graph explanation** at the top)
+**Demo video:** inline at top of README (`project-selection-graph-solution-readme.mp4`, ≤10 MB for GitHub upload)
 
 ---
 
