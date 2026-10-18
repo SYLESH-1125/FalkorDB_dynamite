@@ -332,6 +332,12 @@ Integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_
 
 <br />
 
+https://github.com/user-attachments/assets/ca29a866-e5f4-4e83-b60c-03b30973cb3e
+
+https://github.com/user-attachments/assets/639ddd1a-a7bd-4a29-9c16-66276066d638
+
+<br />
+
 ### Topology (how nodes connect)
 
 ```mermaid
