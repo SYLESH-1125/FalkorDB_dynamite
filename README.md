@@ -15,7 +15,15 @@
 
 Hackathon **Track 03 (Company Brain)**: governed documents → **FalkorDB** relation graph → agent answers with **path, sources, and Cypher**. The recording walks role selection, sign-in, Company Brain, and the graph-backed reply flow.
 
-<video autoplay muted loop playsinline controls width="100%" src="https://github.com/user-attachments/assets/dd6f5152-2daf-4cac-85ef-1a8b3001f1c5"></video>
+<p align="center">
+  <a href="https://github.com/user-attachments/assets/dd6f5152-2daf-4cac-85ef-1a8b3001f1c5">
+    <img
+      src="docs/images/readme-video-poster.jpg"
+      alt="▶ Play video — project selection & FalkorDB graph solution"
+      width="100%"
+    />
+  </a>
+</p>
 
 ---
 
