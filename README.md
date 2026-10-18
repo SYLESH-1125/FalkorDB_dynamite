@@ -13,20 +13,7 @@
 
 ## Project selection & solution — graph explanation
 
-Hackathon **Track 03 (Company Brain)**: governed documents → **FalkorDB** relation graph → agent answers with **path, sources, and Cypher**. The recording walks role selection, sign-in, Company Brain, and the graph-backed reply flow.
-
 https://github.com/user-attachments/assets/dd6f5152-2daf-4cac-85ef-1a8b3001f1c5
-
----
-
-### Graph solution (`bhumi_company_brain`)
-
-Native graph store for relationships and agent context (same story as the video):
-
-<img
-  src="docs/images/readme-falkordb-graph-topology.jpg"
-  alt="FalkorDB graph topology — Person, Project, Decision, Document, Fact, Issue linked for Company Brain"
-/>
 
 ---
 
