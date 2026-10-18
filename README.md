@@ -11,6 +11,18 @@
 | **Live app** | [falkordb-bhumi-dynamite.vercel.app](https://falkordb-bhumi-dynamite.vercel.app/) |
 | **Live API** | [bhumi-company-brain.onrender.com](https://bhumi-company-brain.onrender.com) (`GET /health`) |
 
+## Demo walkthrough (video)
+
+End-to-end product demo — roles, Company Brain, graph path, and core modules.
+
+<br />
+
+<video controls width="100%" src="docs/demo/bhumi-hackathon-demo.mp4">
+  <a href="docs/demo/bhumi-hackathon-demo.mp4">Play or download the demo video (MP4)</a>
+</video>
+
+<br />
+
 ![BHUMI end-to-end architecture — governed data into FalkorDB and the Company Brain agent](docs/images/pitch/end-to-end-architecture.png)
 
 ---
@@ -453,7 +465,7 @@ Integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_
 5. Knowledge Graph explorer — person, decision, document.
 6. Stop FalkorDB — `/api/brain/ask` returns 503.
 
-**Demo video:** _[link when recorded]_
+**Demo video:** [docs/demo/bhumi-hackathon-demo.mp4](docs/demo/bhumi-hackathon-demo.mp4) (also embedded at the top of this README)
 
 ---
 
