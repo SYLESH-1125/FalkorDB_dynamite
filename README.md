@@ -11,19 +11,36 @@
 | **Live app** | [falkordb-bhumi-dynamite.vercel.app](https://falkordb-bhumi-dynamite.vercel.app/) |
 | **Live API** | [bhumi-company-brain.onrender.com](https://bhumi-company-brain.onrender.com) (`GET /health`) |
 
-## Demo walkthrough (video)
+## Project selection & solution — graph explanation (video)
 
-End-to-end product demo — roles, Company Brain, graph path, and core modules.
+**What this recording covers:** hackathon track choice (Company Brain / FalkorDB), the **relation-graph** solution (people → projects → decisions → documents → facts), role-based sign-in, and **Company Brain** showing tool, path, sources, and Cypher on a real question.
+
+Press **Play** below (GitHub needs an absolute file URL — not a relative `docs/...` path).
 
 <br />
 
-<video controls width="100%" src="docs/demo/bhumi-hackathon-demo.mp4">
-  <a href="docs/demo/bhumi-hackathon-demo.mp4">Play or download the demo video (MP4)</a>
+<!-- Video: use raw URL so github.com renders the player. File: docs/demo/project-selection-graph-solution.mp4 -->
+<video controls width="100%" playsinline preload="metadata"
+  src="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4">
+  <source
+    type="video/mp4"
+    src="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4" />
 </video>
 
+<p>
+  <strong>If the player is empty:</strong>
+  <a href="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4">open the MP4 directly</a>
+  or edit this README on GitHub, drag <code>docs/demo/project-selection-graph-solution.mp4</code> into the editor — GitHub will swap in a <code>user-attachments</code> URL that always plays inline.
+</p>
+
 <br />
 
-![BHUMI end-to-end architecture — governed data into FalkorDB and the Company Brain agent](docs/images/pitch/end-to-end-architecture.png)
+**Graph solution (FalkorDB `bhumi_company_brain`) — same story as the video:**
+
+<img
+  src="docs/images/readme-falkordb-graph-topology.jpg"
+  alt="FalkorDB graph topology — Person, Project, Decision, Document, Fact, Issue linked for Company Brain"
+/>
 
 ---
 
@@ -465,7 +482,7 @@ Integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_
 5. Knowledge Graph explorer — person, decision, document.
 6. Stop FalkorDB — `/api/brain/ask` returns 503.
 
-**Demo video:** [docs/demo/bhumi-hackathon-demo.mp4](docs/demo/bhumi-hackathon-demo.mp4) (also embedded at the top of this README)
+**Demo video:** [project-selection-graph-solution.mp4](docs/demo/project-selection-graph-solution.mp4) (embedded under **Project selection & solution — graph explanation** at the top)
 
 ---
 
