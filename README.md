@@ -11,7 +11,7 @@
 | **Live app** | [falkordb-bhumi-dynamite.vercel.app](https://falkordb-bhumi-dynamite.vercel.app/) |
 | **Live API** | [bhumi-company-brain.onrender.com](https://bhumi-company-brain.onrender.com) (`GET /health`) |
 
-![BHUMI Company Brain — FalkorDB as the relation graph for AI agents](docs/images/bhumi-falkordb-graph-context.jpg)
+![BHUMI end-to-end architecture — governed data into FalkorDB and the Company Brain agent](docs/images/pitch/end-to-end-architecture.png)
 
 ---
 
@@ -115,7 +115,7 @@ If FalkorDB is down, `GET /health` reports `"graph":"down"` and `POST /api/brain
 **Graph name:** `bhumi_company_brain` on FalkorDB  
 **Seed:** one synthetic **Organization** desk (coal ministry / CIL-style) — safe to clone and judge without credentials.
 
-![Relation graph context — people, issues, decisions, and documents connected for agents](docs/images/bhumi-falkordb-graph-context.jpg)
+![BHUMI Company Brain × FalkorDB — native graph topology (Person, Project, Decision, Document, Fact, Issue)](docs/images/readme-falkordb-graph-topology.jpg)
 
 ### Topology (how nodes connect)
 
@@ -168,7 +168,7 @@ flowchart TB
 
 Vectors retrieve *similar text*. This build **traverses** the graph so the agent can name **owners**, **decisions**, and **source pages** in one answer.
 
-![Multi-hop provenance vs single-chunk retrieval](docs/images/graph-vs-vector-company-brain.jpg)
+![Company Brain agent — question to graph hops to tool, path, sources, and Cypher in the UI](docs/images/readme-graph-agent-at-work.jpg)
 
 ### 1. Ask in the product
 
