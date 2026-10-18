@@ -112,157 +112,6 @@ If FalkorDB is down, `GET /health` reports `"graph":"down"` and `POST /api/brain
 
 ---
 
-## Map your graph in the README
-
-| Field | Value |
-| --- | --- |
-| **Graph name** | `bhumi_company_brain` on FalkorDB |
-| **Seed** | One synthetic **Organization** desk (coal ministry / CIL-style). Safe to clone and judge without credentials. |
-
-<br />
-
-<img
-  src="docs/images/readme-falkordb-graph-topology.jpg"
-  alt="BHUMI Company Brain × FalkorDB — Person, Project, Decision, Document, Fact, and Issue topology"
-/>
-
-<br />
-
-### Topology (how nodes connect)
-
-```mermaid
-flowchart TB
-  ORG[Organization]
-  SUB[Subsidiary]
-  MINE[Mine]
-  PER[Person]
-  TEA[Team]
-  PRJ[Project]
-  ISS[Issue]
-  DEC[Decision]
-  DOC[Document]
-  FAC[Fact]
-  TOP[Topic]
-  TIX[Ticket]
-
-  ORG -->|HAS_SUBSIDIARY| SUB
-  SUB -->|BELONGS_TO| MINE
-  PER -->|MEMBER_OF| TEA
-  PER -->|OWNS| PRJ
-  PER -->|RESPONSIBLE_FOR| PRJ
-  PER -->|KNOWS_ABOUT| TOP
-  TEA -->|OWNS| PRJ
-  ISS -->|AFFECTS| PRJ
-  ISS -->|AFFECTS| SUB
-  DEC -->|DECIDED_BY| PER
-  DEC -->|BASED_ON| DOC
-  DEC -->|AFFECTS| PRJ
-  FAC -->|EXTRACTED_FROM| DOC
-  PRJ -->|DEPENDS_ON| MINE
-  TIX -->|ABOUT| PRJ
-  DOC -->|REFERENCES| MINE
-```
-
-| Layer | Labels | Why it exists |
-| --- | --- | --- |
-| **Org structure** | `Organization`, `Subsidiary`, `Mine`, `Team` | Scope questions to ECL, SECL, Gevra, etc. |
-| **Accountability** | `Person`, `Project`, `Issue` | “Who owns this PQ?” is a **path**, not a keyword hit |
-| **Defensibility** | `Decision`, `Document`, `Fact` | Every published figure traces to **pageRef** on a `Fact` |
-| **Operations** | `Ticket`, `Chat`, `Memory` | Impact and session memory for the brain agent |
-
-**Canonical query library:** [`backend/cypher/company_brain.cypher`](backend/cypher/company_brain.cypher)  
-**Runtime (bounded tools, no model-written Cypher):** [`backend/app/infrastructure/graph/company_brain.py`](backend/app/infrastructure/graph/company_brain.py)
-
----
-
-## Show the graph doing the work
-
-Vectors retrieve *similar text*. This build **traverses** the graph so the agent can name **owners**, **decisions**, and **source pages** in one answer.
-
-<br />
-
-<img
-  src="docs/images/readme-graph-agent-at-work.jpg"
-  alt="Company Brain — natural-language question to graph hops, then Tool, Path, Sources, and Cypher in the UI"
-/>
-
-<br />
-
-### 1. Ask in the product
-
-Open **[Company Brain](https://falkordb-bhumi-dynamite.vercel.app/brain)** (after sign-in) and ask:
-
-> *Who owns the ECL offtake variance issue and what decision supports the response?*
-
-The UI shows four things judges can verify:
-
-| UI panel | What it proves |
-| --- | --- |
-| **Intent / tool** | e.g. `issue_investigation` — not free-form Cypher from the LLM |
-| **Path** | Ordered hops: `Issue → Project → Person → Decision → Document → Fact` |
-| **Sources** | Document nodes with kind and detail (page / table) |
-| **Cypher** | The exact parameterized query that ran against FalkorDB |
-
-### 2. Same question on the API
-
-```bash
-curl -s -X POST "https://bhumi-company-brain.onrender.com/api/brain/ask" \
-  -H "Authorization: Bearer YOUR_JWT" \
-  -H "Content-Type: application/json" \
-  -d "{\"question\": \"Who owns the ECL offtake variance issue and what decision supports the response?\"}"
-```
-
-Typical response shape (fields the frontend renders):
-
-```json
-{
-  "answer": "…narrative grounded on graph rows…",
-  "intent": "issue",
-  "tool": "issue_investigation",
-  "path": [
-    { "fromLabel": "ECL offtake variance", "relationship": "AFFECTS", "toLabel": "House Question Turnaround" },
-    { "fromLabel": "Vikram Sethi", "relationship": "RESPONSIBLE_FOR", "toLabel": "House Question Turnaround" },
-    { "fromLabel": "Answer ECL offtake variance…", "relationship": "BASED_ON", "toLabel": "Parliamentary Question Log" }
-  ],
-  "sources": [
-    { "label": "Parliamentary Question Log", "kind": "Document", "nodeId": "…", "detail": "source document" }
-  ],
-  "cypher": "MATCH (i:Issue)…"
-}
-```
-
-If a hop is missing (e.g. no `Decision` linked), the agent **states the gap** — it does not fabricate a document.
-
-### 3. Execution flow (agent + graph)
-
-```mermaid
-sequenceDiagram
-  participant U as Officer
-  participant API as FastAPI /brain/ask
-  participant A as brain_agent
-  participant F as FalkorDB
-  U->>API: natural-language question
-  API->>A: classify intent
-  A->>F: named tool + params (fixed Cypher)
-  F-->>A: nodes, relationships, facts
-  A-->>API: answer + path + sources + cypher
-  API-->>U: JSON → Company Brain UI
-```
-
-### 4. More questions that exercise real Cypher tools
-
-| Question | Tool family | Graph behaviour |
-| --- | --- | --- |
-| What **knowledge gaps** exist? | `knowledge_gaps` | Projects/issues missing owner, decision, or facts |
-| **Trace** human-in-loop validation | `decision` | `Decision -[:BASED_ON]-> Document` |
-| What **breaks** if Gevra goes down? | `impact` | `DEPENDS_ON`, `AFFECTS`, tickets, chats |
-| **Aliases** for Gevra mine | `entity_aliases` | Original names kept; aliases linked, not merged |
-| Who is **central** on expertise? | PageRank / degree | `KNOWS_ABOUT` centrality |
-
-Explore the same entities visually under **Graph explorer** in the app (`/graph`).
-
----
-
 ## What we built for Graph Hacks (Track 03)
 
 **Company Brain** is a working slice of stage 3 + 5 + 6:
@@ -464,6 +313,157 @@ Integration tests skip when FalkorDB is unreachable; `test_graph_unavailable_on_
 - Synthetic seed only; production would ingest governed facts from stage-2 pipeline into `upsert_fact`.
 - Free Render tier: ephemeral graph — re-seed on boot; memories reset on restart.
 - MCP exposure of graph tools is a future increment; REST + UI are the demo surface.
+
+---
+
+## Map your graph in the README
+
+| Field | Value |
+| --- | --- |
+| **Graph name** | `bhumi_company_brain` on FalkorDB |
+| **Seed** | One synthetic **Organization** desk (coal ministry / CIL-style). Safe to clone and judge without credentials. |
+
+<br />
+
+<img
+  src="docs/images/readme-falkordb-graph-topology.jpg"
+  alt="BHUMI Company Brain × FalkorDB — Person, Project, Decision, Document, Fact, and Issue topology"
+/>
+
+<br />
+
+### Topology (how nodes connect)
+
+```mermaid
+flowchart TB
+  ORG[Organization]
+  SUB[Subsidiary]
+  MINE[Mine]
+  PER[Person]
+  TEA[Team]
+  PRJ[Project]
+  ISS[Issue]
+  DEC[Decision]
+  DOC[Document]
+  FAC[Fact]
+  TOP[Topic]
+  TIX[Ticket]
+
+  ORG -->|HAS_SUBSIDIARY| SUB
+  SUB -->|BELONGS_TO| MINE
+  PER -->|MEMBER_OF| TEA
+  PER -->|OWNS| PRJ
+  PER -->|RESPONSIBLE_FOR| PRJ
+  PER -->|KNOWS_ABOUT| TOP
+  TEA -->|OWNS| PRJ
+  ISS -->|AFFECTS| PRJ
+  ISS -->|AFFECTS| SUB
+  DEC -->|DECIDED_BY| PER
+  DEC -->|BASED_ON| DOC
+  DEC -->|AFFECTS| PRJ
+  FAC -->|EXTRACTED_FROM| DOC
+  PRJ -->|DEPENDS_ON| MINE
+  TIX -->|ABOUT| PRJ
+  DOC -->|REFERENCES| MINE
+```
+
+| Layer | Labels | Why it exists |
+| --- | --- | --- |
+| **Org structure** | `Organization`, `Subsidiary`, `Mine`, `Team` | Scope questions to ECL, SECL, Gevra, etc. |
+| **Accountability** | `Person`, `Project`, `Issue` | “Who owns this PQ?” is a **path**, not a keyword hit |
+| **Defensibility** | `Decision`, `Document`, `Fact` | Every published figure traces to **pageRef** on a `Fact` |
+| **Operations** | `Ticket`, `Chat`, `Memory` | Impact and session memory for the brain agent |
+
+**Canonical query library:** [`backend/cypher/company_brain.cypher`](backend/cypher/company_brain.cypher)  
+**Runtime (bounded tools, no model-written Cypher):** [`backend/app/infrastructure/graph/company_brain.py`](backend/app/infrastructure/graph/company_brain.py)
+
+---
+
+## Show the graph doing the work
+
+Vectors retrieve *similar text*. This build **traverses** the graph so the agent can name **owners**, **decisions**, and **source pages** in one answer.
+
+<br />
+
+<img
+  src="docs/images/readme-graph-agent-at-work.jpg"
+  alt="Company Brain — natural-language question to graph hops, then Tool, Path, Sources, and Cypher in the UI"
+/>
+
+<br />
+
+### 1. Ask in the product
+
+Open **[Company Brain](https://falkordb-bhumi-dynamite.vercel.app/brain)** (after sign-in) and ask:
+
+> *Who owns the ECL offtake variance issue and what decision supports the response?*
+
+The UI shows four things judges can verify:
+
+| UI panel | What it proves |
+| --- | --- |
+| **Intent / tool** | e.g. `issue_investigation` — not free-form Cypher from the LLM |
+| **Path** | Ordered hops: `Issue → Project → Person → Decision → Document → Fact` |
+| **Sources** | Document nodes with kind and detail (page / table) |
+| **Cypher** | The exact parameterized query that ran against FalkorDB |
+
+### 2. Same question on the API
+
+```bash
+curl -s -X POST "https://bhumi-company-brain.onrender.com/api/brain/ask" \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d "{\"question\": \"Who owns the ECL offtake variance issue and what decision supports the response?\"}"
+```
+
+Typical response shape (fields the frontend renders):
+
+```json
+{
+  "answer": "…narrative grounded on graph rows…",
+  "intent": "issue",
+  "tool": "issue_investigation",
+  "path": [
+    { "fromLabel": "ECL offtake variance", "relationship": "AFFECTS", "toLabel": "House Question Turnaround" },
+    { "fromLabel": "Vikram Sethi", "relationship": "RESPONSIBLE_FOR", "toLabel": "House Question Turnaround" },
+    { "fromLabel": "Answer ECL offtake variance…", "relationship": "BASED_ON", "toLabel": "Parliamentary Question Log" }
+  ],
+  "sources": [
+    { "label": "Parliamentary Question Log", "kind": "Document", "nodeId": "…", "detail": "source document" }
+  ],
+  "cypher": "MATCH (i:Issue)…"
+}
+```
+
+If a hop is missing (e.g. no `Decision` linked), the agent **states the gap** — it does not fabricate a document.
+
+### 3. Execution flow (agent + graph)
+
+```mermaid
+sequenceDiagram
+  participant U as Officer
+  participant API as FastAPI /brain/ask
+  participant A as brain_agent
+  participant F as FalkorDB
+  U->>API: natural-language question
+  API->>A: classify intent
+  A->>F: named tool + params (fixed Cypher)
+  F-->>A: nodes, relationships, facts
+  A-->>API: answer + path + sources + cypher
+  API-->>U: JSON → Company Brain UI
+```
+
+### 4. More questions that exercise real Cypher tools
+
+| Question | Tool family | Graph behaviour |
+| --- | --- | --- |
+| What **knowledge gaps** exist? | `knowledge_gaps` | Projects/issues missing owner, decision, or facts |
+| **Trace** human-in-loop validation | `decision` | `Decision -[:BASED_ON]-> Document` |
+| What **breaks** if Gevra goes down? | `impact` | `DEPENDS_ON`, `AFFECTS`, tickets, chats |
+| **Aliases** for Gevra mine | `entity_aliases` | Original names kept; aliases linked, not merged |
+| Who is **central** on expertise? | PageRank / degree | `KNOWS_ABOUT` centrality |
+
+Explore the same entities visually under **Graph explorer** in the app (`/graph`).
 
 ---
 
