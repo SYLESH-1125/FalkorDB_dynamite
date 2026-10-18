@@ -11,31 +11,25 @@
 | **Live app** | [falkordb-bhumi-dynamite.vercel.app](https://falkordb-bhumi-dynamite.vercel.app/) |
 | **Live API** | [bhumi-company-brain.onrender.com](https://bhumi-company-brain.onrender.com) (`GET /health`) |
 
-## Project selection & solution — graph explanation (video)
+## Project selection & solution — graph explanation
 
-**What this recording covers:** hackathon track choice (Company Brain / FalkorDB), the **relation-graph** solution (people → projects → decisions → documents → facts), role-based sign-in, and **Company Brain** showing tool, path, sources, and Cypher on a real question.
+Hackathon **Track 03 (Company Brain)**: governed documents → **FalkorDB** relation graph → agent answers with **path, sources, and Cypher**. The recording walks role selection, sign-in, Company Brain, and the graph-backed reply flow.
 
-Press **Play** below (GitHub needs an absolute file URL — not a relative `docs/...` path).
+### ▶ Play the video
 
-<br />
+[![Play: project selection and FalkorDB graph solution — click to open the MP4 on GitHub](docs/images/readme-video-poster.jpg)](https://github.com/SYLESH-1125/FalkorDB_dynamite/blob/main/docs/demo/project-selection-graph-solution.mp4)
 
-<!-- Video: use raw URL so github.com renders the player. File: docs/demo/project-selection-graph-solution.mp4 -->
-<video controls width="100%" playsinline preload="metadata"
-  src="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4">
-  <source
-    type="video/mp4"
-    src="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4" />
-</video>
+**Click the image above** — GitHub opens [`project-selection-graph-solution.mp4`](docs/demo/project-selection-graph-solution.mp4) with the built-in video player.
 
-<p>
-  <strong>If the player is empty:</strong>
-  <a href="https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4">open the MP4 directly</a>
-  or edit this README on GitHub, drag <code>docs/demo/project-selection-graph-solution.mp4</code> into the editor — GitHub will swap in a <code>user-attachments</code> URL that always plays inline.
-</p>
+Direct link: [watch on GitHub](https://github.com/SYLESH-1125/FalkorDB_dynamite/blob/main/docs/demo/project-selection-graph-solution.mp4) · [raw MP4](https://github.com/SYLESH-1125/FalkorDB_dynamite/raw/main/docs/demo/project-selection-graph-solution.mp4)
 
-<br />
+Want the player **embedded in this README** (no click)? Edit this file on github.com, drag `docs/demo/project-selection-graph-solution.mp4` into the editor, and commit — see [docs/demo/VIDEO-IN-README.md](docs/demo/VIDEO-IN-README.md).
 
-**Graph solution (FalkorDB `bhumi_company_brain`) — same story as the video:**
+---
+
+### Graph solution (`bhumi_company_brain`)
+
+Same story as the video — native graph store for relationships and agent context:
 
 <img
   src="docs/images/readme-falkordb-graph-topology.jpg"
