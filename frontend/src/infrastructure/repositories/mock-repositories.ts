@@ -24,6 +24,7 @@ import type { FaqItem, HelpResource } from "@/src/domain/entities/help";
 import type { KnowledgeGraph } from "@/src/domain/entities/graph";
 import type { BrainAnswer, BrainBrief, BrainFact } from "@/src/domain/entities/brain";
 import { answerQuestion, computeTerms, computeClusters, assembleReport } from "@/src/infrastructure/engine/knowledge-engine";
+import { demoBrainAnswer } from "@/src/infrastructure/engine/demo-brain-answer";
 
 const SESSION_KEY = "bhumi.session";
 const SUBS = ["ECL", "BCCL", "CCL", "NCL", "WCL", "SECL", "MCL", "NEC"];
@@ -654,20 +655,8 @@ const previewBrief: BrainBrief = {
 
 export const brainRepository: BrainRepository = {
   brief: () => ok(previewBrief),
-  ask: (question) => ok<BrainAnswer>({
-    answer: `Preview only — “${question}” was not run on FalkorDB. Set NEXT_PUBLIC_API_URL to the Company Brain API.`,
-    intent: "preview",
-    path: [
-      { fromLabel: "Ananya Rao", relationship: "OWNS", toLabel: "Legacy Record Digitisation" },
-      { fromLabel: "Adopt human-in-loop validation before publication", relationship: "BASED_ON", toLabel: "Validation SOP 2026" },
-    ],
-    sources: [
-      { label: "Validation SOP 2026", kind: "Document", nodeId: "doc-validation-sop", detail: "source document" },
-    ],
-    cypher: "MATCH (person:Person)-[:OWNS]->(thing {id: $id}) RETURN person.name",
-    remembered: [],
-  }),
-  record: (fact: BrainFact) => ok({ id: "preview", title: fact.title }),
+  ask: (question) => ok(demoBrainAnswer(question)),
+  record: (fact: BrainFact) => ok({ id: nextId("fact"), title: fact.title }),
 };
 
 // ── Voice ─────────────────────────────────────────────────────────────────────
