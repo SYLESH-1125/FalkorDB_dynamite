@@ -110,12 +110,21 @@ If FalkorDB is down, `GET /health` reports `"graph":"down"` and `POST /api/brain
 
 ---
 
-## 🗺️ Map your graph in the README
+## Map your graph in the README
 
-**Graph name:** `bhumi_company_brain` on FalkorDB  
-**Seed:** one synthetic **Organization** desk (coal ministry / CIL-style) — safe to clone and judge without credentials.
+| Field | Value |
+| --- | --- |
+| **Graph name** | `bhumi_company_brain` on FalkorDB |
+| **Seed** | One synthetic **Organization** desk (coal ministry / CIL-style). Safe to clone and judge without credentials. |
 
-![BHUMI Company Brain × FalkorDB — native graph topology (Person, Project, Decision, Document, Fact, Issue)](docs/images/readme-falkordb-graph-topology.jpg)
+<br />
+
+<img
+  src="docs/images/readme-falkordb-graph-topology.jpg"
+  alt="BHUMI Company Brain × FalkorDB — Person, Project, Decision, Document, Fact, and Issue topology"
+/>
+
+<br />
 
 ### Topology (how nodes connect)
 
@@ -164,11 +173,18 @@ flowchart TB
 
 ---
 
-## 🛡️ Show the graph doing the work
+## Show the graph doing the work
 
 Vectors retrieve *similar text*. This build **traverses** the graph so the agent can name **owners**, **decisions**, and **source pages** in one answer.
 
-![Company Brain agent — question to graph hops to tool, path, sources, and Cypher in the UI](docs/images/readme-graph-agent-at-work.jpg)
+<br />
+
+<img
+  src="docs/images/readme-graph-agent-at-work.jpg"
+  alt="Company Brain — natural-language question to graph hops, then Tool, Path, Sources, and Cypher in the UI"
+/>
+
+<br />
 
 ### 1. Ask in the product
 
